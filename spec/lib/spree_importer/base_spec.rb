@@ -6,6 +6,6 @@ describe SpreeImporter::Base do
     csv_path = File.expand_path "../../", __FILE__
     csv_path = "#{csv_path}/go-live-order-list.csv"
     base.read csv_path
-    base.import
+    # base.import
   end
 end

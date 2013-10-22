@@ -1,17 +1,19 @@
 module SpreeImporter
-  module Base
-    extend ActiveSupport::Concern
-    module ClassMethods
-      def row_based
-        include Importer::RowBased
-      end
+  module Importers
+    module Base
+      extend ActiveSupport::Concern
+      module ClassMethods
+        def row_based
+          include SpreeImporter::Importers::RowBased
+        end
 
-      def column_based
-        include Importer::ColumnBased
-      end
+        def column_based
+          include SpreeImporter::Importers::ColumnBased
+        end
 
-      def header_based
-        include Importer::HeaderBased
+        def header_based
+          include SpreeImporter::Importers::HeaderBased
+        end
       end
     end
   end

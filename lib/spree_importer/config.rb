@@ -9,6 +9,15 @@ module SpreeImporter
   end
 
   class Config
-    attr_accessor :columns
+    attr_accessor :importers
+    def register_importer(key, klass)
+      self.importers[key] = klass
+    end
+
+    def importers
+      @importers ||= {
+        product: SpreeImporter::Importers::Product
+      }
+    end
   end
 end
