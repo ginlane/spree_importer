@@ -38,3 +38,6 @@ require 'spree_importer/factories'
 ```
 
 Copyright (c) 2013 [name of extension creator], released under the New BSD License
+=======
+spree_importer
+==============
