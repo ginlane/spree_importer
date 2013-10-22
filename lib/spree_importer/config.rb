@@ -16,7 +16,10 @@ module SpreeImporter
 
     def importers
       @importers ||= {
-        product: SpreeImporter::Importers::Product
+        product:   SpreeImporter::Importers::Product,
+        property:  SpreeImporter::Importers::Property,
+        option:    SpreeImporter::Importers::Option,
+        prototype: SpreeImporter::Importers::Prototype
       }
     end
   end

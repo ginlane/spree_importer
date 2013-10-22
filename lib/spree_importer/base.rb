@@ -8,14 +8,17 @@ module SpreeImporter
       self.csv     = open path
       self.csv     = CSV.parse @csv, headers: true
       self.headers = Hash[csv.headers.map.with_index.to_a].inject({ }) do |hs, (k, v)|
-        h = Header.new k, v
+        h = Field.new k, v
         hs[h.sanitized] = h
         hs
       end.with_indifferent_access
     end
 
-    def import(kind)
+    def import(kind, options = { })
       importer = fetch_importer kind
+      options.each do |k, v|
+        importer.send "#{k}=", v
+      end
       importer.import headers, csv
     end
 
@@ -24,16 +27,4 @@ module SpreeImporter
     end
   end
 
-  class Header
-    attr_accessor :index, :option, :sanitized, :raw
-    def initialize(header, index)
-      self.raw       = header
-      self.index     = index
-      self.sanitized = header.parameterize "_"
-      self.option    = header.scan(/\(.+?\)/).last
-    end
-    def option?
-      !!option
-    end
-  end
 end

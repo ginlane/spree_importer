@@ -31,6 +31,7 @@ require 'spree/testing_support/url_helpers'
 
 # Requires factories defined in lib/spree_importer/factories.rb
 require 'spree_importer/factories'
+require 'helpers/csv_helper'
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods

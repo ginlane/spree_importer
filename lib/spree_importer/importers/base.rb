@@ -6,15 +6,12 @@ module SpreeImporter
         def row_based
           include SpreeImporter::Importers::RowBased
         end
-
-        def column_based
-          include SpreeImporter::Importers::ColumnBased
-        end
-
-        def header_based
-          include SpreeImporter::Importers::HeaderBased
-        end
       end
+
+      def val(headers, row, key)
+        row[headers[key].try(:raw)]
+      end
+
     end
   end
 end

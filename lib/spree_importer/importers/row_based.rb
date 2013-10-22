@@ -2,16 +2,17 @@ module SpreeImporter
   module Importers
     module RowBased
       extend ActiveSupport::Concern
-      module ClassMethods
-        def target(klass)
-          define_method :target do
-            klass
-          end
-        end
 
+      module ClassMethods
         def import_attributes(*args)
           define_method :import_attributes do
             args
+          end
+        end
+
+        def target(klass)
+          define_method :target do
+            klass
           end
         end
       end
@@ -29,11 +30,6 @@ module SpreeImporter
         end
         instances
       end
-
-      def val(headers, row, key)
-        row[headers[key].raw]
-      end
-
     end
   end
 end
