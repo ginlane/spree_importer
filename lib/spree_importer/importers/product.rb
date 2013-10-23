@@ -4,7 +4,9 @@ module SpreeImporter
       include SpreeImporter::Importers::Base
 
       row_based
+
       import_attributes :sku, :name, :price, :available_on
+
       target Spree::Product
 
       def import(headers, csv)
@@ -40,9 +42,11 @@ module SpreeImporter
                 product.set_property prop.name, value
               end
             end
+
           end
         end
       end
+
     end
   end
 end
