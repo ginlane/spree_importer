@@ -11,7 +11,6 @@ module SpreeImporter
       def val(headers, row, key)
         row[headers[key].try(:raw)].try :strip
       end
-
     end
   end
 end

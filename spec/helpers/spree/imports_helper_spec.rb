@@ -11,5 +11,9 @@ require 'spec_helper'
 #   end
 # end
 describe Spree::ImportsHelper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "generates import methods" do
+    fake_importer = Object.new
+    helper.expects(:call_import).with "options", fake_importer, %w[ fnord skidoo ]
+    helper.import_options fake_importer, %w[ fnord skidoo ]
+  end
 end

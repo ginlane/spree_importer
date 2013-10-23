@@ -3,15 +3,15 @@ module SpreeImporter
     class Prototype
       include SpreeImporter::Importers::Base
 
-      attr_accessor :category
+      attr_accessor :prototype_name
 
       def import(headers, csv)
-        self.category = category.to_s.downcase
+        self.prototype_name = prototype_name.to_s.downcase
         props_and_ops = [ ]
 
         csv.each do |row|
           cat = Field.new val(headers, row, 'category')
-          if cat.sanitized == category
+          if cat.sanitized == prototype_name
             headers.each do |_, h|
               if val headers, row, h.sanitized
                 props_and_ops << h.sanitized
@@ -28,7 +28,7 @@ module SpreeImporter
         option_types  = Spree::OptionType.where name: props_and_ops
 
         Spree::Prototype.new do |prototype|
-          prototype.name         = category
+          prototype.name         = prototype_name
           prototype.properties   = properties
           prototype.option_types = option_types
         end

@@ -15,11 +15,20 @@ module SpreeImporter
     end
 
     def import(kind, options = { })
+      create   = options.delete :create_record
       importer = fetch_importer kind
+
       options.each do |k, v|
         importer.send "#{k}=", v
       end
-      importer.import headers, csv
+
+      record = importer.import headers, csv
+
+      if create
+        [ record ].flatten.each &:save!
+      end
+
+      record
     end
 
     def fetch_importer(kind)
