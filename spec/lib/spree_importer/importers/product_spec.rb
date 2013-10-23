@@ -30,8 +30,6 @@ describe SpreeImporter::Importers::Product do
 
     necklace.save!
 
-    puts necklace.option_types.inspect
-
     products     = base.import :product
   end
 end

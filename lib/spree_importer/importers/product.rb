@@ -22,13 +22,16 @@ module SpreeImporter
             option_values_hash           = { }
 
             option_types.each do |ot|
-              field  = val headers, row, ot.name
+              field   = val headers, row, ot.name
+              field ||= val headers, row, ot.presentation
               if field
-                option_values_hash[ot.id] = Spree::OptionValue.where name: field.split(",").map{|f| Field.new(f).sanitized }
+                fields                    = field.split(",").map{|f| Field.new(f).sanitized }
+                option_values_hash[ot.id] = Spree::OptionValue.where(name: fields).map &:id
               end
             end
 
             product.option_values_hash = option_values_hash
+
             product.save!
 
             properties.each do |prop|

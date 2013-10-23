@@ -2,6 +2,7 @@ module SpreeImporter
   class Field
     attr_accessor :index, :option, :sanitized, :raw
     def initialize(field, index=nil)
+      field          = field.strip
       self.raw       = field
       self.index     = index
       self.sanitized = field.gsub(/\(.+?\)/, '').parameterize "_"

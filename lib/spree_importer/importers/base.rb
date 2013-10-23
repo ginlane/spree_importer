@@ -9,7 +9,7 @@ module SpreeImporter
       end
 
       def val(headers, row, key)
-        row[headers[key].try(:raw)]
+        row[headers[key].try(:raw)].try :strip
       end
 
     end
