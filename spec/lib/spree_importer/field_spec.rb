@@ -21,4 +21,14 @@ describe SpreeImporter::Field do
     field3 = SpreeImporter::Field.new "Fnord Poops(23skidoo)"
     [ field1, field2, field3 ].uniq.length.should eql 2
   end
+
+  it "should handle header columns and [kind] prefixes" do
+    field = SpreeImporter::Field.new "[option] fnord", header = true
+    field.kind.should eql "option"
+    field.sanitized.should eql "fnord"
+    field.raw.should eql "[option] fnord"
+    field.option.should be_nil
+    field.header?.should be_true
+    field.kind?.should be_true
+  end
 end

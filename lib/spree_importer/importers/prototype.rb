@@ -7,11 +7,21 @@ module SpreeImporter
 
       def import(headers, csv)
         self.prototype_name = prototype_name.to_s.downcase
-        props_and_ops = [ ]
+        prototypes           = [ ]
+        csv.each do |row|
+          prototypes << Field.new(val(headers, row, prototype_name)).sanitized
+        end
+        prototypes.uniq.map do |prototype|
+          import_prototype headers, csv, prototype
+        end
+      end
+
+      def import_prototype(headers, csv, name)
+        props_and_ops       = [ ]
 
         csv.each do |row|
-          cat = Field.new val(headers, row, 'category')
-          if cat.sanitized == prototype_name
+          cat = Field.new val(headers, row, prototype_name)
+          if cat.sanitized == name
             headers.each do |_, h|
               if val headers, row, h.sanitized
                 props_and_ops << h.sanitized
@@ -28,7 +38,7 @@ module SpreeImporter
         option_types  = Spree::OptionType.where name: props_and_ops
 
         Spree::Prototype.new do |prototype|
-          prototype.name         = prototype_name
+          prototype.name         = name
           prototype.properties   = properties
           prototype.option_types = option_types
         end

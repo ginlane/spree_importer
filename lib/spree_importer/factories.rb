@@ -9,6 +9,11 @@ FactoryGirl.define do
     data {
       File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/bauble-bar.csv"
     }
+    trait :annotated do
+      data {
+        File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/simple-sheet-annotated.csv"
+      }
+    end
   end
 
   factory :import, class: Spree::Import do

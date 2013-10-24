@@ -5,7 +5,7 @@ module SpreeImporter
 
       row_based
 
-      import_attributes :sku, :name, :price, :available_on
+      import_attributes :sku, :name, :price, :available_on, :description
 
       target Spree::Product
 

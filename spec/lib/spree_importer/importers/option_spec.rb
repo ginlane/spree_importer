@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe SpreeImporter::Importers::Option do
-
+  it "should not be row based" do
+    SpreeImporter::Importers::Option.row_based?.should be_false
+  end
   it "should set attributes on options from csv file" do
     base        = importer "bauble-bar"
     option_type = base.import :option, option_name: "Color", delimiter: ","

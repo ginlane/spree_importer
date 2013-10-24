@@ -5,6 +5,10 @@ module SpreeImporter
 
       attr_accessor :property_name
 
+      def self.match_header(h)
+        h.kind.nil? && !Product.new.import_attributes.include?(h.sanitized.to_sym)
+      end
+
       def import(headers, csv)
         property              = Spree::Property.new
         property_header       = headers[property_name.parameterize]

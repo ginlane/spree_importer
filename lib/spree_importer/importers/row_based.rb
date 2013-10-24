@@ -15,6 +15,10 @@ module SpreeImporter
             klass
           end
         end
+
+        def row_based?
+          true
+        end
       end
 
       def each_instance(headers, csv)
