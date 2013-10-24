@@ -5,7 +5,11 @@ module SpreeImporter
   class Base
     attr_accessor :csv, :headers
     def read(path)
-      self.csv     = open path
+      self.csv = open path
+      parse
+    end
+
+    def parse
       self.csv     = CSV.parse @csv, headers: true
       self.headers = Hash[csv.headers.map.with_index.to_a].inject({ }) do |hs, (k, v)|
         h = Field.new k, v

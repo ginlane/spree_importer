@@ -20,7 +20,7 @@ module SpreeImporter
         property:  SpreeImporter::Importers::Property,
         option:    SpreeImporter::Importers::Option,
         prototype: SpreeImporter::Importers::Prototype
-      }
+      }.with_indifferent_access
     end
   end
 end
