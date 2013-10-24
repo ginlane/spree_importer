@@ -2,17 +2,15 @@ class Spree::ImportsController < ApplicationController
   include Spree::ImportsHelper
 
   def create
-    targets  = params[:targets]
-    importer = SpreeImporter::Base.new
+    import = Spree::Import.new import_params
 
-    importer.read params[:import]
-
-    import_options    importer, targets[:options]
-    import_properties importer, targets[:properties]
-    import_prototypes importer, targets[:prototypes]
-    import_products   importer, targets[:products]
-
+    import.save!
+    import.run!
     render json: true
   end
 
+  protected
+  def import_params
+    params.require(:import).permit :import_source_file_id, :target, arguments: [ ]
+  end
 end
