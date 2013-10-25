@@ -31,7 +31,7 @@ FactoryGirl.define do
 
     trait :prototype do
       target "prototype"
-      arguments %w[ necklace ring ]
+      arguments %w[ category ]
     end
 
     trait :product do

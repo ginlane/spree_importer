@@ -26,10 +26,8 @@ describe SpreeImporter::Importers::Product do
 
     [ summary, style_number, color ].each &:save!
 
-    necklace     = base.import :prototype, prototype_name: :necklace
-
-    necklace.save!
-
+    base.import :prototype, prototype_name: :category, create_record: true
     products     = base.import :product
+    products.length.should eql 37
   end
 end

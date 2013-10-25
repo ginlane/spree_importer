@@ -11,8 +11,8 @@ describe SpreeImporter::Importers::Prototype do
 
     base         = importer "go-live-order-list"
 
-    prototype    = base.import :prototype, prototype_name: "Necklace"
-
+    prototypes   = base.import :prototype, prototype_name: "category"
+    prototype    = prototypes.first
     prototype.name.should eql "necklace"
     prototype.properties.length.should eql 1
     prototype.properties.first.name.should eql "style_number"

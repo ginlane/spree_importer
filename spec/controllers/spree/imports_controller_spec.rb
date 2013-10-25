@@ -25,7 +25,7 @@ describe Spree::ImportsController do
   it "should import protoypes from spreadsheet" do
     expect {
       spree_post :create, import: attrs(:prototype)
-    }.to change(Spree::Prototype, :count).by(2)
+    }.to change(Spree::Prototype, :count).by(4)
   end
 
   context "with a populated db" do
@@ -40,15 +40,13 @@ describe Spree::ImportsController do
 
       [ summary, style_number, color ].each &:save!
 
-      necklace     = base.import :prototype, prototype_name: :necklace
-
-      necklace.save!
+      prototypes    = base.import :prototype, prototype_name: :category, create_record: true
     end
 
     it "should import products from spreadsheet" do
       expect {
         spree_post :create, import: attrs(:product)
-      }.to change(Spree::Product, :count).by(23)
+      }.to change(Spree::Product, :count).by(37)
     end
   end
 end
