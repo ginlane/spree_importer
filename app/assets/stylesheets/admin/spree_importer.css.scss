@@ -1,0 +1,8 @@
+#import_file_box {
+    width: 300px;
+    height: 200px;
+    border: 10px dashed #CCC;
+    &.hover {
+	border-color: #333;
+    }
+}

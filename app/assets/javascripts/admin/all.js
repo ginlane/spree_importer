@@ -9,4 +9,5 @@
 
 //= require admin/spree_backend
 
+//= require admin/spree_importer
 //= require_tree .

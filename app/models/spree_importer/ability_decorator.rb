@@ -9,5 +9,3 @@ class SpreeImporter::AbilityDecorator
     end
   end
 end
-
-Spree::Ability.register_ability SpreeImporter::AbilityDecorator

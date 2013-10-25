@@ -1,4 +1,4 @@
-class Spree::Admin::ImportSourceFilesController < ApplicationController
+class Spree::Admin::ImportSourceFilesController < Spree::Admin::BaseController
   def create
     params.require :import_source_file
     data        = params[:import_source_file][:data].read
@@ -21,6 +21,6 @@ class Spree::Admin::ImportSourceFilesController < ApplicationController
   end
 
   def index
-
+    @import_source_file = Spree::ImportSourceFile.new
   end
 end
