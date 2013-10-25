@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Spree::Admin::ImportSourceFilesController do
+  before :each do
+    @user = FactoryGirl.create :admin_user
+    controller.stubs(:spree_current_user).returns @user
+  end
   it "should create a new impot source file, yo." do
     expect {
       spree_post :create, import_source_file: {

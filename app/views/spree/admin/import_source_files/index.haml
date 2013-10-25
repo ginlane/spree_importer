@@ -8,6 +8,13 @@
 %h3
   Upload CSV File
 
-= form_for [:admin, @import_source_file ], class_name: "dropzone" do |f|
-  = f.label :data
-  = f.file_field :data
+= form_for [:admin, @import_source_file ], html: { class: "dropzone" } do |f|
+  .import
+    %label{ for: "dont_import" } Only upload (Don't import products)
+    %input{ type: "hidden", name: "import", value: true }
+    = check_box_tag :import, false, false, id: "dont_import"
+
+  .fallback
+    = f.label :data, "Data File"
+    = f.file_field :data
+    = f.submit

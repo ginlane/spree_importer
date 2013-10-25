@@ -7,6 +7,6 @@
  *= require admin/spree_backend
 
  *= require_self
+ *= require admin/dropzone
  *= require_tree .
-
 */

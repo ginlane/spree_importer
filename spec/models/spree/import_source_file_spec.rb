@@ -7,7 +7,7 @@ describe Spree::ImportSourceFile do
   end
 
   it "should import all the fucks" do
-    FactoryGirl.create :shipping_category, name: "default"
+    FactoryGirl.create :shipping_category, name: "Default"
     source_file = FactoryGirl.create :import_source_file, :annotated
     source_file.import!
     Spree::Property.count.should eql 3

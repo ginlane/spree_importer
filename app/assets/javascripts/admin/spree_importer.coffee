@@ -1,2 +1,7 @@
+#= require admin/dropzone
+Dropzone.autoDiscover = false
 $(document).ready ->
-  new Dropzone("form#new_import_source_file", { paramName: "import_source_file[data]" });
+  dropzone = new Dropzone "#new_import_source_file", {
+    paramName: "import_source_file[data]",
+    parallelUploads: 1
+  }

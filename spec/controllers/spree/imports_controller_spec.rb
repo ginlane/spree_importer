@@ -30,7 +30,7 @@ describe Spree::ImportsController do
 
   context "with a populated db" do
     before :each do
-      shipping     = FactoryGirl.create :shipping_category, name: "default"
+      shipping     = FactoryGirl.create :shipping_category, name: "Default"
 
       base         = importer "bauble-bar"
 

@@ -17,7 +17,7 @@ describe SpreeImporter::Importers::Product do
   end
 
   it "should import products with prototypes, properties, and options" do
-    FactoryGirl.create :shipping_category, name: "default"
+    FactoryGirl.create :shipping_category, name: "Default"
     base         = importer "bauble-bar"
 
     summary      = base.import :property, property_name: "summary"

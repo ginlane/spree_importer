@@ -1757,5 +1757,3 @@ if (typeof exports == "object") {
 } else {
   this["Dropzone"] = require("dropzone");
 }})();
-
-console.log("AAASAGGASFASDFASDFASDF")
