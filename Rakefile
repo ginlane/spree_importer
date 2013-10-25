@@ -12,4 +12,7 @@ desc 'Generates a dummy app for testing'
 task :test_app do
   ENV['LIB_NAME'] = 'spree_importer'
   Rake::Task['extension:test_app'].invoke
+  sh "bundle exec rails g spree:install -A"
+  sh "bundle exec rails g spree_importer:install -A"
+  sh "bundle exec rake db:seed"
 end

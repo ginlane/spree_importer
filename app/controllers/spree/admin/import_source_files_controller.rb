@@ -1,4 +1,4 @@
-class Spree::ImportSourceFilesController < ApplicationController
+class Spree::Admin::ImportSourceFilesController < ApplicationController
   def create
     params.require :import_source_file
     data        = params[:import_source_file][:data].read
@@ -13,9 +13,14 @@ class Spree::ImportSourceFilesController < ApplicationController
       render json: source_file.errors, status: :unprocessable_entity
     end
   end
+
   def update
     source_file = Spree::ImportSourceFile.find params[:id]
     source_file.import!
     render json: true
+  end
+
+  def index
+
   end
 end

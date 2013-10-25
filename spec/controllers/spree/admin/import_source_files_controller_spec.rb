@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Spree::ImportSourceFilesController do
+describe Spree::Admin::ImportSourceFilesController do
   it "should create a new impot source file, yo." do
     expect {
       spree_post :create, import_source_file: {
