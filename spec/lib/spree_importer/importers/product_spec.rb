@@ -32,5 +32,9 @@ describe SpreeImporter::Importers::Product do
     style_number.name.should eql "summary"
     style_number.presentation.should eql "Summary"
     products.length.should eql 37
+
+    # it should handle redundant uploads, bithc
+    base.import :product
+    products.length.should eql 37
   end
 end
