@@ -16,4 +16,12 @@ describe SpreeImporter::Importers::Option do
     option_type.option_values.length.should eql 33
     option_type.new_record?.should be_false
   end
+
+  it "should warn about dups" do
+    option_importer = SpreeImporter::Importers::Option.new
+    option_type     = FactoryGirl.create :option_type, name: "fnord", presentation: "FNORD"
+    instance        = option_importer.fetch_instance name: "fnord"
+    instance.id.should eql option_type.id
+    option_importer.warnings.first.should match /Warning/
+  end
 end

@@ -13,6 +13,6 @@ describe Spree::ImportSourceFile do
     Spree::Property.count.should eql 3
     Spree::OptionType.count.should eql 2
     Spree::Prototype.count.should eql 4
-    Spree::Product.count.should eql 37
+    Spree::Product.count.should eql 34
   end
 end

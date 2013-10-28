@@ -11,6 +11,12 @@ module SpreeImporter
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
+          # for safety we're skipping and warning on products
+          if Spree::Variant.exists? sku: product.sku
+            self.warnings << "Duplicate product for sku #{product.sku}, skipping import"
+            next
+          end
+
           category  = Field.new(val(headers, row, "category")).sanitized
           prototype = Spree::Prototype.find_by_name category
           shipping  = val headers, row, "shipping"

@@ -8,7 +8,11 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::BaseController
       if params[:import]
         source_file.import!
       end
-      render json: { warnings: source_file.warnings, imported_records: source_file.imported_records }
+      render json: {
+        warnings: source_file.import_warnings,
+        errors: source_file.import_errors,
+        imported_records: source_file.imported_records
+      }
     else
       render json: source_file.errors, status: :unprocessable_entity
     end

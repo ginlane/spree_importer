@@ -3,7 +3,13 @@ require 'spree_importer/config'
 
 module SpreeImporter
   class Base
-    attr_accessor :csv, :headers, :errors
+    attr_accessor :csv, :headers, :errors, :warnings, :records
+
+    def initialize
+      @warnings = { }.with_indifferent_access
+      @errors   = { }.with_indifferent_access
+      @records  = { }.with_indifferent_access
+    end
 
     def read(path)
       self.csv = open path
@@ -44,10 +50,23 @@ module SpreeImporter
 
       if create
         [ record ].flatten.each &:save
-        self.errors = [ record ].flatten.inject({ }) do |acc, rec|
-          acc[rec.name] = rec.errors
+
+        import_errors = [ record ].flatten.inject({ }) do |acc, rec|
+          acc[rec.name] = rec.errors.full_messages unless rec.valid?
+          acc
+        end
+
+        unless import_errors.empty?
+          errors[kind] ||= [ ]
+          errors[kind]  << import_errors
         end
       end
+
+      warnings[kind] ||= [ ]
+      warnings[kind]  += importer.warnings
+
+      records[kind]  ||= 0
+      records[kind]   += [ record ].flatten.count
 
       record
     end

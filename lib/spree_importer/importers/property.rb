@@ -3,6 +3,8 @@ module SpreeImporter
     class Property
       include SpreeImporter::Importers::Base
 
+      target Spree::Property
+
       attr_accessor :property_name
 
       def self.match_header(h)
@@ -10,8 +12,8 @@ module SpreeImporter
       end
 
       def import(headers, csv)
-        property              = Spree::Property.new
         property_header       = headers[property_name.parameterize]
+        property              = fetch_instance name: [ property_header.option, property_header.sanitized ].compact
         property.name         = property_header.option || property_header.sanitized
         property.presentation = property_header.label
         property

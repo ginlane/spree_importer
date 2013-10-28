@@ -11,4 +11,11 @@ describe SpreeImporter::Base do
     base = importer "simple-sheet-annotated"
     base.find_headers("option").length.should eql 2
   end
+
+  it "should accumulate warnings" do
+    base = importer "simple-sheet-annotated"
+    base.import :option, option_name: "sizes", create_record: true
+    base.import :option, option_name: "sizes", create_record: true
+    base.warnings[:option].first.should match /Warning/
+  end
 end

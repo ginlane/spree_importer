@@ -9,13 +9,6 @@ module SpreeImporter
             args
           end
         end
-
-        def target(klass)
-          define_method :target do
-            klass
-          end
-        end
-
         def row_based?
           true
         end
@@ -24,16 +17,16 @@ module SpreeImporter
       def each_instance(headers, csv)
         instances = [ ]
         csv.each do |row|
-          i = target.new do |instance|
-            import_attributes.each do |attr|
-              instance.send "#{attr}=", val(headers, row, attr)
-            end
+          instance = target.new
+          import_attributes.each do |attr|
+            instance.send "#{attr}=", val(headers, row, attr)
           end
-          instances << i
-          yield i, row
+          instances << instance
+          yield instance, row
         end
         instances
       end
+
     end
   end
 end

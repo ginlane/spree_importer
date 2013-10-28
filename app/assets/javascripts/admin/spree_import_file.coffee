@@ -1,4 +1,4 @@
-class SpreeImportFile
+(exports ? this).SpreeImportFile = class SpreeImportFile
   constructor: ->
     @dropzone = new Dropzone "#new_import_source_file", {
       paramName: "import_source_file[data]",
@@ -12,5 +12,5 @@ class SpreeImportFile
     # errrrr
     console.log "ERRRRRRR", f, err
 
-  handleSuccess: (e) =>
-    console.log "Suck sess.", arguments
+  handleSuccess: (file, info) =>
+    console.log info

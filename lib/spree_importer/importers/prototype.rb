@@ -3,6 +3,8 @@ module SpreeImporter
     class Prototype
       include SpreeImporter::Importers::Base
 
+      target Spree::Prototype
+
       attr_accessor :prototype_name
 
       def import(headers, csv)
@@ -34,14 +36,13 @@ module SpreeImporter
 
         props_and_ops.uniq!
 
-        properties    = Spree::Property.where name: props_and_ops
-        option_types  = Spree::OptionType.where name: props_and_ops
-
-        Spree::Prototype.new do |prototype|
-          prototype.name         = name
-          prototype.properties   = properties
-          prototype.option_types = option_types
-        end
+        properties             = Spree::Property.where name: props_and_ops
+        option_types           = Spree::OptionType.where name: props_and_ops
+        prototype              = fetch_instance name: name
+        prototype.name         = name
+        prototype.properties   = properties
+        prototype.option_types = option_types
+        prototype
       end
     end
   end

@@ -46,7 +46,7 @@ describe Spree::ImportsController do
     it "should import products from spreadsheet" do
       expect {
         spree_post :create, import: attrs(:product)
-      }.to change(Spree::Product, :count).by(37)
+      }.to change(Spree::Product, :count).by(34)
     end
   end
 end
