@@ -38,7 +38,7 @@
       %td.prototype-totals
       %td.product-totals
 
-    %tr.odd
+    %tr.odd.warnings{ data: { "message-row" => "warnings" } }
       %th
         Warnings
       %td.option-warnings
@@ -46,7 +46,7 @@
       %td.prototype-warnings
       %td.product-warnings
 
-    %tr.even
+    %tr.even.errors{ data: { "message-row" => "errors" } }
       %th
         Errors
       %td.option-errors
