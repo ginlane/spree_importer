@@ -16,6 +16,7 @@ describe SpreeImporter::Importers::Prototype do
     prototype.name.should eql "necklace"
     prototype.properties.length.should eql 1
     prototype.properties.first.name.should eql "style_number"
+    prototype.properties.first.presentation.should eql "Style Number"
     prototype.option_types.length.should eql 1
     prototype.option_types.first.name.should eql "sizes"
   end

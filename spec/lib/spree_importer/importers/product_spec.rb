@@ -28,6 +28,9 @@ describe SpreeImporter::Importers::Product do
 
     base.import :prototype, prototype_name: :category, create_record: true
     products     = base.import :product
+    style_number = products.first.properties.first
+    style_number.name.should eql "summary"
+    style_number.presentation.should eql "Summary"
     products.length.should eql 37
   end
 end

@@ -14,13 +14,11 @@ module SpreeImporter
           category  = Field.new(val(headers, row, "category")).sanitized
           prototype = Spree::Prototype.find_by_name category
           shipping  = val headers, row, "shipping"
-          puts shipping.inspect
+
           if shipping.nil?
-            puts "DEFAULT"
             shipping = Spree::ShippingCategory.find_by_name "Default"
           else
-            puts "finding #{shipping.inspect}"
-            shipping  = Spree::ShippingCategory.find_by_name shipping
+            shipping = Spree::ShippingCategory.find_by_name shipping
           end
 
           unless prototype.nil?

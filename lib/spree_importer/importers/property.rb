@@ -13,7 +13,7 @@ module SpreeImporter
         property              = Spree::Property.new
         property_header       = headers[property_name.parameterize]
         property.name         = property_header.option || property_header.sanitized
-        property.presentation = property_name
+        property.presentation = property_header.label
         property
       end
     end
