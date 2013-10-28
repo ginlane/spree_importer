@@ -18,3 +18,38 @@
     = f.label :data, "Data File"
     = f.file_field :data
     = f.submit
+
+#last_import.hidden
+  %h3 Last Import
+
+  %table.index
+    %tr.odd
+      %th
+      %th Options
+      %th Properties
+      %th Prototypes
+      %th Products
+
+    %tr.even
+      %th
+        Totals
+      %td.option-totals
+      %td.property-totals
+      %td.prototype-totals
+      %td.product-totals
+
+    %tr.odd
+      %th
+        Warnings
+      %td.option-warnings
+      %td.property-warnings
+      %td.prototype-warnings
+      %td.product-warnings
+
+    %tr.even
+      %th
+        Errors
+      %td.option-errors
+      %td.property-errors
+      %td.prototype-errors
+      %td.product-errors

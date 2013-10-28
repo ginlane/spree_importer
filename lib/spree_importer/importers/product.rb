@@ -7,7 +7,7 @@ module SpreeImporter
 
       import_attributes :sku, :name, :price, :available_on, :description
 
-      target Spree::Product
+      target ::Spree::Product
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|

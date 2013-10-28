@@ -3,7 +3,7 @@ module SpreeImporter
     class Prototype
       include SpreeImporter::Importers::Base
 
-      target Spree::Prototype
+      target ::Spree::Prototype
 
       attr_accessor :prototype_name
 
@@ -36,8 +36,8 @@ module SpreeImporter
 
         props_and_ops.uniq!
 
-        properties             = Spree::Property.where name: props_and_ops
-        option_types           = Spree::OptionType.where name: props_and_ops
+        properties             = ::Spree::Property.where name: props_and_ops
+        option_types           = ::Spree::OptionType.where name: props_and_ops
         prototype              = fetch_instance name: name
         prototype.name         = name
         prototype.properties   = properties

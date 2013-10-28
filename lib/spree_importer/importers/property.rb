@@ -3,7 +3,7 @@ module SpreeImporter
     class Property
       include SpreeImporter::Importers::Base
 
-      target Spree::Property
+      target ::Spree::Property
 
       attr_accessor :property_name
 

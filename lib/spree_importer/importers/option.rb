@@ -3,7 +3,7 @@ module SpreeImporter
     class Option
       include SpreeImporter::Importers::Base
 
-      target Spree::OptionType
+      target ::Spree::OptionType
 
       attr_accessor :option_name, :delimiter
 
