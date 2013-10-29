@@ -5,6 +5,10 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def show
     @resource = @import_source_file = Spree::ImportSourceFile.find params[:id]
+    respond_with(@resource) do |format|
+      format.html
+      format.text { render text: @resource.data }
+    end
   end
 
   def create
