@@ -2,54 +2,22 @@
   = Spree.t :listing_import_source_files
 
 = content_for :page_actions do
-  = render partial: "spree/admin/shared/product_sub_menu"
+  %li
+    = button_link_to Spree.t(:import_file), new_admin_import_source_file_url, { icon: 'icon-plus', id: 'admin_new_import_source_file' }
 
+= render partial: "spree/admin/shared/product_sub_menu"
 
-%h3
-  Upload CSV File
+%table.index
+  %tr.odd
+    %th
+      Upload Date
+    %th
+      File Name
+    %th
+      Rows
 
-= form_for [:admin, @import_source_file ], html: { class: "dropzone" } do |f|
-  .import
-    %label{ for: "dont_import" } Only upload (Don't import products)
-    %input{ type: "hidden", name: "import", value: true }
-    = check_box_tag :import, false, false, id: "dont_import"
-
-  .fallback
-    = f.label :data, "Data File"
-    = f.file_field :data
-    = f.submit
-
-#last_import.hidden
-  %h3 Last Import
-
-  %table.index
-    %tr.odd
-      %th
-      %th Options
-      %th Properties
-      %th Prototypes
-      %th Products
-
-    %tr.even
-      %th
-        Totals
-      %td.option-totals
-      %td.property-totals
-      %td.prototype-totals
-      %td.product-totals
-
-    %tr.odd.warnings{ data: { "message-row" => "warnings" } }
-      %th
-        Warnings
-      %td.option-warnings
-      %td.property-warnings
-      %td.prototype-warnings
-      %td.product-warnings
-
-    %tr.even.errors{ data: { "message-row" => "errors" } }
-      %th
-        Errors
-      %td.option-errors
-      %td.property-errors
-      %td.prototype-errors
-      %td.product-errors
+  - @collection.each do |import_source_file|
+    %tr{ class: cycle("even", "odd") }
+      %td= link_to import_source_file.created_at.strftime("%m/%d/%Y"), admin_import_source_file_path(import_source_file)
+      %td= import_source_file.file_name
+      %td= import_source_file.rows

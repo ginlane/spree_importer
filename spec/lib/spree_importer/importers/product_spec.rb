@@ -7,7 +7,7 @@ describe SpreeImporter::Importers::Product do
   end
 
   it "should set attributes on products from csv file" do
-    base      = importer "go-live-order-list"
+    base      = get_importer "go-live-order-list"
     instances = base.import :product
     instances.each do |i|
       i.name.should_not be_nil
@@ -18,7 +18,7 @@ describe SpreeImporter::Importers::Product do
 
   it "should import products with prototypes, properties, and options" do
     FactoryGirl.create :shipping_category, name: "Default"
-    base         = importer "bauble-bar"
+    base         = get_importer "bauble-bar"
 
     summary      = base.import :property, property_name: "summary"
     style_number = base.import :property, property_name: "style_number"

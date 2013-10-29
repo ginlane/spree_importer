@@ -9,7 +9,7 @@ describe SpreeImporter::Importers::Prototype do
     sizes        = FactoryGirl.create :option_type, name: "sizes", presentation: "Sizes"
     style_number = FactoryGirl.create :property, name: "style_number", presentation: "Style Number"
 
-    base         = importer "go-live-order-list"
+    base         = get_importer "go-live-order-list"
 
     prototypes   = base.import :prototype, prototype_name: "category"
     prototype    = prototypes.first

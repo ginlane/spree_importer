@@ -1,4 +1,5 @@
 class Spree::ImportSourceFile < ActiveRecord::Base
+  include Enumerable
   has_many :imports
   validates_uniqueness_of :data
 
@@ -8,10 +9,16 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     mime =~ /csv/
   end
 
+  def each
+    importer.csv.each { |*args| yield *args }
+  end
+
+  def headers
+    importer.headers
+  end
+
   def import!
-    importer     = SpreeImporter::Base.new
-    importer.csv = data
-    importer.parse
+    self.rows = importer.csv.inject(0) { |acc| acc + 1 }
 
     self.class.transaction do
       importer.option_headers.each do |header|
@@ -31,6 +38,17 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       self.import_warnings  = importer.warnings
       self.import_errors    = importer.errors
       self.imported_records = importer.records
+
+      update_column :rows, rows
     end
+  end
+
+  def importer(force = false)
+    if @importer.nil? || force
+      @importer     = SpreeImporter::Base.new
+      @importer.csv = data
+      @importer.parse
+    end
+    @importer
   end
 end

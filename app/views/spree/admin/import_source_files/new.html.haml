@@ -1,0 +1,52 @@
+= content_for :page_title do
+  = Spree.t :upload_csv_file
+
+= content_for :page_actions
+
+= render partial: "spree/admin/shared/product_sub_menu"
+
+= form_for [:admin, @import_source_file ], html: { class: "dropzone", multipart: true } do |f|
+  .import
+    %label{ for: "dont_import" } Only upload (Don't import products)
+    %input{ type: "hidden", name: "import", value: true }
+    = check_box_tag :import, false, false, id: "dont_import"
+
+  .fallback
+    = f.label :data, "Data File"
+    = f.file_field :data
+    = f.submit
+
+#last_import.hidden
+  %h3 Last Import
+
+  %table.index
+    %tr.odd
+      %th
+      %th Options
+      %th Properties
+      %th Prototypes
+      %th Products
+
+    %tr.even
+      %th
+        Totals
+      %td.option-totals
+      %td.property-totals
+      %td.prototype-totals
+      %td.product-totals
+
+    %tr.odd.warnings{ data: { "message-row" => "warnings" } }
+      %th
+        Warnings
+      %td.option-warnings
+      %td.property-warnings
+      %td.prototype-warnings
+      %td.product-warnings
+
+    %tr.even.errors{ data: { "message-row" => "errors" } }
+      %th
+        Errors
+      %td.option-errors
+      %td.property-errors
+      %td.prototype-errors
+      %td.product-errors

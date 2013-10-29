@@ -1,8 +1,10 @@
 class CreateSpreeImportSourceFiles < ActiveRecord::Migration
   def change
     create_table :spree_import_source_files do |t|
-      t.text   :data
-      t.string :mime
+      t.text    :data
+      t.integer :rows
+      t.string  :file_name
+      t.string  :mime
       t.timestamps
     end
   end

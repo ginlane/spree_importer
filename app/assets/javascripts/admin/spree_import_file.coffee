@@ -1,5 +1,7 @@
 (exports ? this).SpreeImportFile = class SpreeImportFile
   constructor: ->
+    return unless !!$("#new_import_source_file").length
+
     @dropzone = new Dropzone "#new_import_source_file", {
       paramName: "import_source_file[data]",
       parallelUploads: 1
@@ -40,4 +42,4 @@
       html += @info[label][k].join("</td></tr><tr><td colspan='5'>")
       html += "</td></tr>"
 
-    $row.replaceWith(html)
+    $row.replaceWith html

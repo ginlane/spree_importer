@@ -32,7 +32,7 @@ describe Spree::ImportsController do
     before :each do
       shipping     = FactoryGirl.create :shipping_category, name: "Default"
 
-      base         = importer "bauble-bar"
+      base         = get_importer "bauble-bar"
 
       summary      = base.import :property, property_name: "summary"
       style_number = base.import :property, property_name: "style_number"

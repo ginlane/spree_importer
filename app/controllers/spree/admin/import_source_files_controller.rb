@@ -1,8 +1,16 @@
-class Spree::Admin::ImportSourceFilesController < Spree::Admin::BaseController
+class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceController
+  def new
+    @import_source_file = Spree::ImportSourceFile.new
+  end
+
+  def show
+    @resource = @import_source_file = Spree::ImportSourceFile.find params[:id]
+  end
+
   def create
     params.require :import_source_file
-    data        = params[:import_source_file][:data].read
-    source_file = Spree::ImportSourceFile.new data: data, mime: "text/csv"
+    file        = params[:import_source_file][:data]
+    source_file = Spree::ImportSourceFile.new data: file.read, mime: "text/csv", file_name: file.path
 
     if source_file.save
       if params[:import]
@@ -25,6 +33,6 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::BaseController
   end
 
   def index
-    @import_source_file = Spree::ImportSourceFile.new
+    respond_with @collection
   end
 end

@@ -1,0 +1,16 @@
+= content_for :page_title do
+  = Spree.t :imported_csv
+
+= content_for :page_actions
+
+= render partial: "spree/admin/shared/product_sub_menu"
+
+%table.index
+  %tr.odd
+    - @resource.headers.each do |_,h|
+      %th
+        = h.raw
+  - @resource.each do |row|
+    %tr{ class: cycle("even", "odd")}
+      - @resource.headers.each do |_,h|
+        %td= truncate row[h.raw]
