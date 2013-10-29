@@ -15,27 +15,4 @@ FactoryGirl.define do
       }
     end
   end
-
-  factory :import, class: Spree::Import do
-    import_source_file
-
-    trait :option do
-      target "option"
-      arguments %w[ color size ]
-    end
-
-    trait :property do
-      target "property"
-      arguments %w[ summary style_number ]
-    end
-
-    trait :prototype do
-      target "prototype"
-      arguments %w[ category ]
-    end
-
-    trait :product do
-      target "product"
-    end
-  end
 end

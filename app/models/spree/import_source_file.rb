@@ -1,6 +1,5 @@
 class Spree::ImportSourceFile < ActiveRecord::Base
   include Enumerable
-  has_many :imports
   validates_uniqueness_of :data
 
   attr_accessor :import_warnings, :import_errors, :imported_records
