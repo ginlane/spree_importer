@@ -2,7 +2,7 @@ require 'csv'
 require 'spree_importer/config'
 
 module SpreeImporter
-  class Base
+  class Importer
     attr_accessor :csv, :headers, :errors, :warnings, :records
 
     def initialize

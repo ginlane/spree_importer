@@ -19,7 +19,7 @@ module SpreeImporter
       end
 
       def import_prototype(headers, csv, name)
-        props_and_ops       = [ ]
+        props_and_ops = [ ]
 
         csv.each do |row|
           cat = Field.new val(headers, row, prototype_name)
@@ -32,7 +32,6 @@ module SpreeImporter
             end
           end
         end
-
 
         props_and_ops.uniq!
 

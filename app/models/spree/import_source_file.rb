@@ -44,7 +44,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
   def importer(force = false)
     if @importer.nil? || force
-      @importer     = SpreeImporter::Base.new
+      @importer     = SpreeImporter::Importer.new
       @importer.csv = data
       @importer.parse
     end
