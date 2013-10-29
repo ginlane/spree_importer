@@ -18,6 +18,6 @@
 
   - @collection.each do |import_source_file|
     %tr{ class: cycle("even", "odd") }
-      %td= link_to import_source_file.created_at.strftime("%m/%d/%Y"), admin_import_source_file_path(import_source_file)
+      %td= link_to import_source_file.created_at.strftime("%m/%d/%Y %H:%M"), admin_import_source_file_path(import_source_file)
       %td= import_source_file.file_name
       %td= import_source_file.rows
