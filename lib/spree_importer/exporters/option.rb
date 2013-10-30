@@ -8,7 +8,9 @@ module SpreeImporter
 
       def append(row, product)
         product.option_types.each do |type|
-          row[type.name] = type.option_values.join(",")
+          row[type.name] = type.option_values.map do |value|
+            Field.to_field_string value.presentation, option: value.name
+          end.join ","
         end
       end
     end

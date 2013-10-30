@@ -44,8 +44,11 @@ module SpreeImporter
               end
             end
 
-            product.option_values_hash = option_values_hash
-            product.save!
+            if option_values_hash.any?
+              product.option_values_hash = option_values_hash
+              product.save!
+            end
+
             properties.each do |prop|
               value = val headers, row, prop.name
               if value

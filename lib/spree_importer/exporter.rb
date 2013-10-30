@@ -2,8 +2,14 @@ require 'csv'
 require 'spree_importer/config'
 
 class SpreeImporter::Exporter
+  include Enumerable
   attr_accessor :headers
-  def export(options = { })
+
+  def initialize(default_options = { })
+    @default_options = { }
+  end
+
+  def export(options = @default_options)
     exporters    = get_exporters options[:exporters]
     self.headers = [ ]
 
@@ -18,13 +24,26 @@ class SpreeImporter::Exporter
 
     with_csv options[:file] do |csv|
       csv << headers
+      if block_given?
+        yield CSV.generate_line headers
+      end
       each_product options[:params] do |product|
         row = CSV::Row.new [], []
         exporters.each do |exporter|
           exporter.append row, product
         end
-        csv << row
+        if block_given?
+          yield row.to_csv
+        else
+          csv << row
+        end
       end
+    end
+  end
+
+  def each
+    export @default_options do |row|
+      yield row
     end
   end
 

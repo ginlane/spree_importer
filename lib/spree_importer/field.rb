@@ -31,5 +31,17 @@ module SpreeImporter
     def eql?(other)
       other.raw.eql? raw
     end
+    def to_s
+      self.class.to_field_string sanitized, option: option, kind: kind
+    end
+    def self.to_field_string(string, params = { })
+      if params[:option] && params[:option] != string
+        string = "(#{params[:option]})#{string}"
+      end
+      if params[:kind]
+        string = "[#{params[:kind]}]#{string}"
+      end
+      string
+    end
   end
 end

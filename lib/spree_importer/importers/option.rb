@@ -20,10 +20,12 @@ module SpreeImporter
         end
 
         option_type.option_values = values.flatten.uniq.map do |value|
+          pos = 0
           unless option_type.option_values.map(&:name).include?(value.sanitized)
             Spree::OptionValue.new do |option_value|
-              option_value.name         = value.sanitized
-              option_value.presentation = value.raw
+              option_value.name         = value.option ||value.sanitized
+              option_value.presentation = value.label
+              option_value.position     = (pos+=1)
             end
           end
         end.compact

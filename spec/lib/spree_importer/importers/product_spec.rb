@@ -17,16 +17,14 @@ describe SpreeImporter::Importers::Product do
   end
 
   it "should import products with prototypes, properties, and options" do
-    FactoryGirl.create :shipping_category, name: "Default"
     base         = get_importer "bauble-bar"
 
-    summary      = base.import :property, property_name: "summary"
-    style_number = base.import :property, property_name: "style_number"
-    color        = base.import :option, option_name: "color"
+    summary      = base.import :property, property_name: "summary", create_record: true
+    style_number = base.import :property, property_name: "style_number", create_record: true
+    color        = base.import :option, option_name: "color", create_record: true
 
-    [ summary, style_number, color ].each &:save!
+    prototype    = base.import :prototype, prototype_name: :category, create_record: true
 
-    base.import :prototype, prototype_name: :category, create_record: true
     products     = base.import :product
     style_number = products.first.properties.first
     style_number.name.should eql "summary"

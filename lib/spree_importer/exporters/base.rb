@@ -34,17 +34,20 @@
       def headers(product)
         [ product.send(product_attribute) ].flatten.map do |instance|
           header_attrs.map do |attr|
+            field  = ""
+            option = nil
             if attr.is_a? Array
               a1, a2 = attr.map {|a| instance.send a }.compact
-              if a2.nil? || a1 == a2
-                header = a1
+              if a2.nil?
+                field = a1
               else
-                header = "(#{a1})#{a2}"
+                field  = a2
+                option = a1
               end
             else
-              header = instance.send attr
+              field = instance.send attr
             end
-            prefix.nil?? header : "[#{prefix}]#{header}"
+            Field.to_field_string field, option: option, kind: prefix
           end
         end.flatten
       end

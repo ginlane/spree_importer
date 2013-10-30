@@ -31,4 +31,15 @@ describe SpreeImporter::Field do
     field.header?.should be_true
     field.kind?.should be_true
   end
+
+  it "should generate a [kind]name(option) field" do
+    str   = SpreeImporter::Field.to_field_string "motherlicker", kind: "old", option: "gregg"
+    field = SpreeImporter::Field.new str, true
+
+    str.should eql "[old](gregg)motherlicker"
+    field.kind.should eql "old"
+    field.option.should eql "gregg"
+    field.sanitized.should eql "motherlicker"
+    field.to_s.should eql str
+  end
 end
