@@ -5,6 +5,7 @@ module SpreeImporter
       prefix       :option
       header_attrs [ :name, :presentation ]
       product_attr :option_types
+      has_options
 
       def append(row, product)
         product.option_types.each do |type|

@@ -39,7 +39,8 @@
       end
 
       def val(headers, row, key)
-        row[headers[key].try(:raw)].try :strip
+        v = row[headers[key].try(:raw)].try :strip
+        v.blank?? nil : v
       end
 
       def props_and_ops_from_headers(headers, row)

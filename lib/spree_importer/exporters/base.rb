@@ -29,8 +29,16 @@
             attr
           end
         end
-      end
 
+        def has_options
+          define_method :has_options do
+            true
+          end
+        end
+      end
+      def has_options?
+        false
+      end
       def headers(product)
         [ product.send(product_attribute) ].flatten.map do |instance|
           header_attrs.map do |attr|
@@ -42,7 +50,7 @@
                 field = a1
               else
                 field  = a2
-                option = a1
+                option = a1 if has_options?
               end
             else
               field = instance.send attr

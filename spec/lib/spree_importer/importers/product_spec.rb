@@ -15,24 +15,31 @@ describe SpreeImporter::Importers::Product do
       i.price.should_not be_nil
     end
   end
+  context "importing the whole shebang" do
+    before :each do
+      @base         = get_importer "simple-sheet-annotated"
 
-  it "should import products with prototypes, properties, and options" do
-    base         = get_importer "bauble-bar"
+      @summary      = @base.import :property, property_name: "grid_order", create_record: true
+      @style_number = @base.import :property, property_name: "style_number", create_record: true
+      @sizes        = @base.import :option, option_name: "sizes", create_record: true
+      @fnords       = @base.import :option, option_name: "fnords", create_record: true
+      @products     = @base.import :product
+    end
 
-    summary      = base.import :property, property_name: "summary", create_record: true
-    style_number = base.import :property, property_name: "style_number", create_record: true
-    color        = base.import :option, option_name: "color", create_record: true
+    it "should import products with prototypes, properties, and options" do
+      @grid_order = @products.first.properties.first
+      @grid_order.name.should eql "grid_order"
+      @grid_order.presentation.should eql "Grid Order"
+      @products.length.should eql 37
 
-    prototype    = base.import :prototype, prototype_name: :category, create_record: true
+      # it should handle redundant uploads, bithc
+      @base.import :product
+      @products.length.should eql 37
+    end
 
-    products     = base.import :product
-    style_number = products.first.properties.first
-    style_number.name.should eql "summary"
-    style_number.presentation.should eql "Summary"
-    products.length.should eql 37
-
-    # it should handle redundant uploads, bithc
-    base.import :product
-    products.length.should eql 37
+    it "shouldn't import motherlicking blank optionsfuckfuckfuckright?gotdamn" do
+      @product = Spree::Variant.find_by_sku("0002_KK_GL").product
+      @product.option_types.length.should eql 1 # NO FNORDS
+    end
   end
 end

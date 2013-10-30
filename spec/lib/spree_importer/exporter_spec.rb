@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SpreeImporter::Exporter do
   before :each do
     @product = FactoryGirl.create :product_with_option_types
+    FactoryGirl.create :option_value, option_type: @product.option_types.first
     FactoryGirl.create :property, name: "fnordprop", presentation: "fnordprop"
     @product.option_types << FactoryGirl.create(:option_type,
                                                 name: "fnord",
@@ -43,6 +44,7 @@ describe SpreeImporter::Exporter do
     importer.import!
 
     product = Spree::Product.first
+
     product.option_types.length.should eql 2
     fnord   = product.option_types.select{|ot| ot.name == "fnord" }.first
     fnord.should_not be_nil
@@ -51,4 +53,5 @@ describe SpreeImporter::Exporter do
     product.property("fnordprop").should eql "fliff"
     product.sku.should eql @product.sku
   end
+
 end

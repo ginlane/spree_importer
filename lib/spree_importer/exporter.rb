@@ -27,8 +27,9 @@ class SpreeImporter::Exporter
       if block_given?
         yield CSV.generate_line headers
       end
+      clean_headers = headers.map {|h| SpreeImporter::Field.new(h).sanitized }
       each_product options[:search] do |product|
-        row = CSV::Row.new [], []
+        row = CSV::Row.new clean_headers, []
         exporters.each do |exporter|
           exporter.append row, product
         end

@@ -7,7 +7,8 @@ module SpreeImporter
 
       def append(row, product)
         headers(product).each do |h|
-          row[h] = product.property(Field.new(h).sanitized)
+          key      = Field.new(h).sanitized
+          row[key] = product.property(Field.new(h).sanitized)
         end
       end
     end
