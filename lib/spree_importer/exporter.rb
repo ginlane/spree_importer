@@ -37,6 +37,7 @@ class SpreeImporter::Exporter
   end
 
   def get_exporters(exporters)
+
     if exporters.nil?
       SpreeImporter.config.exporters.values
     else
