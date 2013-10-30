@@ -4,8 +4,17 @@ module Spree
       def export
         respond_to do |format|
           format.csv do
-            self.response_body = SpreeImporter::Exporter.new params: params[:q]
+            self.response_body = SpreeImporter::Exporter.new search: search
           end
+        end
+      end
+
+      protected
+      def search
+        if params[:q]
+          params[:q][:deleted_at_null] ||= "1"
+          params[:q][:s]               ||= "name asc"
+          params[:q]
         end
       end
     end

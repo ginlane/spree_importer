@@ -21,6 +21,14 @@ describe SpreeImporter::Exporter do
     end
   end
 
+  it "should find shit" do
+    FactoryGirl.create :product_with_option_types, sku: "MOTHERLICKER"
+    exporter = SpreeImporter::Exporter.new
+    csv      = CSV.new exporter.export(search: { variants_including_master_sku_cont: "MOTH"}), headers: true
+    rows     = csv.read
+    rows.length.should eql 1
+  end
+
   it "should generate mothafuckin' rows" do
     exporter = SpreeImporter::Exporter.new
     csv_text = exporter.export

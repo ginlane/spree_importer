@@ -6,7 +6,7 @@ class SpreeImporter::Exporter
   attr_accessor :headers
 
   def initialize(default_options = { })
-    @default_options = { }
+    @default_options = default_options
   end
 
   def export(options = @default_options)
@@ -27,7 +27,7 @@ class SpreeImporter::Exporter
       if block_given?
         yield CSV.generate_line headers
       end
-      each_product options[:params] do |product|
+      each_product options[:search] do |product|
         row = CSV::Row.new [], []
         exporters.each do |exporter|
           exporter.append row, product
@@ -47,11 +47,11 @@ class SpreeImporter::Exporter
     end
   end
 
-  def each_product(params, &block)
-    if params == :all || params.nil?
+  def each_product(search, &block)
+    if search == :all || search.nil?
       Spree::Product.find_each &block
     else
-      Spree::Product.where(params).find_each &block
+      Spree::Product.ransack(search).result.group_by_products_id.find_each &block
     end
   end
 

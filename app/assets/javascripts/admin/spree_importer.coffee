@@ -5,3 +5,4 @@ Dropzone.autoDiscover = false
 
 $(document).ready ->
   importer = new SpreeImportFile()
+  exporter = new SpreeExporter()
