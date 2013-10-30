@@ -27,7 +27,6 @@ module SpreeImporter
             end
           end
         end.compact
-
         option_type
       end
 

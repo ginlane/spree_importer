@@ -51,7 +51,9 @@
             props_and_ops << h.option if h.option?
           end
         end
+
         props_and_ops.uniq!
+
         properties   = ::Spree::Property.where name: props_and_ops
         option_types = ::Spree::OptionType.where name: props_and_ops
 

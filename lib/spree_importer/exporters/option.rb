@@ -7,9 +7,8 @@ module SpreeImporter
       product_attr :option_types
 
       def append(row, product)
-        product.option_types.inject row do |acc, type|
-          acc << [ type.option_values.join(",") ]
-          acc
+        product.option_types.each do |type|
+          row[type.name] = type.option_values.join(",")
         end
       end
     end

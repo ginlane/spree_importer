@@ -38,7 +38,8 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       self.import_errors    = importer.errors
       self.imported_records = importer.records
 
-      update_column :rows, rows
+      self.rows = rows
+      update_column :rows, rows unless new_record?
     end
   end
 

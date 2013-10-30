@@ -6,8 +6,8 @@ module SpreeImporter
       product_attr :properties
 
       def append(row, product)
-        headers(product).inject row do |acc, h|
-          acc << [ h, product.property(Field.new(h).sanitized) ]
+        headers(product).each do |h|
+          row[h] = product.property(Field.new(h).sanitized)
         end
       end
     end

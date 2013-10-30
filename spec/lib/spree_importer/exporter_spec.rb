@@ -29,11 +29,12 @@ describe SpreeImporter::Exporter do
     [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
     importer = Spree::ImportSourceFile.new data: csv_text
+
     importer.import!
 
     product = Spree::Product.first
     product.option_types.length.should eql 2
-    product.get_property("fnordprop").should eql "fliff"
+    product.property("fnordprop").should eql "fliff"
     product.sku.should eql @product.sku
   end
 end
