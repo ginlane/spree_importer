@@ -44,6 +44,7 @@
 
       def props_and_ops_from_headers(headers, row)
         props_and_ops = [ ]
+
         headers.each do |_, h|
           if val headers, row, h.sanitized
             props_and_ops << h.sanitized

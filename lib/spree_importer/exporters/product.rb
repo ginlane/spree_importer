@@ -3,15 +3,14 @@ module SpreeImporter
     class Product
       include SpreeImporter::Exporters::Base
 
-      def headers(product)
-        # static
+      # static
+      def headers(_)
         %w[ sku name price available_on description ]
       end
 
       def append(row, product)
-        headers(product).inject(row) do |acc, h|
-          acc << [ h, product.send(h) ]
-          acc
+        headers(product).each do |h|
+          row[h] = product.send h
         end
       end
     end

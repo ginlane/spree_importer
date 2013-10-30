@@ -10,6 +10,7 @@ module SpreeImporter
       target ::Spree::Product
 
       def import(headers, csv)
+
         each_instance headers, csv do |product, row|
           # for safety we're skipping and warning on products
           if Spree::Variant.exists? sku: product.sku

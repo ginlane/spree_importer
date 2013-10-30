@@ -7,7 +7,9 @@ class SpreeImporter::Exporter
     exporters    = get_exporters options[:exporters]
     self.headers = [ ]
 
-    # horrifyingly inefficient. Could/should be set up to group by prototype.
+    # horrifyingly inefficient. Not much way around it since
+    # individual products can have arbitrary properties and
+    # option_types that aren't connected to a prototype.
     each_product options[:params] do |product|
       exporters.each do |exporter|
         self.headers |= exporter.headers(product)
@@ -17,7 +19,7 @@ class SpreeImporter::Exporter
     with_csv options[:file] do |csv|
       csv << headers
       each_product options[:params] do |product|
-        row = [ ]
+        row = CSV::Row.new [], []
         exporters.each do |exporter|
           exporter.append row, product
         end
@@ -44,9 +46,9 @@ class SpreeImporter::Exporter
 
   def with_csv(file, &block)
     if file.nil?
-      CSV.generate &block
+      CSV.generate({ headers: :first_row }, &block)
     else
-      CSV.open file, "wb", &block
+      CSV.open(file, "wb", { headers: :first_row }, &block)
     end
   end
 end

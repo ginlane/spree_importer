@@ -21,12 +21,14 @@ describe SpreeImporter::Exporter do
 
   it "should generate mothafuckin' rows" do
     exporter = SpreeImporter::Exporter.new
-    csv      = CSV.parse exporter.export, headers: true
+    csv_text = exporter.export
+    csv      = CSV.parse csv_text, headers: true
+    File.open("tmp.csv", "wb") {|f| f.puts exporter.export }
     csv.inject(0) { |acc| acc + 1 }.should eql 1
 
     [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
-    importer = Spree::ImportSourceFile.new data: exporter.export
+    importer = Spree::ImportSourceFile.new data: csv_text
     importer.import!
 
     product = Spree::Product.first
