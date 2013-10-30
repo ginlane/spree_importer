@@ -37,7 +37,6 @@ class SpreeImporter::Exporter
   end
 
   def get_exporters(exporters)
-    puts "FNODR "
     if exporters.nil?
       SpreeImporter.config.exporters.values
     else

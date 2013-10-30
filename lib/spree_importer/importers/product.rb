@@ -31,8 +31,6 @@ module SpreeImporter
           product.shipping_category_id = shipping.id
           properties                   = [ ]
 
-          #### ARGH. setting properties and option types without a prototype is fux0red.
-
           if prototype.nil?
             properties, option_types = props_and_ops_from_headers headers, row
             option_values_hash = { }
@@ -45,7 +43,7 @@ module SpreeImporter
                 option_values_hash[ot.id] = Spree::OptionValue.where(name: fields).map &:id
               end
             end
-            puts product.inspect
+
             product.option_values_hash = option_values_hash
             product.save!
             properties.each do |prop|
