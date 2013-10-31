@@ -34,7 +34,7 @@ describe SpreeImporter::Exporter do
     csv      = CSV.parse csv_text, headers: true
 
     csv.inject(0) { |acc| acc + 1 }.should eql 1
-puts csv_text
+
     [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
     importer = Spree::ImportSourceFile.new data: csv_text
