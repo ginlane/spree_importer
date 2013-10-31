@@ -39,7 +39,29 @@
       end
 
       def val(headers, row, key)
-        row[headers[key].try(:raw)].try :strip
+        header   = headers[key].try :raw
+        return nil if header.nil?
+
+        v = row[header].try :strip
+        v.blank?? nil : v
+      end
+
+      def props_and_ops_from_headers(headers, row)
+        props_and_ops = [ ]
+
+        headers.each do |_, h|
+          if val headers, row, h.sanitized
+            props_and_ops << h.sanitized
+            props_and_ops << h.option if h.option?
+          end
+        end
+
+        props_and_ops.uniq!
+
+        properties   = ::Spree::Property.where name: props_and_ops
+        option_types = ::Spree::OptionType.where name: props_and_ops
+
+        [ properties, option_types ]
       end
     end
   end

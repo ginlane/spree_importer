@@ -9,9 +9,12 @@ module SpreeImporter
   end
 
   class Config
-    attr_accessor :importers
+    attr_accessor :importers, :exporters
     def register_importer(key, klass)
       self.importers[key] = klass
+    end
+    def register_exporter(key, klass)
+      self.exporters[key] = klass
     end
 
     def importers
@@ -22,5 +25,15 @@ module SpreeImporter
         prototype: SpreeImporter::Importers::Prototype
       }.with_indifferent_access
     end
+
+    def exporters
+      @exporters ||= {
+        product:   SpreeImporter::Exporters::Product,
+        option:    SpreeImporter::Exporters::Option,
+        property:  SpreeImporter::Exporters::Property,
+        # prototype: SpreeImporter::Exporters::Prototype
+      }.with_indifferent_access
+    end
+
   end
 end

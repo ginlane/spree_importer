@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SpreeImporter::Base do
+describe SpreeImporter::Importer do
   it "should read a CSV file" do
     base     = get_importer "go-live-order-list"
     base.csv.should_not be_nil

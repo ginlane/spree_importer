@@ -2,7 +2,7 @@ require 'csv'
 require 'spree_importer/config'
 
 module SpreeImporter
-  class Base
+  class Importer
     attr_accessor :csv, :headers, :errors, :warnings, :records
 
     def initialize
@@ -30,9 +30,9 @@ module SpreeImporter
     end
 
     def parse
-      self.csv     = CSV.parse csv, headers: true
+      self.csv     = CSV.parse csv, headers: :first_row
       self.headers = Hash[csv.headers.map.with_index.to_a].inject({ }) do |hs, (k, _)|
-        h = Field.new k, is_header = true
+        h               = Field.new k, is_header = true
         hs[h.sanitized] = h
         hs
       end.with_indifferent_access
