@@ -11,8 +11,9 @@ module SpreeImporter
         option_type              = fetch_instance name: option_name
         values                   = [ ]
         option_header            = headers[option_name.parameterize]
+
         option_type.name         = option_header.option || option_header.sanitized
-        option_type.presentation = option_name
+        option_type.presentation = option_header.label
 
         csv.each do |row|
           field = val headers, row, option_name.parameterize
@@ -29,6 +30,7 @@ module SpreeImporter
             end
           end
         end.compact
+
         option_type
       end
 

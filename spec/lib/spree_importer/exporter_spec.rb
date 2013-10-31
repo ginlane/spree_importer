@@ -7,19 +7,17 @@ describe SpreeImporter::Exporter do
     FactoryGirl.create :property, name: "fnordprop", presentation: "fnordprop"
     @product.option_types << FactoryGirl.create(:option_type,
                                                 name: "fnord",
-                                                presentation: "fnord",
+                                                presentation: "Gregg",
                                                 option_values: [ FactoryGirl.build(:option_value, name: "Fnord", presentation: "F")])
     @product.set_property "fnordprop", "fliff"
-    @headers = %w| sku name price available_on
-                   [option](foo-size)Size [option]fnord fnordprop |
+    @headers = %w| sku name price available_on description
+                   [option](foo-size)Size [option](fnord)Gregg [property]fnordprop |
   end
 
   it "should generate headers" do
     exporter = SpreeImporter::Exporter.new
     string   = exporter.export
-    @headers.each do |key|
-      exporter.headers.should include(key)
-    end
+    @headers.should == exporter.headers
   end
 
   it "should find shit" do
@@ -36,7 +34,7 @@ describe SpreeImporter::Exporter do
     csv      = CSV.parse csv_text, headers: true
 
     csv.inject(0) { |acc| acc + 1 }.should eql 1
-
+puts csv_text
     [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
     importer = Spree::ImportSourceFile.new data: csv_text
@@ -53,5 +51,4 @@ describe SpreeImporter::Exporter do
     product.property("fnordprop").should eql "fliff"
     product.sku.should eql @product.sku
   end
-
 end

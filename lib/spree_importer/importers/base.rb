@@ -39,7 +39,10 @@
       end
 
       def val(headers, row, key)
-        v = row[headers[key].try(:raw)].try :strip
+        header   = headers[key].try :raw
+        return nil if header.nil?
+
+        v = row[header].try :strip
         v.blank?? nil : v
       end
 

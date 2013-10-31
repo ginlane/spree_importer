@@ -31,7 +31,7 @@
         end
 
         def has_options
-          define_method :has_options do
+          define_method :has_options? do
             true
           end
         end
@@ -50,7 +50,7 @@
                 field = a1
               else
                 field  = a2
-                option = a1 if has_options?
+                option = a1
               end
             else
               field = instance.send attr

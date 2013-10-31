@@ -24,15 +24,18 @@ class SpreeImporter::Exporter
 
     with_csv options[:file] do |csv|
       csv << headers
+
       if block_given?
         yield CSV.generate_line headers
       end
-      clean_headers = headers.map {|h| SpreeImporter::Field.new(h).sanitized }
+
       each_product options[:search] do |product|
-        row = CSV::Row.new clean_headers, []
+        row = CSV::Row.new headers, [ ]
+
         exporters.each do |exporter|
           exporter.append row, product
         end
+
         if block_given?
           yield row.to_csv
         else

@@ -30,12 +30,12 @@ module SpreeImporter
           product.shipping_category_id = shipping.id
           properties                   = [ ]
 
-          properties, option_types = props_and_ops_from_headers headers, row
-          option_values_hash       = { }
+          properties, option_types     = props_and_ops_from_headers headers, row
+          option_values_hash           = { }
 
           option_types.each do |ot|
-            field   = val headers, row, ot.name
-            field ||= val headers, row, ot.presentation
+            key     = Field.to_field_string ot.presentation, option: ot.name, kind: "option"
+            field   = row[key]
             if field
               fields                    = field.split(",").map{|f| Field.new(f).sanitized }
               option_values_hash[ot.id] = Spree::OptionValue.where(name: fields).map &:id
@@ -44,9 +44,9 @@ module SpreeImporter
 
           if option_values_hash.any?
             product.option_values_hash = option_values_hash
-            product.save!
           end
 
+          product.save!
           properties.each do |prop|
             value = val headers, row, prop.name
             if value
