@@ -2,7 +2,9 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   include Enumerable
   validates_uniqueness_of :data
 
-  attr_accessor :import_warnings, :import_errors, :imported_records
+  serialize :import_warnings
+  serialize :import_errors
+  serialize :imported_records
 
   def csv?
     mime =~ /csv/
@@ -39,7 +41,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       self.imported_records = importer.records
 
       self.rows = rows
-      update_column :rows, rows unless new_record?
+      save!
     end
   end
 

@@ -5,6 +5,9 @@ class CreateSpreeImportSourceFiles < ActiveRecord::Migration
       t.integer :rows
       t.string  :file_name
       t.string  :mime
+      t.text    :import_warnings
+      t.text    :import_errors
+      t.text    :imported_records
       t.timestamps
     end
   end

@@ -12,7 +12,7 @@ module SpreeImporter
     end
 
     def read(path)
-      self.csv = open path
+      self.csv = open(path).read
       parse
     end
 
