@@ -15,6 +15,7 @@ describe SpreeImporter::Importers::Product do
       i.price.should_not be_nil
     end
   end
+
   context "importing the whole shebang" do
     before :each do
       @base         = get_importer "simple-sheet-annotated"

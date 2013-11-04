@@ -7,4 +7,6 @@ gem "haml"
 gem "sass"
 gem "cancan", "~>1.6.10"
 
+gem "pry"
+gem "binding_of_caller"
 gemspec
