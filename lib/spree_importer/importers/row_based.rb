@@ -19,7 +19,9 @@ module SpreeImporter
         csv.each do |row|
           instance = target.new
           import_attributes.each do |attr|
-            instance.send "#{attr}=", val(headers, row, attr)
+            if value = val(headers, row, attr)
+              instance.send "#{attr}=", value
+            end
           end
           instances << instance
           yield instance, row
