@@ -6,7 +6,10 @@
 
 = render partial: "spree/admin/shared/product_sub_menu"
 
+#import_table{ "data-import" => { warnings: @resource.import_warnings, errors: @resource.import_errors, imported_records: @resource.imported_records }.to_json }
+  %h3 Import Info
 
+  = render partial: "spree/admin/import_source_files/warning_table"
 
 %table.index
   %tr.odd
@@ -14,6 +17,6 @@
       %th
         = h.raw
   - @resource.each do |row|
-    %tr{ class: cycle("even", "odd")}
+    %tr{ class: cycle("even", "odd") }
       - @resource.headers.each do |_,h|
         %td= truncate row[h.raw]

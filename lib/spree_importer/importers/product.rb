@@ -5,7 +5,8 @@ module SpreeImporter
 
       row_based
 
-      import_attributes :sku, :name, :price, :available_on, :description
+      import_attributes :sku, :name, :price, :available_on,
+                        :description, :meta_description, :meta_keywords, :cost_price
 
       target ::Spree::Product
 
@@ -37,8 +38,9 @@ module SpreeImporter
             key     = Field.to_field_string ot.presentation, option: ot.name, kind: "option"
             field   = row[key]
             if field
-              fields                    = field.split(",").map{|f| Field.new(f).sanitized }
-              option_values_hash[ot.id] = Spree::OptionValue.where(name: fields).map &:id
+              fields                    = field.split(",").map{|f| Field.new(f) }
+              field_values              = (fields.map(&:option) + fields.map(&:label)).compact.uniq
+              option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map(&:id).uniq
             end
           end
 
@@ -47,6 +49,7 @@ module SpreeImporter
           end
 
           product.save!
+
           properties.each do |prop|
             value = val headers, row, prop.name
             if value

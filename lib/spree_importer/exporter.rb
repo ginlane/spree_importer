@@ -16,7 +16,7 @@ class SpreeImporter::Exporter
     # horrifyingly inefficient. Not much way around it since
     # individual products can have arbitrary properties and
     # option_types that aren't connected to a prototype.
-    each_product options[:params] do |product|
+    each_product options[:search] do |product|
       exporters.each do |exporter|
         self.headers |= exporter.headers(product)
       end
@@ -52,8 +52,11 @@ class SpreeImporter::Exporter
   end
 
   def each_product(search, &block)
-    if search == :all || search.nil?
+    case search
+    when :all, nil
       Spree::Product.find_each &block
+    when :dummy
+      block.call SpreeImporter::DummyProduct.new
     else
       Spree::Product.ransack(search).result.group_by_products_id.find_each &block
     end

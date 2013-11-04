@@ -51,6 +51,7 @@
 
         headers.each do |_, h|
           if val headers, row, h.sanitized
+            props_and_ops << h.label
             props_and_ops << h.sanitized
             props_and_ops << h.option if h.option?
           end

@@ -11,6 +11,8 @@ module Spree
 
       protected
       def search
+        return :dummy unless Spree::Product.exists?
+
         if params[:q]
           params[:q][:deleted_at_null] ||= "1"
           params[:q][:s]               ||= "name asc"

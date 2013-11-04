@@ -18,35 +18,4 @@
 
 #last_import.hidden
   %h3 Last Import
-
-  %table.index
-    %tr.odd
-      %th
-      %th Options
-      %th Properties
-      %th Prototypes
-      %th Products
-
-    %tr.even
-      %th
-        Totals
-      %td.option-totals
-      %td.property-totals
-      %td.prototype-totals
-      %td.product-totals
-
-    %tr.odd.warnings{ data: { "message-row" => "warnings" } }
-      %th
-        Warnings
-      %td.option-warnings
-      %td.property-warnings
-      %td.prototype-warnings
-      %td.product-warnings
-
-    %tr.even.errors{ data: { "message-row" => "errors" } }
-      %th
-        Errors
-      %td.option-errors
-      %td.property-errors
-      %td.prototype-errors
-      %td.product-errors
+  = render partial: "spree/admin/import_source_files/warning_table"

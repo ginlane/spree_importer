@@ -10,7 +10,7 @@ describe SpreeImporter::Exporter do
                                                 presentation: "Gregg",
                                                 option_values: [ FactoryGirl.build(:option_value, name: "Fnord", presentation: "F")])
     @product.set_property "fnordprop", "fliff"
-    @headers = %w| sku name price available_on description
+    @headers = %w| sku name price available_on description meta_description meta_keywords cost_price
                    [option](foo-size)Size [option](fnord)Gregg [property]fnordprop |
   end
 
@@ -50,5 +50,28 @@ describe SpreeImporter::Exporter do
     fnord.option_values.first.presentation.should eql "F"
     product.property("fnordprop").should eql "fliff"
     product.sku.should eql @product.sku
+  end
+
+  it "should export an empty template file" do
+    [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
+    dummeh   = SpreeImporter::DummyProduct.new
+    exporter = SpreeImporter::Exporter.new
+    csv_text = exporter.export search: :dummy
+    csv      = CSV.new csv_text, headers: true
+    rows     = csv.read
+    csv.rewind
+
+    row      = csv.gets
+
+    rows.length.should eql 1
+    row.headers.length.should eql 10
+
+    %w[ sku name price available_on description meta_description
+        meta_keywords cost_price ].each do |header|
+      row[header].should eql dummeh.send(header).to_s
+    end
+
+    row["[option](option_type)Option Type"].should eql "(option1)O1,(option2)O2"
+    row["[property](property_name)Property Name"].should eql "Property Value"
   end
 end
