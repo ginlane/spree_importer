@@ -51,4 +51,26 @@ describe SpreeImporter::Exporter do
     product.property("fnordprop").should eql "fliff"
     product.sku.should eql @product.sku
   end
+
+  it "should export an empty template file" do
+    [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
+    dummeh   = SpreeImporter::DummyProduct.new
+    exporter = SpreeImporter::Exporter.new
+    csv_text = exporter.export search: :dummy
+    csv      = CSV.new csv_text, headers: true
+    rows     = csv.read
+    csv.rewind
+
+    row      = csv.gets
+
+    rows.length.should eql 1
+    row.headers.length.should eql 7
+
+    %w[ sku name price available_on description ].each do |header|
+      row[header].should eql dummeh.send(header).to_s
+    end
+
+    row["[option](option_type)Option Type"].should eql "(option1)O1,(option2)O2"
+    row["[property](property_name)Property Name"].should eql "Property Value"
+  end
 end
