@@ -23,7 +23,7 @@ describe SpreeImporter::Field do
   end
 
   it "should handle header columns and [kind] prefixes" do
-    field = SpreeImporter::Field.new "[option] fnord", header = true
+    field = SpreeImporter::Field.new "[option] fnord", header: true
     field.kind.should eql "option"
     field.sanitized.should eql "fnord"
     field.raw.should eql "[option] fnord"
@@ -34,7 +34,7 @@ describe SpreeImporter::Field do
 
   it "should generate a [kind]name(option) field" do
     str   = SpreeImporter::Field.to_field_string "Motherlicker", kind: "old", option: "gregg"
-    field = SpreeImporter::Field.new str, true
+    field = SpreeImporter::Field.new str, header: true
 
     str.should eql "[old](gregg)Motherlicker"
     field.kind.should eql "old"

@@ -20,6 +20,9 @@ module SpreeImporter
           instance = target.new
           import_attributes.each do |attr|
             if value = val(headers, row, attr)
+              if attr == :available_on
+                value = Date.strptime value, "%m/%d/%Y"
+              end
               instance.send "#{attr}=", value
             end
           end

@@ -23,15 +23,15 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
     self.class.transaction do
       importer.option_headers.each do |header|
-        importer.import :option, option_name: header.sanitized, create_record: true
+        importer.import :option, option_name: header.key, create_record: true
       end
 
       importer.property_headers.each do |header|
-        importer.import :property, property_name: header.sanitized, create_record: true
+        importer.import :property, property_name: header.key, create_record: true
       end
 
       importer.prototype_headers.each do |header|
-        importer.import :prototype, prototype_name: header.sanitized, create_record: true
+        importer.import :prototype, prototype_name: header.key, create_record: true
       end
 
       importer.import :product

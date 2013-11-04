@@ -5,15 +5,15 @@ describe SpreeImporter::Importers::Option do
     SpreeImporter::Importers::Option.row_based?.should be_false
   end
   it "should set attributes on options from csv file" do
-    base        = get_importer "bauble-bar"
-    option_type = base.import :option, option_name: "Color", delimiter: ","
-    option_type.option_values.length.should eql 33
+    base        = get_importer "gin-lane-product-list"
+    option_type = base.import :option, option_name: "color", delimiter: ","
+    option_type.option_values.length.should eql 4
   end
 
   it "should create records if create_record is true" do
-    base        = get_importer "bauble-bar"
-    option_type = base.import :option, option_name: "Color", delimiter: ",", create_record: true
-    option_type.option_values.length.should eql 33
+    base        = get_importer "gin-lane-product-list"
+    option_type = base.import :option, option_name: "color", delimiter: ",", create_record: true
+    option_type.option_values.length.should eql 4
     option_type.new_record?.should be_false
   end
 

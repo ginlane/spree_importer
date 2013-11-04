@@ -28,8 +28,8 @@ class SpreeImporter::Exporter
       if block_given?
         yield CSV.generate_line headers
       end
-
-      each_product options[:search] do |product|
+      kind = options[:variants] ? :variant : :product
+      send "each_#{kind}", options[:search] do |product|
         row = CSV::Row.new headers, [ ]
 
         exporters.each do |exporter|
@@ -59,6 +59,12 @@ class SpreeImporter::Exporter
       block.call SpreeImporter::DummyProduct.new
     else
       Spree::Product.ransack(search).result.group_by_products_id.find_each &block
+    end
+  end
+
+  def each_variant(search, &block)
+    each_product search do |product|
+      product.variants.each &block
     end
   end
 

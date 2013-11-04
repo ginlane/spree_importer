@@ -31,9 +31,9 @@ module SpreeImporter
 
     def parse
       self.csv     = CSV.parse csv.force_encoding("UTF-8"), headers: :first_row, encoding: "UTF-8"
-      self.headers = Hash[csv.headers.map.with_index.to_a].inject({ }) do |hs, (k, _)|
-        h               = Field.new k, is_header = true
-        hs[h.sanitized] = h
+      self.headers = Hash[csv.headers.map.with_index.to_a].inject({ }) do |hs, (k, i)|
+        h         = Field.new k, header: true, index: i
+        hs[h.key] = h
         hs
       end.with_indifferent_access
     end
