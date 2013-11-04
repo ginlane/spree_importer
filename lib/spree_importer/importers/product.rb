@@ -39,7 +39,7 @@ module SpreeImporter
             if field
               fields                    = field.split(",").map{|f| Field.new(f) }
               field_values              = (fields.map(&:option) + fields.map(&:label)).compact.uniq
-              option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map &:id
+              option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map(&:id).uniq
             end
           end
 
