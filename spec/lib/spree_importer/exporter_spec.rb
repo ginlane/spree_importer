@@ -10,7 +10,7 @@ describe SpreeImporter::Exporter do
                                                 presentation: "Gregg",
                                                 option_values: [ FactoryGirl.build(:option_value, name: "Fnord", presentation: "F")])
     @product.set_property "fnordprop", "fliff"
-    @headers = %w| sku name price available_on description
+    @headers = %w| sku name price available_on description meta_description meta_keywords cost_price
                    [option](foo-size)Size [option](fnord)Gregg [property]fnordprop |
   end
 
@@ -64,9 +64,10 @@ describe SpreeImporter::Exporter do
     row      = csv.gets
 
     rows.length.should eql 1
-    row.headers.length.should eql 7
+    row.headers.length.should eql 10
 
-    %w[ sku name price available_on description ].each do |header|
+    %w[ sku name price available_on description meta_description
+        meta_keywords cost_price ].each do |header|
       row[header].should eql dummeh.send(header).to_s
     end
 

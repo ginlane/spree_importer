@@ -19,6 +19,17 @@ class SpreeImporter::DummyProduct
     1.year.ago
   end
 
+  def meta_description
+    "Meta Description"
+  end
+
+  def meta_keywords
+    "Meta Keywords"
+  end
+
+  def cost_price
+    2.99
+  end
 
   def property(name)
     "Property Value"
