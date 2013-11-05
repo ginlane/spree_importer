@@ -19,10 +19,11 @@ module SpreeImporter
 
     def importers
       @importers ||= {
-        product:   SpreeImporter::Importers::Product,
-        property:  SpreeImporter::Importers::Property,
-        option:    SpreeImporter::Importers::Option,
-        prototype: SpreeImporter::Importers::Prototype
+        product:    SpreeImporter::Importers::Product,
+        property:   SpreeImporter::Importers::Property,
+        option:     SpreeImporter::Importers::Option,
+        stock_item: SpreeImporter::Importers::StockItem,
+        prototype:  SpreeImporter::Importers::Prototype
       }.with_indifferent_access
     end
 
@@ -31,6 +32,7 @@ module SpreeImporter
         product:   SpreeImporter::Exporters::Product,
         option:    SpreeImporter::Exporters::Option,
         property:  SpreeImporter::Exporters::Property,
+        variant:  SpreeImporter::Exporters::Variant,
         # prototype: SpreeImporter::Exporters::Prototype
       }.with_indifferent_access
     end

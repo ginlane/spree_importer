@@ -15,7 +15,7 @@ module SpreeImporter
         each_instance headers, csv do |product, row|
           # for safety we're skipping and warning on products
           if Spree::Variant.exists? sku: product.sku
-            self.warnings << "Duplicate product for sku #{product.sku}, skipping import"
+            self.warnings << "Duplicate product for sku #{product.sku}, skipping product import"
             next
           end
 

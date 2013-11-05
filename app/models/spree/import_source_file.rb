@@ -35,12 +35,13 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       end
 
       importer.import :product
+      # importer.import :stock_item
 
       self.import_warnings  = importer.warnings
       self.import_errors    = importer.errors
       self.imported_records = importer.records
+      self.rows             = rows
 
-      self.rows = rows
       save!
     end
   end

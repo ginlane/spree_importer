@@ -17,6 +17,13 @@ describe SpreeImporter::Exporter do
                    [option](foo-size)Size [option](fnord)Gregg [property]fnordprop |
   end
 
+  it "should return the correct kind of exporters" do
+    exporter = SpreeImporter::Exporter.new
+    exporter.get_exporters(nil).map(&:class).should_not include(SpreeImporter::Exporters::Variant)
+    exporter.variant_export!
+    exporter.get_exporters(nil).map(&:class).should_not include(SpreeImporter::Exporters::Product)
+  end
+
   it "should generate headers" do
     exporter = SpreeImporter::Exporter.new
     string   = exporter.export
@@ -93,5 +100,9 @@ describe SpreeImporter::Exporter do
     rows     = csv.read
     csv.rewind
     rows.length.should eql 2
+
+    first_row = csv.gets
+
+    first_row["master_sku"].should_not be_nil
   end
 end
