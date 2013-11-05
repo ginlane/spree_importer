@@ -22,7 +22,7 @@ module SpreeImporter
         option_type.option_values = values.flatten.uniq.map do |value|
           pos = 0
           unless option_type.option_values.map(&:name).include?(value.key)
-            Spree::OptionValue.new do |option_value|
+            ::Spree::OptionValue.new do |option_value|
               option_value.name         = value.key
               option_value.presentation = value.label
               option_value.position     = (pos+=1)
