@@ -5,6 +5,7 @@
       def prefix
         nil
       end
+
       module ClassMethods
         def target(klass)
           define_method :target do
