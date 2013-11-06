@@ -59,9 +59,13 @@ module SpreeImporter
             end
           end
 
-          taxonomy       = val(headers, row, "category")
-          taxon_names    = taxonomy.split(/(->)|,/).map &:strip
-          product.taxons = Spree::Taxon.where(name: taxon_names)
+          if taxonomy = val(headers, row, "category")
+            taxon_names = taxonomy.split(",").map do |tax|
+              tax.split("->").last.strip
+            end.uniq
+            product.taxons = Spree::Taxon.where(name: taxon_names)
+          end
+
           product.save!
         end
       end

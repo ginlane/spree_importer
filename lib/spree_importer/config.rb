@@ -35,7 +35,8 @@ module SpreeImporter
         product:   SpreeImporter::Exporters::Product,
         option:    SpreeImporter::Exporters::Option,
         property:  SpreeImporter::Exporters::Property,
-        variant:  SpreeImporter::Exporters::Variant,
+        taxonomy:  SpreeImporter::Exporters::Taxonomy,
+        variant:   SpreeImporter::Exporters::Variant,
         # prototype: SpreeImporter::Exporters::Prototype
       }.with_indifferent_access
     end

@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe SpreeImporter::Exporter do
   before :each do
-    @product = FactoryGirl.create :product_with_option_types, sku: "FNORD"
+    @taxonomy = FactoryGirl.create :taxonomy, name: "My Waters"
+    @taxon    = FactoryGirl.create :taxon, name: "The Funk"
+    @taxon.move_to_child_of @taxonomy.root
+
+    @product        = FactoryGirl.create :product_with_option_types, sku: "FNORD"
+    @product.taxons << @taxon
+
     FactoryGirl.create :option_value, option_type: @product.option_types.first
     FactoryGirl.create :property, name: "fnordprop", presentation: "fnordprop"
     @product.option_types << FactoryGirl.create(:option_type,
@@ -10,11 +16,11 @@ describe SpreeImporter::Exporter do
                                                 presentation: "Gregg",
                                                 option_values: [
                 FactoryGirl.build(:option_value, position: 1, name: "Fnord", presentation: "F"),
-                FactoryGirl.build(:option_value, position: 2,name: "Skidoo", presentation: "S")
+                FactoryGirl.build(:option_value, position: 2, name: "Skidoo", presentation: "S")
              ])
     @product.set_property "fnordprop", "fliff"
     @headers = %w| sku name price available_on description meta_description meta_keywords cost_price
-                   [option](foo-size)Size [option](fnord)Gregg [property]fnordprop |
+                   [option](foo-size)Size [option](fnord)Gregg [property]fnordprop category |
   end
 
   it "should return the correct kind of exporters" do
@@ -78,7 +84,7 @@ describe SpreeImporter::Exporter do
     row      = csv.gets
 
     rows.length.should eql 1
-    row.headers.length.should eql 10
+    row.headers.length.should eql 11
 
     %w[ sku name price description meta_description
         meta_keywords cost_price ].each do |header|

@@ -7,7 +7,11 @@ module SpreeImporter
 
       def import(headers, csv)
         taxon_header = headers["category"]
+
+        return if taxon_header.nil?
+
         taxonomies   = [ ]
+
         csv.each do |row|
 
           if value = val(headers, row, taxon_header.key)
@@ -21,6 +25,7 @@ module SpreeImporter
                 sub_taxon.move_to_child_of taxon
                 sub_taxon
               end
+
               taxonomies << taxonomy
             end
           end

@@ -38,7 +38,8 @@ describe SpreeImporter::Importers::Product do
       @products.length.should eql 5
 
       product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
-      product.taxons.length.should eql 2
+      product.taxons.count.should eql 1
+      product.taxons.first.pretty_name.should eql "Hat -> UBERHAT"
     end
     it "should generate skus for variants" do
       product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
