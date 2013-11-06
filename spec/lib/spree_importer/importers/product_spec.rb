@@ -35,6 +35,13 @@ describe SpreeImporter::Importers::Product do
       # it should handle redundant uploads, bithc
       @base.import :product
       @products.length.should eql 5
+
+    end
+    it "should generate skus for variants" do
+      product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
+      product.variants.each do |v|
+        v.sku.should eql "#{product.sku}-#{v.option_values.first.name.upcase}"
+      end
     end
 
     it "shouldn't import motherlicking blank optionsfuckfuckfuckright?gotdamn" do
