@@ -98,6 +98,13 @@ describe SpreeImporter::Exporter do
     end
 
     @product.send :build_variants_from_option_values_hash
+    @product.variants.each &:generate_sku!
+
+    count = 0
+    @product.variants.each do |v|
+      v.stock_items.first.update_column :count_on_hand, (count+=1)
+    end
+
     exporter = SpreeImporter::Exporter.new
     csv_text = exporter.export variants: true
     csv      = CSV.new csv_text, headers: true
@@ -109,5 +116,6 @@ describe SpreeImporter::Exporter do
     first_row = csv.gets
 
     first_row["master_sku"].should_not be_nil
+    first_row["(default)quantity"].should eql "1"
   end
 end

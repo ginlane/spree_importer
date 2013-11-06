@@ -41,6 +41,10 @@ module SpreeImporter
         target.find_by_sku val(headers, row, "master_sku")
       end
 
+      # stock headers are in the format (location)quantity if there is
+      # only one location the header can be just "quantity", however
+      # if there are more than one the location needs to be specified
+      # for _each header_.
       def stock_headers(headers, row)
         headers.values.each do |header|
           if header =~ /quantity/

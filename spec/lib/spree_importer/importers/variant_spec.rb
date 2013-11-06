@@ -19,6 +19,4 @@ describe SpreeImporter::Importers::Variant do
 
     (expected_counts & counts).should eql expected_counts
   end
-
-  it "should delete variants if nil"
 end
