@@ -17,7 +17,7 @@ module SpreeImporter
           if value = val(headers, row, taxon_header.key)
 
             value.split(delimiter).each do |heirarchy|
-              heirarchy = heirarchy.split(sep).map &:strip
+              heirarchy = heirarchy.split("->").map &:strip
               taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift
 
               heirarchy.inject(taxonomy.root) do |taxon, sub|
@@ -33,11 +33,6 @@ module SpreeImporter
         end
 
         taxonomies.uniq
-      end
-
-      # TODO: pull these into a config
-      def sep
-        "->"
       end
 
       def delimiter
