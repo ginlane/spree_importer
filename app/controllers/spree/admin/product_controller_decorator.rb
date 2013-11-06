@@ -4,7 +4,7 @@ module Spree
       def export
         respond_to do |format|
           format.csv do
-            self.response_body = SpreeImporter::Exporter.new search: search
+            self.response_body = SpreeImporter::Exporter.new search: search, variants: true
           end
         end
       end

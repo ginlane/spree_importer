@@ -7,11 +7,11 @@ FactoryGirl.define do
   factory :import_source_file, class: Spree::ImportSourceFile do
     mime "text/csv"
     data {
-      File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/bauble-bar.csv"
+      File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/gin-lane-product-list.csv"
     }
     trait :annotated do
       data {
-        File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/simple-sheet-annotated.csv"
+        File.read "#{SpreeImporter::Engine.root}/spec/fixtures/files/gin-lane-product-list.csv"
       }
     end
   end

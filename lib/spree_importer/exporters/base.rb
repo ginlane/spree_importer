@@ -36,9 +36,11 @@
           end
         end
       end
+
       def has_options?
         false
       end
+
       def headers(product)
         [ product.send(product_attribute) ].flatten.map do |instance|
           header_attrs.map do |attr|

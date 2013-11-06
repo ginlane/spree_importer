@@ -5,18 +5,28 @@ class SpreeImporter::Exporter
   include Enumerable
   attr_accessor :headers
 
+  def variant_export!
+    @variant_export = true
+  end
+
+  def variant_export?
+    !!@variant_export
+  end
+
   def initialize(default_options = { })
     @default_options = default_options
   end
 
   def export(options = @default_options)
+    variant_export! if options[:variants]
     exporters    = get_exporters options[:exporters]
     self.headers = [ ]
+
 
     # horrifyingly inefficient. Not much way around it since
     # individual products can have arbitrary properties and
     # option_types that aren't connected to a prototype.
-    each_product options[:search] do |product|
+    each_export_item options[:search] do |product|
       exporters.each do |exporter|
         self.headers |= exporter.headers(product)
       end
@@ -29,7 +39,7 @@ class SpreeImporter::Exporter
         yield CSV.generate_line headers
       end
 
-      each_product options[:search] do |product|
+      each_export_item options[:search] do |product|
         row = CSV::Row.new headers, [ ]
 
         exporters.each do |exporter|
@@ -51,6 +61,14 @@ class SpreeImporter::Exporter
     end
   end
 
+  def each_export_item(search, &block)
+    if variant_export?
+      each_variant search, &block
+    else
+      each_product search, &block
+    end
+  end
+
   def each_product(search, &block)
     case search
     when :all, nil
@@ -62,9 +80,20 @@ class SpreeImporter::Exporter
     end
   end
 
+  def each_variant(search, &block)
+    each_product search do |product|
+      product.variants.each &block
+    end
+  end
+
   def get_exporters(exporters)
     if exporters.nil?
-      SpreeImporter.config.exporters.values
+      exporters = SpreeImporter.config.exporters
+      if variant_export?
+        exporters.reject {|k, _| k == "product" }.values
+      else # product_export
+        exporters.reject {|k, _| k == "variant" }.values
+      end
     else
       SpreeImporter.config.exporters.slice *exporters
     end.map &:new

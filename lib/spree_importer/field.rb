@@ -1,20 +1,23 @@
 module SpreeImporter
   class Field
     attr_accessor :index, :kind, :option, :sanitized, :raw
-    def initialize(field, header=false)
-      @header        = header
+    def initialize(field, options = { header: false })
+      @header        = options[:header]
       return if field.nil?
 
       field          = field.strip
-      self.raw       = field
-      self.index     = index
+      self.raw       = field.strip
+      self.index     = options[:index]
       self.sanitized = label.parameterize "_"
       self.option    = field.scan(/\((.+?)\)/).last.try :last
       self.kind      = field.scan(/\[(.+?)\]/).last.try :last
     end
+    def key
+      option || sanitized
+    end
     def label
       return if raw.nil?
-      raw.gsub(/\(.+?\)/, '').gsub /\[.+\]/, ''
+      raw.gsub(/\(.+?\)/, '').gsub(/\[.+\]/, '').strip
     end
     def header?
       @header
@@ -30,6 +33,12 @@ module SpreeImporter
     end
     def eql?(other)
       other.raw.eql? raw
+    end
+    def =~(other)
+      match other
+    end
+    def match(regexp)
+      regexp =~ to_s
     end
     def to_s
       self.class.to_field_string label, option: option, kind: kind

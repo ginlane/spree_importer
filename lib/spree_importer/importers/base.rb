@@ -39,10 +39,10 @@
       end
 
       def val(headers, row, key)
-        header   = headers[key].try :raw
+        header   = headers[key]
         return nil if header.nil?
 
-        v = row[header].try :strip
+        v = row.field(header.index).try :strip
         v.blank?? nil : v
       end
 
@@ -50,7 +50,7 @@
         props_and_ops = [ ]
 
         headers.each do |_, h|
-          if val headers, row, h.sanitized
+          if val headers, row, h.key
             props_and_ops << h.label
             props_and_ops << h.sanitized
             props_and_ops << h.option if h.option?
