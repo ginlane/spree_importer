@@ -24,6 +24,7 @@ module SpreeImporter
         product:    SpreeImporter::Importers::Product,
         property:   SpreeImporter::Importers::Property,
         option:     SpreeImporter::Importers::Option,
+        taxonomy:   SpreeImporter::Importers::Taxonomy,
         variant:    SpreeImporter::Importers::Variant,
         prototype:  SpreeImporter::Importers::Prototype
       }.with_indifferent_access

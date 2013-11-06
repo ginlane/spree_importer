@@ -51,12 +51,18 @@ module SpreeImporter
 
           product.save!
           product.variants.each &:generate_sku!
+
           properties.each do |prop|
             value = val headers, row, prop.name
             if value
               product.set_property prop.name, value
             end
           end
+
+          taxonomy       = val(headers, row, "category")
+          taxon_names    = taxonomy.split(/(->)|,/).map &:strip
+          product.taxons = Spree::Taxon.where(name: taxon_names)
+          product.save!
         end
       end
     end
