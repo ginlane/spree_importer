@@ -8,10 +8,10 @@ module SpreeImporter
       has_options
 
       def append(row, product)
-        if product.is_a? Spree::Product
-          append_product row, product
-        else
+        if product.respond_to? :option_values
           append_variant row, product
+        else
+          append_product row, product
         end
       end
 

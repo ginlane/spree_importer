@@ -34,6 +34,12 @@ module SpreeImporter
     def eql?(other)
       other.raw.eql? raw
     end
+    def =~(other)
+      match other
+    end
+    def match(regexp)
+      regexp =~ to_s
+    end
     def to_s
       self.class.to_field_string label, option: option, kind: kind
     end

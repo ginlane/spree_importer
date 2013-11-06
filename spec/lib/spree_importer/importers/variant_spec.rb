@@ -11,12 +11,13 @@ describe SpreeImporter::Importers::Variant do
     variant.should be_is_master
 
     variants        = variant.product.variants
+
     variants.length.should eql 4
 
     counts          = variants.map(&:stock_items).flatten.map &:count_on_hand
-    # expected_counts = [ 0, 1, 32, 3 ]
+    expected_counts = [ 0, 1, 32, 3 ]
 
-    # (expected_counts & counts).should eql expected_counts
+    (expected_counts & counts).should eql expected_counts
   end
 
   it "should delete variants if nil"

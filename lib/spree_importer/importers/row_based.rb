@@ -47,9 +47,8 @@ module SpreeImporter
         return target.new if unique_keys.nil?
 
         params = unique_keys.inject({ }) do |hash, key|
-          if arg = val(headers, row, key.to_s) && !arg.blank?
-            hash[key] = arg
-          end
+          arg       = val headers, row, key.to_s
+          hash[key] = arg unless arg.blank?
           hash
         end
 
