@@ -35,6 +35,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       end
 
       importer.import :product
+      importer.import :variant
       # importer.import :stock_item
 
       self.import_warnings  = importer.warnings

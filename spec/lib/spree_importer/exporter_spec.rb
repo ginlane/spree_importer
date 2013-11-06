@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe SpreeImporter::Exporter do
   before :each do
-    @product = FactoryGirl.create :product_with_option_types
+    @product = FactoryGirl.create :product_with_option_types, sku: "FNORD"
     FactoryGirl.create :option_value, option_type: @product.option_types.first
     FactoryGirl.create :property, name: "fnordprop", presentation: "fnordprop"
     @product.option_types << FactoryGirl.create(:option_type,
@@ -42,10 +42,10 @@ describe SpreeImporter::Exporter do
     exporter = SpreeImporter::Exporter.new
     csv_text = exporter.export
     csv      = CSV.parse csv_text, headers: true
-
+    sku      = @product.sku
     csv.inject(0) { |acc| acc + 1 }.should eql 1
 
-    [ Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
+    [ Spree::Variant, Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
     importer = Spree::ImportSourceFile.new data: csv_text
 
@@ -54,12 +54,16 @@ describe SpreeImporter::Exporter do
     product = Spree::Product.first
 
     product.option_types.length.should eql 2
+
     fnord   = product.option_types.select{|ot| ot.name == "fnord" }.first
+
     fnord.should_not be_nil
+
     fval    = fnord.option_values.find_by_name "Fnord"
+
     fval.presentation.should eql "F"
     product.property("fnordprop").should eql "fliff"
-    product.sku.should eql @product.sku
+    product.sku.should eql sku
   end
 
   it "should export an empty template file" do
@@ -98,6 +102,7 @@ describe SpreeImporter::Exporter do
     csv_text = exporter.export variants: true
     csv      = CSV.new csv_text, headers: true
     rows     = csv.read
+
     csv.rewind
     rows.length.should eql 2
 

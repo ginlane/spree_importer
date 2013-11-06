@@ -1,7 +1,5 @@
 module SpreeImporter
   module Exporters
-    # I don't like the double-duty that Product is doing for Variant
-    # export. The if statements feel sloppy and
     class Variant < Product
 
       # static
