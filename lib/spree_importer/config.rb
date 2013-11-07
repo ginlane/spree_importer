@@ -26,7 +26,11 @@ module SpreeImporter
 
     attr_accessor :importers, :exporters
 
-    attr_accessor_with_default delimiter: ","
+    attr_accessor_with_default delimiter: ",",
+                               date_format: "%m/%d/%Y",
+                               date_columns: %w[ available_on ],
+                               taxon_separator: "->"
+
 
 
     def register_importer(key, klass)

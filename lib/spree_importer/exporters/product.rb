@@ -12,12 +12,16 @@ module SpreeImporter
         headers(product).each do |h|
           next unless product.respond_to? h
 
-          if h == "available_on"
-            row[h]  = product.send(h).strftime "%m/%d/%Y"
+          if date_column? h
+            row[h]  = product.send(h).strftime SpreeImporter.config.date_format
           else
             row[h]  = product.send h
           end
         end
+      end
+
+      def date_column?(column)
+        SpreeImporter.config.date_columns.include? column
       end
     end
   end

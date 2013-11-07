@@ -35,41 +35,55 @@ module SpreeImporter
           properties                   = [ ]
 
           properties, option_types     = props_and_ops_from_headers headers, row
-          option_values_hash           = { }
 
-          option_types.each do |ot|
-            if field = val(headers, row, ot.name)
-              fields                    = field.split(",").map{|f| Field.new(f) }
-              field_values              = (fields.map(&:key) + fields.map(&:label)).compact.uniq
-              option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map(&:id).uniq
-            end
-          end
-
-          if option_values_hash.any?
-            product.option_values_hash = option_values_hash
-          end
-
-          product.save!
-          product.variants.each &:generate_sku!
-
-          properties.each do |prop|
-            value = val headers, row, prop.name
-            if value
-              product.set_property prop.name, value
-            end
-          end
-
-          if taxonomy = val(headers, row, "category")
-            taxon_names = taxonomy.split(",").map do |tax|
-              tax.split("->").last.strip
-            end.uniq
-            product.taxons = Spree::Taxon.where(name: taxon_names)
-          end
+          setup_variants product,   option_types, headers, row
+          setup_properties product, properties, headers, row
+          setup_taxonomies product, val(headers, row, "category")
 
           product.save!
         end
       end
+
+      def setup_taxonomies(product, taxonomy)
+        if taxonomy
+          taxon_names = taxonomy.split(SpreeImporter.config.delimiter).map do |tax|
+            tax.split(SpreeImporter.config.taxon_separator).last.strip
+          end.uniq
+          product.taxons = Spree::Taxon.where name: taxon_names
+        end
+      end
+
+      def setup_properties(product, properties, headers, row)
+        properties.each do |prop|
+          value = val headers, row, prop.name
+          if value
+            product.set_property prop.name, value
+          end
+        end
+      end
+
+
+      def setup_variants(product, option_types, headers, row)
+        option_values_hash = { }
+
+        option_types.each do |ot|
+          if field = val(headers, row, ot.name)
+            fields                    = field.split(SpreeImporter.config.delimiter).map{|f| Field.new(f) }
+            field_values              = (fields.map(&:key) + fields.map(&:label)).compact.uniq
+            option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map(&:id).uniq
+          end
+        end
+
+        if option_values_hash.any?
+          product.option_values_hash  = option_values_hash
+        end
+
+        product.save!
+        product.variants.each &:generate_sku!
+      end
     end
+
+
 
   end
 end

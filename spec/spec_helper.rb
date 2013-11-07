@@ -1,6 +1,7 @@
 # Run Coverage report
 require 'simplecov'
 require 'csv'
+
 SimpleCov.start do
   add_filter 'spec/dummy'
   add_group 'Controllers', 'app/controllers'
@@ -32,6 +33,7 @@ require 'spree/testing_support/url_helpers'
 
 # Requires factories defined in lib/spree_importer/factories.rb
 require 'spree_importer/factories'
+require 'spree_importer/config'
 require 'helpers/csv_helper'
 
 RSpec.configure do |config|
