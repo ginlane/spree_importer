@@ -8,8 +8,26 @@ module SpreeImporter
     end
   end
 
+  module AttrAccessorWithDefault
+    extend ActiveSupport::Concern
+    module ClassMethods
+      def attr_accessor_with_default(attrs)
+        attrs.each do |attr, default|
+          define_method attr do
+            instance_variable_get("@#{attr}".to_sym) || default
+          end
+        end
+      end
+    end
+  end
+
   class Config
+    include AttrAccessorWithDefault
+
     attr_accessor :importers, :exporters
+
+    attr_accessor_with_default delimiter: ","
+
 
     def register_importer(key, klass)
       self.importers[key] = klass
