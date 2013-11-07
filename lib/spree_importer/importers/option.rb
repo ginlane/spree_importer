@@ -34,7 +34,7 @@ module SpreeImporter
       end
 
       def delimiter
-        @delimiter ||= ","
+        SpreeImporter.config.delimiter
       end
     end
   end
