@@ -4,6 +4,10 @@ module SpreeImporter
 
       class_option :auto_run_migrations, :type => :boolean, :default => false
 
+      def fix_dummy_rakefile
+        inject_into_file "Rakefile", "ENV['BUNDLE_GEMFILE'] = File.expand_path('../../Gemfile', __FILE__)\n", before: "require"
+      end
+
       def add_javascripts
         append_file 'app/assets/javascripts/store/all.js', "//= require store/spree_importer\n"
         append_file 'app/assets/javascripts/admin/all.js', "//= require admin/spree_importer\n"
