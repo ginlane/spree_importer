@@ -49,7 +49,7 @@ module SpreeImporter
         headers.values.each do |header|
           if header =~ /quantity/
             location = locations[header.option || "default"]
-            yield location, val(headers, row, header.key)
+            yield location, val(headers, row, header.key) unless location.nil?
           end
         end
       end
