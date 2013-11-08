@@ -13,7 +13,7 @@ module SpreeImporter
           next unless product.respond_to? h
 
           if date_column? h
-            row[h]  = product.send(h).strftime SpreeImporter.config.date_format
+            row[h]  = product.send(h).try :strftime, SpreeImporter.config.date_format
           else
             row[h]  = product.send h
           end

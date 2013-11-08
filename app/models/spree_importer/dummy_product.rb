@@ -35,6 +35,18 @@ class SpreeImporter::DummyProduct
     "Property Value"
   end
 
+  def master_sku
+    "MASTER-#{sku}"
+  end
+
+  def stock_items
+    [ ]
+  end
+
+  def variants
+    @variants ||= [ SpreeImporter::DummyProduct.new ]
+  end
+
   def taxons
     @taxons ||= [ SpreeImporter::DummyTaxon.new ]
   end
