@@ -34,13 +34,17 @@ class Spree::ImportSourceFile < ActiveRecord::Base
         importer.import :prototype, prototype_name: header.key, create_record: true
       end
 
+      importer.import :taxonomy
+
       importer.import :product
+      importer.import :variant
+      # importer.import :stock_item
 
       self.import_warnings  = importer.warnings
       self.import_errors    = importer.errors
       self.imported_records = importer.records
+      self.rows             = rows
 
-      self.rows = rows
       save!
     end
   end

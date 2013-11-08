@@ -1,6 +1,7 @@
 # Run Coverage report
 require 'simplecov'
 require 'csv'
+
 SimpleCov.start do
   add_filter 'spec/dummy'
   add_group 'Controllers', 'app/controllers'
@@ -32,6 +33,7 @@ require 'spree/testing_support/url_helpers'
 
 # Requires factories defined in lib/spree_importer/factories.rb
 require 'spree_importer/factories'
+require 'spree_importer/config'
 require 'helpers/csv_helper'
 
 RSpec.configure do |config|
@@ -70,6 +72,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with :truncation
     FactoryGirl.create :shipping_category, name: "Default"
+    FactoryGirl.create :stock_location, name: "default"
   end
 
   # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.

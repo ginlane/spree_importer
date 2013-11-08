@@ -35,6 +35,10 @@ class SpreeImporter::DummyProduct
     "Property Value"
   end
 
+  def taxons
+    @taxons ||= [ SpreeImporter::DummyTaxon.new ]
+  end
+
   def option_types
     @option_types ||= [ SpreeImporter::DummyOptionType.new ]
   end

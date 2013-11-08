@@ -5,7 +5,7 @@ module SpreeImporter
 
       target ::Spree::OptionType
 
-      attr_accessor :option_name, :delimiter
+      attr_accessor :option_name
 
       def import(headers, csv)
         option_type              = fetch_instance name: option_name
@@ -34,7 +34,7 @@ module SpreeImporter
       end
 
       def delimiter
-        @delimiter ||= ","
+        SpreeImporter.config.delimiter
       end
     end
   end

@@ -4,18 +4,24 @@ module SpreeImporter
       include SpreeImporter::Exporters::Base
 
       # static
-      def headers(_)
+      def headers(product_or_variant)
         %w[ sku name price available_on description meta_description meta_keywords cost_price ]
       end
 
       def append(row, product)
         headers(product).each do |h|
-          if h.to_s == "available_on" 
-            row[h] = product.send(h).strftime "%m/%d/%Y" unless product[h].nil?
+          next unless product.respond_to? h
+
+          if date_column? h
+            row[h]  = product.send(h).strftime SpreeImporter.config.date_format
           else
-            row[h] = product.send h
+            row[h]  = product.send h
           end
         end
+      end
+
+      def date_column?(column)
+        SpreeImporter.config.date_columns.include? column
       end
     end
   end

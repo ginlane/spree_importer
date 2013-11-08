@@ -23,6 +23,7 @@ describe SpreeImporter::Importers::Product do
       @material     = @base.import :property, property_name: "material", create_record: true
       @size         = @base.import :option, option_name: "size", create_record: true
       @color        = @base.import :option, option_name: "color", create_record: true
+      @taxonomies   = @base.import :taxonomy
       @products     = @base.import :product
     end
 
@@ -35,6 +36,16 @@ describe SpreeImporter::Importers::Product do
       # it should handle redundant uploads, bithc
       @base.import :product
       @products.length.should eql 5
+
+      product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
+      product.taxons.count.should eql 1
+      product.taxons.first.pretty_name.should eql "Hat -> UBERHAT"
+    end
+    it "should generate skus for variants" do
+      product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
+      product.variants.each do |v|
+        v.sku.should eql "#{product.sku}-#{v.option_values.first.name.upcase}"
+      end
     end
 
     it "shouldn't import motherlicking blank optionsfuckfuckfuckright?gotdamn" do

@@ -43,4 +43,10 @@ describe SpreeImporter::Field do
     field.label.should eql "Motherlicker"
     field.to_s.should eql str
   end
+
+  it "should match regexps" do
+    field  = SpreeImporter::Field.new "[kind](option)Label"
+    (field =~ /option/).should be_true
+    field.should match(/option/)
+  end
 end

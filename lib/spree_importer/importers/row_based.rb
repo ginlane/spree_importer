@@ -9,15 +9,26 @@ module SpreeImporter
             args
           end
         end
+
+        def unique_keys(*keys)
+          define_method :unique_keys do
+            keys
+          end
+        end
+
         def row_based?
           true
         end
       end
 
+      def unique_keys
+        nil
+      end
+
       def each_instance(headers, csv)
         instances = [ ]
         csv.each do |row|
-          instance = target.new
+          instance = fetch_instance headers, row
           import_attributes.each do |attr|
             if value = val(headers, row, attr)
               if attr == :available_on
@@ -32,6 +43,19 @@ module SpreeImporter
         instances
       end
 
+      def fetch_instance(headers, row)
+        return target.new if unique_keys.nil?
+
+        params = unique_keys.inject({ }) do |hash, key|
+          arg       = val headers, row, key.to_s
+          hash[key] = arg unless arg.blank?
+          hash
+        end
+
+        return target.new if params.empty?
+
+        target.where(params).first || target.new
+      end
     end
   end
 end
