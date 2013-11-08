@@ -14,10 +14,11 @@ module SpreeImporter
 
         each_instance headers, csv do |product, row|
           # for safety we're skipping and warning on products
+
           master_sku  = val headers, row, "master_sku"
           product.sku = master_sku unless master_sku.nil?
 
-          if Spree::Variant.exists? sku: product.sku
+          if ::Spree::Variant.exists? sku: product.sku
             self.warnings << "Product exists for sku #{product.sku}, skipping product import"
             next
           end
@@ -26,9 +27,9 @@ module SpreeImporter
           shipping  = val headers, row, "shipping"
 
           if shipping.nil?
-            shipping = Spree::ShippingCategory.find_by_name "Default"
+            shipping = ::Spree::ShippingCategory.find_by_name "Default"
           else
-            shipping = Spree::ShippingCategory.find_by_name shipping
+            shipping = ::Spree::ShippingCategory.find_by_name shipping
           end
 
           product.shipping_category_id = shipping.id
