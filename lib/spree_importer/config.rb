@@ -13,6 +13,7 @@ module SpreeImporter
     module ClassMethods
       def attr_accessor_with_default(attrs)
         attrs.each do |attr, default|
+          attr_accessor attr
           define_method attr do
             instance_variable_get("@#{attr}".to_sym) || default
           end
@@ -30,8 +31,6 @@ module SpreeImporter
                                date_format: "%m/%d/%Y",
                                date_columns: %w[ available_on ],
                                taxon_separator: "->"
-
-
 
     def register_importer(key, klass)
       self.importers[key] = klass

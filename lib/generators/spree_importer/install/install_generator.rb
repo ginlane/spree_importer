@@ -3,6 +3,7 @@ module SpreeImporter
     class InstallGenerator < Rails::Generators::Base
 
       class_option :auto_run_migrations, :type => :boolean, :default => false
+      class_option :skip_migrations, :type => :boolean, :default => true
 
 
       def add_javascripts
@@ -16,7 +17,7 @@ module SpreeImporter
       end
 
       def add_migrations
-        run 'bundle exec rake railties:install:migrations FROM=spree_importer'
+        run 'bundle exec rake railties:install:migrations FROM=spree_importer' unless options[:skip_migrations]
       end
 
       def run_migrations
