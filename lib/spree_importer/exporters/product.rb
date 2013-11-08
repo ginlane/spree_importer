@@ -10,8 +10,8 @@ module SpreeImporter
 
       def append(row, product)
         headers(product).each do |h|
-          if h.to_s == "available_on"
-            row[h] = product.send(h).strftime "%m/%d/%Y"
+          if h.to_s == "available_on" 
+            row[h] = product.send(h).strftime "%m/%d/%Y" unless product[h].nil?
           else
             row[h] = product.send h
           end
