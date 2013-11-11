@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree', "~>2.1"
+  s.add_dependency 'spree'
   s.add_dependency 'haml-rails'
 
   s.add_development_dependency 'capybara', '~> 2.1'
