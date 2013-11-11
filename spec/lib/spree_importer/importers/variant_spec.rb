@@ -21,7 +21,7 @@ describe SpreeImporter::Importers::Variant do
     import_source_file = get_import_source_file "ayr-initial-import"
     import_source_file.import!
 
-    master             = Spree::Variant.find_by_sku("13942-BLC11")
+    master             = Spree::Variant.find_by_sku "13942-BLC11"
     variant            = master.product.variants.first
     var_sku            = variant.sku
     opt_vals           = variant.option_values.to_a

@@ -48,7 +48,7 @@ module SpreeImporter
       def stock_headers(headers, row)
         headers.values.each do |header|
           if header =~ /quantity/
-            location = locations[header.option || "default"]
+            location = locations[header.option || "Default"]
             yield location, val(headers, row, header.key) unless location.nil?
           end
         end
