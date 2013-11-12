@@ -5,6 +5,9 @@ module SpreeImporter
       class_option :auto_run_migrations, :type => :boolean, :default => false
       class_option :skip_migrations, :type => :boolean, :default => true
 
+      def add_seeds
+        append_file "db/seeds.rb", "\nSpreeImporter::Engine.load_seed if defined?(SpreeImporter)\n"
+      end
 
       def add_javascripts
         append_file 'app/assets/javascripts/store/all.js', "//= require store/spree_importer\n"
