@@ -11,8 +11,8 @@ if File.exist?(import_path)
   importer.import!
 end
 
-if File.exist?(secondary_import)
-  data     = File.read secondary_import
-  importer = Spree::ImportSourceFile.new data: data, file_name: secondary_import, mime: "text/csv"
+if File.exist?(secondary_import_path)
+  data     = File.read secondary_import_path
+  importer = Spree::ImportSourceFile.new data: data, file_name: secondary_import_path, mime: "text/csv"
   importer.import!
 end
