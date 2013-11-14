@@ -12,7 +12,6 @@ describe SpreeImporter::SkuInterpolator do
 
   it "should tokenize a sku string" do
     sku_interpolator = SpreeImporter::SkuInterpolator.new "<master>-<size>-<color>"
-    sku_interpolator.structure.should eql %w[ master size color ]
     sku_interpolator.to_sku("MASTER", @options).should eql "MASTER-LG-BL"
   end
 

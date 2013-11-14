@@ -15,7 +15,16 @@ module SpreeImporter
     # MASTER     | (bl)Blue   | (lg)Large | 50     | <master>-<size>-*        => MASTER-LG-BL-50
     #
     def initialize(pattern)
-      @pairs = interpolate pattern
+      @pattern = pattern.dup
+
+      if @pattern =~ /\*$/
+        @pattern.chop!
+        @wildcard = true
+        @last_sep = @pattern.last
+        @pattern.chop!
+      end
+
+      @structure = @pattern.scan(/<([a-z_]+)>(.?)/).transpose.first
     end
 
     def to_sku(master, option_pairs)
@@ -24,10 +33,10 @@ module SpreeImporter
 
       structured_options = [ ]
       option_pairs.delete_if do|(name, option)|
-        structure.include? name and structured_options << [ name, option ]
+        @structure.include? name and structured_options << [ name, option ]
       end
 
-      structure.each do |segment|
+      @structure.each do |segment|
         structured_options.each do |(name, option)|
           if segment == name
             sku.sub! /<#{segment}>/, option.name.upcase
@@ -43,25 +52,6 @@ module SpreeImporter
       end
 
       sku
-    end
-
-    def structure
-      @pairs.transpose.first
-    end
-
-    def interpolate(pattern)
-      @pattern = pattern.dup
-      string   = @pattern
-
-      if string =~ /\*$/
-        string.chop!
-        @wildcard = true
-        @last_sep = string.last
-        @pattern  = @pattern[0..-2]
-        string.chop!
-      end
-
-      string.scan /<([a-z_]+)>(.?)/
     end
 
   end
