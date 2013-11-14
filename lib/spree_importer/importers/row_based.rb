@@ -31,8 +31,18 @@ module SpreeImporter
           instance = fetch_instance headers, row
           import_attributes.each do |attr|
             if value = val(headers, row, attr)
+              # could be pulled into some import_attribute annotations
+              # or something
               if attr == :available_on
-                value = Date.strptime value, "%m/%d/%Y"
+                format = SpreeImporter.config.date_format
+                begin
+                  value = Date.strptime value, format
+                rescue ArgumentError
+                  message = "Invalid date #{value}. Expected format: #{format}"
+                  row     = instances.length + 1
+                  col     = headers[attr].raw
+                  raise SpreeImporter::ImportException.new row, col, message
+                end
               end
               instance.send "#{attr}=", value
             end
