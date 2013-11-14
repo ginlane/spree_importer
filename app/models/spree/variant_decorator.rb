@@ -7,9 +7,7 @@ Spree::Variant.class_eval do
 
   def generate_sku!
     return if !sku.blank? || is_master?
-
-    option_values.sort_by! &:position
-    self.sku = [ master_sku, option_values.map(&:name) ].flatten.join("-").upcase
+    product.set_sku self
     save!
   end
 end

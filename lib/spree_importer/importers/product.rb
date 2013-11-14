@@ -23,8 +23,12 @@ module SpreeImporter
             next
           end
 
-          category  = Field.new(val(headers, row, "category")).sanitized
-          shipping  = val headers, row, "shipping"
+          category    = Field.new(val(headers, row, "category")).sanitized
+          shipping    = val headers, row, "shipping"
+          sku_pattern = val headers, row, "sku_pattern"
+          sku_pattern = SpreeImporter.config.default_sku if sku_pattern.blank?
+
+          product.sku_pattern = sku_pattern
 
           if shipping.nil?
             shipping = ::Spree::ShippingCategory.find_by_name "Default"
