@@ -8,11 +8,11 @@ module SpreeImporter
     #
     # master sku | color      | size      | weight | sku pattern
     # ----------------------------------------------------------------------
-    # MASTER     | (bl)(Blue) | (lg)Large | 50     | <master>-<size>-<color>  => MASTER-LG-BL
+    # MASTER     | (bl)Blue | (lg)Large | 50     | <master>-<size>-<color>  => MASTER-LG-BL
     # ----------------------------------------------------------------------
-    # MASTER     | (bl)(Blue) | (lg)Large | 50     | <master>-*               => MASTER-BL-LG-50
+    # MASTER     | (bl)Blue | (lg)Large | 50     | <master>-*               => MASTER-BL-LG-50
     # ----------------------------------------------------------------------
-    # MASTER     | (bl)(Blue) | (lg)Large | 50     | <master>-<size>-*        => MASTER-LG-BL-50
+    # MASTER     | (bl)Blue | (lg)Large | 50     | <master>-<size>-*        => MASTER-LG-BL-50
     #
     def initialize(pattern)
       @pairs = interpolate pattern
