@@ -24,7 +24,7 @@ module SpreeImporter
         @pattern.chop!
       end
 
-      @structure = @pattern.scan(/<([a-z_]+)>(.?)/).transpose.first
+      @structure = @pattern.scan(/<([a-z_]+)>/).flatten
     end
 
     def to_sku(master, option_pairs)
