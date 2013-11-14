@@ -4,9 +4,9 @@ describe SpreeImporter::SkuInterpolator do
 
   before :each do
     @options = [
-      [ "color", Spree::OptionValue.new(name: "bl", presentation: "Blue") ],
-      [ "size", Spree::OptionValue.new(name: "lg", presentation: "Large") ],
-      [ "weight", Spree::OptionValue.new(name: "50", presentation: "50")  ],
+      [ "color",  Spree::OptionValue.new(name: "bl", presentation: "Blue")  ],
+      [ "size",   Spree::OptionValue.new(name: "lg", presentation: "Large") ],
+      [ "weight", Spree::OptionValue.new(name: "50", presentation: "50")    ],
     ]
   end
 
