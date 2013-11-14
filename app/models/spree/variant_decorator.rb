@@ -1,5 +1,5 @@
 Spree::Variant.class_eval do
-  delegate_belongs_to :product, :properties, :property, :option_types, :taxons
+  delegate_belongs_to :product, :properties, :property, :option_types, :taxons, :sku_pattern
 
   def master_sku
     is_master?? sku : product.master.sku

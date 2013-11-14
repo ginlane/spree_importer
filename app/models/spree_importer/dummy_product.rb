@@ -7,6 +7,10 @@ class SpreeImporter::DummyProduct
     "Description"
   end
 
+  def sku_pattern
+    "<master>-<size>-<color>"
+  end
+
   def sku
     "SKU_HERE"
   end
