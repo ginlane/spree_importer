@@ -40,7 +40,7 @@
       $("#error_message p:first").html "Duplicate upload"
       $("#error_message").fadeIn()
     else
-      @formatErrors(err.errors)
+      @formatErrors(err)
 
   handleSuccess: (file, info) =>
     @stopProgress()
@@ -48,9 +48,9 @@
     $table = $("#last_import table")
     @formatTable $table, info
 
-  formatErrors: (errors) =>
-    html = "<tr><th>CSV Formatting Errors</th><th></th></tr>"
-    errors.forEach (e) =>
+  formatErrors: (error) =>
+    html = "<tr><th>CSV Formatting Errors</th><th>#{@editButton(error.file_id)}</th></tr>"
+    error.errors.forEach (e) =>
       html += "<tr class='odd'><td colspan=2>" + e.message + "</td></tr>"
     $("#last_import table").html(html)
     $("#last_import").fadeIn()
@@ -98,3 +98,15 @@
     zIndex: 2e9
     top: 'auto'
     left: 'auto'
+
+
+  editButton: (fileId) =>
+    """
+    <form target="_blank"
+          action="/admin/import_source_files/#{fileId}/edit_in_google" class="button_to" method="post">
+      <div><input name="_method" type="hidden" value="put">
+        <input type="submit" value="Edit">
+        <input name="authenticity_token" type="hidden" value="#{AUTH_TOKEN}">
+      </div>
+    </form>
+    """

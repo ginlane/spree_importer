@@ -10,7 +10,9 @@ module Spree
 
       def google_redirect
         token = oauth_client.auth_code.get_token(params[:code], redirect_uri: redirect_uri)
+
         spree_current_user.update_attribute :google_token, token.token
+
         flash[:notice] = "Authenticated with Google."
         redirect_to session.delete(:google_oauth_return_path)
       end
@@ -27,6 +29,7 @@ module Spree
       def redirect_uri
         "http://#{request.host_with_port}/admin/auth/google_redirect"
       end
+
       def scopes
         %w[ https://docs.google.com/feeds/
             https://docs.googleusercontent.com/

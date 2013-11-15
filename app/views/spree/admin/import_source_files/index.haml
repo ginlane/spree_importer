@@ -22,7 +22,7 @@
 
   - @collection.each do |import_source_file|
     %tr{ class: cycle("even", "odd") }
-      %td= button_to "Edit", admin_import_source_file_edit_in_google_path(import_source_file), method: :put, target: "_top"
+      %td= button_to "Edit", admin_import_source_file_edit_in_google_path(import_source_file), method: :put, form: { target: "_blank" }
       %td
         - unless import_source_file.spreadsheet_url.nil?
           = button_to "Import", admin_import_source_file_import_from_google_path(import_source_file), method: :post

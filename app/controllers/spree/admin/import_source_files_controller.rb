@@ -17,15 +17,19 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     source_file = Spree::ImportSourceFile.new data: file.read, mime: "text/csv", file_name: file.path
 
     if source_file.save
+
       if sanitized[:import]
         source_file.import!
         status = source_file.import_errors.blank?? :ok : :unprocessable_entity
       end
+
       render json: {
+        file_id:  source_file.id,
         warnings: source_file.import_warnings,
-        errors: source_file.import_errors,
+        errors:   source_file.import_errors,
         imported_records: source_file.imported_records
-      }, status: status
+      }, status:  status
+
     else
       render json: source_file.errors, status: :unprocessable_entity
     end
@@ -37,6 +41,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
     resource.import_from_google! spree_current_user.google_token
     redirect_to admin_import_source_files_path
+
   rescue GoogleDrive::AuthenticationError
     session[:google_oauth_return_path] = admin_import_source_files_path
     redirect_to admin_google_auth_path
@@ -49,6 +54,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
       resource.create_in_google! spree_current_user.google_token
     end
     redirect_to resource.spreadsheet_url
+
   rescue GoogleDrive::AuthenticationError
     session[:google_oauth_return_path] = admin_import_source_file_show_in_google_path resource
     redirect_to admin_google_auth_path
