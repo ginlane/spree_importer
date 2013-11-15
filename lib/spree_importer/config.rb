@@ -30,7 +30,9 @@ module SpreeImporter
     attr_accessor_with_default delimiter: ",",
                                date_format: "%m/%d/%Y",
                                date_columns: %w[ available_on ],
-                               taxon_separator: "->"
+                               taxon_separator: "->",
+                               google_client_id: "647628910149.apps.googleusercontent.com",
+                               google_client_secret: "UIHqKxV1rYjN6BzaETmnY09_"
 
     def register_importer(key, klass)
       self.importers[key] = klass

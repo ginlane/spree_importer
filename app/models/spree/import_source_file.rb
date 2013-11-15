@@ -14,13 +14,42 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     importer.csv.each { |*args| yield *args }
   end
 
+  def import_from_google!(token)
+    session   = GoogleDrive.login_with_oauth token
+    ss        = GoogleDrive::Spreadsheet.new session, spreadsheet_feed_url
+    self.data = ss.export_as_string "csv"
+    import!
+  end
+
+  def create_in_google!(token)
+    session   = GoogleDrive.login_with_oauth token
+    ss        = session.create_spreadsheet "import-source-file-#{id}"
+    csv       = CSV data
+    rows      = csv.read
+    worksheet = ss.worksheets.first
+    rows.each_with_index do |row, i|
+      row.each_with_index do |cell, n|
+        worksheet[i+1,n+1] = cell
+      end
+    end
+
+    # Can't format cells via API. Fuckin' fuck.
+    # import_errors.try(:each) do |error|
+    #   worksheet[error.row+1,error.column_index+1]
+    # end
+
+    worksheet.save
+    update_attribute :spreadsheet_url, ss.human_url
+    update_attribute :spreadsheet_feed_url, ss.worksheets_feed_url
+  end
+
   def headers
     importer.headers
   end
 
   def import!
+    import_errors.try :clear
     self.rows = importer.csv.inject(0) { |acc| acc + 1 }
-
     self.class.transaction do
       importer.option_headers.each do |header|
         importer.import :option, option_name: header.key, create_record: true
