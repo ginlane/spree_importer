@@ -66,6 +66,11 @@ describe SpreeImporter::Importers::Product do
 
       @product.option_types.length.should eql 1
     end
+
+    it "should import a sku pattern if specified" do
+      @products[0].sku_pattern.should eql SpreeImporter.config.default_sku
+      @products[1].sku_pattern.should eql "<master>-<color>-<size>"
+    end
   end
 
 end

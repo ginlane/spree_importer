@@ -5,7 +5,7 @@ module SpreeImporter
 
       row_based
 
-      import_attributes :sku, :name, :price, :available_on,
+      import_attributes :sku_pattern, :sku, :name, :price, :available_on,
                         :description, :meta_description, :meta_keywords, :cost_price
 
       target ::Spree::Product
@@ -15,16 +15,17 @@ module SpreeImporter
         each_instance headers, csv do |product, row|
           # for safety we're skipping and warning on products
 
-          master_sku  = val headers, row, "master_sku"
-          product.sku = master_sku unless master_sku.nil?
+          master_sku             = val headers, row, "master_sku"
+          product.sku            = master_sku unless master_sku.nil?
+          product.sku_pattern  ||= SpreeImporter.config.default_sku
 
           if ::Spree::Variant.exists? sku: product.sku
             self.warnings << "Product exists for sku #{product.sku}, skipping product import"
             next
           end
 
-          category  = Field.new(val(headers, row, "category")).sanitized
-          shipping  = val headers, row, "shipping"
+          category    = Field.new(val(headers, row, "category")).sanitized
+          shipping    = val headers, row, "shipping"
 
           if shipping.nil?
             shipping = ::Spree::ShippingCategory.find_by_name "Default"

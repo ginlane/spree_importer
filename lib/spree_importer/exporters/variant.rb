@@ -10,7 +10,7 @@ module SpreeImporter
 
       def append(row, variant)
         super row, variant
-        row["master_sku"] = variant.master_sku
+        row["master_sku"]  = variant.master_sku
         variant.stock_items.each do |si|
           key      = Field.to_field_string "quantity", option: si.stock_location.name
           row[key] = si.count_on_hand

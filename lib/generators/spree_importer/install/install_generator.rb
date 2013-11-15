@@ -3,7 +3,7 @@ module SpreeImporter
     class InstallGenerator < Rails::Generators::Base
 
       class_option :auto_run_migrations, :type => :boolean, :default => false
-      class_option :skip_migrations, :type => :boolean, :default => true
+      class_option :skip_migrations, :type => :boolean, :default => false
 
       def add_seeds
         append_file "db/seeds.rb", "\nSpreeImporter::Engine.load_seed if defined?(SpreeImporter)\n"

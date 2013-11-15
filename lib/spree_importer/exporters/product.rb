@@ -5,7 +5,7 @@ module SpreeImporter
 
       # static
       def headers(product_or_variant)
-        %w[ sku name price available_on description meta_description meta_keywords cost_price ]
+        %w[ sku_pattern sku name price available_on description meta_description meta_keywords cost_price ]
       end
 
       def append(row, product)
