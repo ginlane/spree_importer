@@ -19,15 +19,17 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     if source_file.save
       if sanitized[:import]
         source_file.import!
+        status = source_file.import_errors.blank?? :ok : :unprocessable_entity
       end
       render json: {
         warnings: source_file.import_warnings,
         errors: source_file.import_errors,
         imported_records: source_file.imported_records
-      }
+      }, status: status
     else
       render json: source_file.errors, status: :unprocessable_entity
     end
+
   end
 
   def update

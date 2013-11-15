@@ -15,4 +15,19 @@ describe Spree::ImportSourceFile do
     source_file = FactoryGirl.create :import_source_file
     source_file.inject(0) { |acc| acc + 1 }.should eql 5
   end
+
+  it "should serialize ImportExceptions" do
+    source_file = FactoryGirl.create :import_source_file
+    location    = { row: 1, column: "header", column_index: 1 }
+    exceptions  = [ SpreeImporter::ImportException.new("message", location) ]
+
+    source_file.import_errors = exceptions
+
+    source_file.save
+    exception   = source_file.reload.import_errors.first
+
+    exception.row.should eql 1
+    exception.column.should eql "header"
+    exception.message.should eql "message at row: 1, column: header"
+  end
 end

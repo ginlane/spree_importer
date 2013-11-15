@@ -38,10 +38,11 @@ module SpreeImporter
                 begin
                   value = Date.strptime value, format
                 rescue ArgumentError
-                  message = "Invalid date #{value}. Expected format: #{format}"
-                  row     = instances.length + 1
-                  col     = headers[attr].raw
-                  raise SpreeImporter::ImportException.new row, col, message
+                  message = "Invalid date `#{value}`. Expected format: `#{format}`"
+                  raise SpreeImporter::ImportException.new message,
+                                                           row: instances.length+1,
+                                                           column: headers[attr].raw,
+                                                           column_index: headers[attr].index
                 end
               end
               instance.send "#{attr}=", value
