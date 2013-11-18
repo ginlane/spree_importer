@@ -72,7 +72,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with :truncation
     FactoryGirl.create :shipping_category, name: "Default"
-    FactoryGirl.create :stock_location, name: "default"
+    FactoryGirl.create :stock_location, name: "Default"
   end
 
   # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.

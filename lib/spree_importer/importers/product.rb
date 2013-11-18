@@ -71,7 +71,7 @@ module SpreeImporter
           if field = val(headers, row, ot.name)
             fields                    = field.split(SpreeImporter.config.delimiter).map{|f| Field.new(f) }
             field_values              = (fields.map(&:key) + fields.map(&:label)).compact.uniq
-            option_values_hash[ot.id] = Spree::OptionValue.where(name: field_values).map(&:id).uniq
+            option_values_hash[ot.id] = ot.option_values.where(name: field_values).pluck(:id).uniq
           end
         end
 

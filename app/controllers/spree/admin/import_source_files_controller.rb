@@ -12,12 +12,12 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def create
-    params.require :import_source_file
-    file        = params[:import_source_file][:data]
+    sanitized   = params.slice :import_source_file, :import
+    file        = sanitized[:import_source_file][:data]
     source_file = Spree::ImportSourceFile.new data: file.read, mime: "text/csv", file_name: file.path
 
     if source_file.save
-      if params[:import]
+      if sanitized[:import]
         source_file.import!
       end
       render json: {

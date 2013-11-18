@@ -122,6 +122,6 @@ describe SpreeImporter::Exporter do
     first_row = csv.gets
 
     first_row["master_sku"].should_not be_nil
-    first_row["(default)quantity"].should eql "1"
+    first_row["(Default)quantity"].should eql "1"
   end
 end
