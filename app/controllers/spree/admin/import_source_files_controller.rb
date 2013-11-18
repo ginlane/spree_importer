@@ -14,7 +14,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   def create
     sanitized   = params.slice :import_source_file, :import
     file        = sanitized[:import_source_file][:data]
-    source_file = Spree::ImportSourceFile.new data: file.read, mime: "text/csv", file_name: file.path
+    source_file = Spree::ImportSourceFile.new data: file.read, mime: "text/csv", file_name: file.original_filename
 
     if source_file.save
 

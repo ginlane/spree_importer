@@ -15,7 +15,7 @@ chrome.extension.sendMessage({}, function(response) {
 
       http.onreadystatechange = function() {
         if(http.readyState === 4 && /Authorization needed/.test(http.responseText)) {
-          window.open(APP_URL, "_blank");
+          window.open(APP_URL + "?redir=" + window.location.href, "_blank");
         }
       };
 

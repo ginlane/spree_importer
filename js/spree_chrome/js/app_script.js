@@ -1,7 +1,11 @@
 
 function doGet(qs, params) {
   if(typeof qs === "undefined") { return UiApp.createApplication(); }
-
+  if(qs.parameter.redir) {
+    return HtmlService.createHtmlOutput(
+      "<form action='" + qs.parameter.redir + "' method='get' id='redir'></form>" +
+        "<script>document.getElementById('redir').submit();</script>");
+  }
   var id    = qs? qs.parameter.spreadsheetId : "0AqqDc-YiMbMzdHJmUkMzYkZYUFU4MTRKN0lUSnUzc0E";
   var ss    = SpreadsheetApp.openById(id).getSheets()[0],
   range     = ss.getRange(1, 1, ss.getLastRow(), ss.getLastColumn()),
@@ -22,5 +26,6 @@ function doGet(qs, params) {
       }
     }
   }
+
   return ss;
 }

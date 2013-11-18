@@ -6,6 +6,10 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   serialize :import_errors
   serialize :imported_records
 
+  default_scope -> {
+    order "created_at desc"
+  }
+
   def csv?
     mime =~ /csv/
   end
@@ -23,7 +27,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
   def create_in_google!(token)
     session   = GoogleDrive.login_with_oauth token
-    ss        = session.create_spreadsheet "import-source-file-#{id}"
+    ss        = session.create_spreadsheet "#{file_name}-#{id}"
     csv       = CSV data
     rows      = csv.read
     worksheet = ss.worksheets.first
@@ -35,7 +39,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
     if import_errors
       import_errors.each do |error|
-        worksheet[error.row+1,error.column_index+1] = "[[ERROR: #{error.message}]]\n\
+        worksheet[error.row+1,error.column_index+1] = "[[ERROR: #{error.message}]]\
 #{worksheet[error.row+1,error.column_index+1]}"
       end
     end
