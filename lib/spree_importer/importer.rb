@@ -48,6 +48,11 @@ module SpreeImporter
 
       record = importer.import headers, csv
 
+      unless importer.errors.blank?
+        errors[kind] = importer.errors
+        raise importer.errors.first
+      end
+
       if create
         [ record ].flatten.each &:save
 

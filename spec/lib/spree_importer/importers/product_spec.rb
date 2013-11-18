@@ -20,13 +20,11 @@ describe SpreeImporter::Importers::Product do
     csv      = CSV.parse "available_on\ninvalidate", headers: true
     headers  = { "available_on" => SpreeImporter::Field.new("available_on", headers: true, index: 0) }
     importer = SpreeImporter::Importers::Product.new
-    expect {
-      importer.each_instance(headers.with_indifferent_access, csv){ }
-    }.to raise_error {|error|
-      expect(error).to be_a(SpreeImporter::ImportException)
-      error.row.should eql 1
-      error.column.should eql "available_on"
-    }
+
+    importer.each_instance(headers.with_indifferent_access, csv){ }
+    importer.errors.length.should eql 1
+    importer.errors.first.row.should eql 1
+    importer.errors.first.column.should eql "available_on"
   end
 
   context "importing the whole shebang" do

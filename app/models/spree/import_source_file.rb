@@ -80,7 +80,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.rows             = rows
 
   rescue SpreeImporter::ImportException => e
-    self.import_errors    = [ e ]
+    self.import_errors    = importer.errors.values.flatten
     self.import_warnings  = { }
     self.imported_records = { }
     self.rows             = 0

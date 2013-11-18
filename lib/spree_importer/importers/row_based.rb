@@ -27,29 +27,37 @@ module SpreeImporter
 
       def each_instance(headers, csv)
         instances = [ ]
+        row_index = 0
         csv.each do |row|
-          instance = fetch_instance headers, row
-          import_attributes.each do |attr|
-            if value = val(headers, row, attr)
-              # could be pulled into some import_attribute annotations
-              # or something
-              if attr == :available_on
-                format = SpreeImporter.config.date_format
-                begin
-                  value = Date.strptime value, format
-                rescue ArgumentError
-                  message = "Invalid date `#{value}`. Expected format: `#{format}`"
-                  raise SpreeImporter::ImportException.new message,
-                                                           row: instances.length+1,
-                                                           column: headers[attr].raw,
-                                                           column_index: headers[attr].index
+          row_index += 1
+          begin
+            instance = fetch_instance headers, row
+            import_attributes.each do |attr|
+              if value = val(headers, row, attr)
+                # could be pulled into some import_attribute annotations
+                # or something
+                if attr == :available_on
+                  format = SpreeImporter.config.date_format
+                  begin
+                    value = Date.strptime value, format
+                  rescue ArgumentError
+                    message = "Invalid date `#{value}`. Expected format: `#{format}`"
+                    raise SpreeImporter::ImportException.new message,
+                      row: row_index,
+                      column: headers[attr].raw,
+                      column_index: headers[attr].index
+                  end
                 end
+                instance.send "#{attr}=", value
               end
-              instance.send "#{attr}=", value
             end
+
+            instances << instance
+            yield instance, row
+
+          rescue SpreeImporter::ImportException => e
+            errors << e
           end
-          instances << instance
-          yield instance, row
         end
         instances
       end
