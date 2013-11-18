@@ -38,15 +38,19 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
       importer.import :product
       importer.import :variant
-      # importer.import :stock_item
-
-      self.import_warnings  = importer.warnings
-      self.import_errors    = importer.errors
-      self.imported_records = importer.records
-      self.rows             = rows
-
-      save!
     end
+
+    self.import_warnings  = importer.warnings
+    self.imported_records = importer.records
+    self.rows             = rows
+
+  rescue SpreeImporter::ImportException => e
+    self.import_errors    = [ e ]
+    self.import_warnings  = { }
+    self.imported_records = { }
+    self.rows             = 0
+  ensure
+    save!
   end
 
   def importer(force = false)

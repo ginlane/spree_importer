@@ -16,6 +16,10 @@
     = f.file_field :data
     = f.submit
 
+#error_message.hidden
+  %h3 Error
+  %p.error
+
 #last_import.hidden
   %h3 Last Import
   = render partial: "spree/admin/import_source_files/warning_table"

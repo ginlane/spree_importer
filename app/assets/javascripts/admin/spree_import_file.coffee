@@ -13,6 +13,7 @@
 
     @dropzone.on "error", @handleError
     @dropzone.on "success", @handleSuccess
+    @dropzone.on "sending", @startProgress
 
 
   initializeWarningsTable: =>
@@ -29,16 +30,31 @@
       @formatMessages($table, info.errors, k)
 
     $table.parent().fadeIn()
-    $table.find(".warnings,.errors").click @showMessages
+    $table.find(".warnings").click @showMessages
 
 
   handleError: (f, err) =>
-    # fnord
+    @stopProgress()
+    console.log err
+    if err.data
+      $("#error_message p:first").html "Duplicate upload"
+      $("#error_message").fadeIn()
+    else
+      @formatErrors(err.errors)
 
   handleSuccess: (file, info) =>
+    @stopProgress()
     @info = info
     $table = $("#last_import table")
     @formatTable $table, info
+
+  formatErrors: (errors) =>
+    html = "<tr><th>CSV Formatting Errors</th><th></th></tr>"
+    errors.forEach (e) =>
+      html += "<tr class='odd'><td colspan=2>" + e.message + "</td></tr>"
+    $("#last_import table").html(html)
+    $("#last_import").fadeIn()
+
 
   formatMessages: ($table, info, key) =>
     return unless info[key]
@@ -59,3 +75,26 @@
       html += "</td></tr>"
 
     $row.replaceWith html
+
+  startProgress: =>
+    $("#progress").stop(true, true).fadeIn()
+    spinner = new Spinner(@progressOpts).spin(document.getElementById("spinner"))
+  stopProgress: =>
+    $("#progress").fadeOut()
+
+  progressOpts:
+    lines: 11
+    length: 2
+    width: 3
+    radius: 9
+    corners: 1
+    rotate: 0
+    color: '#fff'
+    speed: 0.8
+    trail: 48
+    shadow: false
+    hwaccel: true
+    className: 'spinner'
+    zIndex: 2e9
+    top: 'auto'
+    left: 'auto'

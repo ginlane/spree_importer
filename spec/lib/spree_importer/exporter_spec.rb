@@ -6,7 +6,8 @@ describe SpreeImporter::Exporter do
     @taxon    = FactoryGirl.create :taxon, name: "The Funk"
     @taxon.move_to_child_of @taxonomy.root
 
-    @product        = FactoryGirl.create :product_with_option_types, sku: "FNORD"
+    @product        = FactoryGirl.create :product_with_option_types,
+                         sku: "FNORD", sku_pattern: "<master>-*"
     @product.taxons << @taxon
 
     FactoryGirl.create :option_value, option_type: @product.option_types.first
@@ -19,7 +20,7 @@ describe SpreeImporter::Exporter do
                 FactoryGirl.build(:option_value, position: 2, name: "Skidoo", presentation: "S")
              ])
     @product.set_property "fnordprop", "fliff"
-    @headers = %w| sku name price available_on description meta_description meta_keywords cost_price
+    @headers = %w| sku_pattern sku name price available_on description meta_description meta_keywords cost_price
                    [option](foo-size)Size [option](fnord)Gregg [property]fnordprop category |
   end
 
@@ -84,7 +85,7 @@ describe SpreeImporter::Exporter do
     row      = csv.gets
 
     rows.length.should eql 1
-    row.headers.length.should eql 11
+    row.headers.length.should eql 12
 
     %w[ sku name price description meta_description
         meta_keywords cost_price ].each do |header|
@@ -121,7 +122,8 @@ describe SpreeImporter::Exporter do
 
     first_row = csv.gets
 
+    first_row["sku_pattern"].should eql @product.sku_pattern
     first_row["master_sku"].should_not be_nil
-    first_row["(default)quantity"].should eql "1"
+    first_row["(Default)quantity"].should eql "1"
   end
 end

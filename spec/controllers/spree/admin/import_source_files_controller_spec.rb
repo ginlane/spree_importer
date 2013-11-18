@@ -5,6 +5,7 @@ describe Spree::Admin::ImportSourceFilesController do
     @user = FactoryGirl.create :admin_user
     controller.stubs(:spree_current_user).returns @user
   end
+
   it "should create a new impot source file, yo." do
     expect {
       spree_post :create, import_source_file: {
@@ -12,6 +13,17 @@ describe Spree::Admin::ImportSourceFilesController do
       }
     }.to change(Spree::ImportSourceFile, :count).by(1)
   end
+
+  it "should return an error for invalid csv" do
+    expect {
+      spree_post :create, import: true, import_source_file: {
+        data: fixture_file_upload("/files/gin-lane-product-list-invalid-date.csv")
+      }
+      response.should be_unprocessable
+      JSON.parse(response.body)["errors"].first["message"].should =~ /Invalid date/
+    }.to change(Spree::ImportSourceFile, :count).by(1)
+  end
+
   context "import commands" do
     before :each do
       Spree::ImportSourceFile.any_instance.expects :import!

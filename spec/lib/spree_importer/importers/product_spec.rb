@@ -16,6 +16,19 @@ describe SpreeImporter::Importers::Product do
     end
   end
 
+  it "should throw an exception for a badlly formatted date string" do
+    csv      = CSV.parse "available_on\ninvalidate", headers: true
+    headers  = { "available_on" => SpreeImporter::Field.new("available_on", headers: true, index: 0) }
+    importer = SpreeImporter::Importers::Product.new
+    expect {
+      importer.each_instance(headers.with_indifferent_access, csv){ }
+    }.to raise_error {|error|
+      expect(error).to be_a(SpreeImporter::ImportException)
+      error.row.should eql 1
+      error.column.should eql "available_on"
+    }
+  end
+
   context "importing the whole shebang" do
     before :each do
       @base         = get_importer "gin-lane-product-list"
@@ -52,6 +65,11 @@ describe SpreeImporter::Importers::Product do
       @product = Spree::Variant.find_by_sku("STN-FW13-DUMMY-NO-SIZE").product
 
       @product.option_types.length.should eql 1
+    end
+
+    it "should import a sku pattern if specified" do
+      @products[0].sku_pattern.should eql SpreeImporter.config.default_sku
+      @products[1].sku_pattern.should eql "<master>-<color>-<size>"
     end
   end
 

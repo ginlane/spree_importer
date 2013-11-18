@@ -1,5 +1,5 @@
 Spree::Variant.class_eval do
-  delegate_belongs_to :product, :properties, :property, :option_types, :taxons
+  delegate_belongs_to :product, :properties, :property, :option_types, :taxons, :sku_pattern
 
   def master_sku
     is_master?? sku : product.master.sku
@@ -7,9 +7,7 @@ Spree::Variant.class_eval do
 
   def generate_sku!
     return if !sku.blank? || is_master?
-
-    option_values.sort_by! &:position
-    self.sku = [ master_sku, option_values.map(&:name) ].flatten.join("-").upcase
+    product.set_sku self
     save!
   end
 end
