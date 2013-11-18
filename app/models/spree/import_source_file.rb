@@ -33,10 +33,12 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       end
     end
 
-    # Can't format cells via API. Fuckin' fuck.
-    # import_errors.try(:each) do |error|
-    #   worksheet[error.row+1,error.column_index+1]
-    # end
+    if import_errors
+      import_errors.each do |error|
+        worksheet[error.row+1,error.column_index+1] = "[[ERROR: #{error.message}]]\n\
+#{worksheet[error.row+1,error.column_index+1]}"
+      end
+    end
 
     worksheet.save
     update_attribute :spreadsheet_url, ss.human_url
