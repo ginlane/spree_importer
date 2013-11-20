@@ -23,7 +23,7 @@
     $table = $ "#import_table table"
     return unless !!$table.length
 
-    @info  = $("#import_table").data("import")
+    @info  = $("#import_table").data "import"
     @formatTable $table, @info
 
   formatTable: ($table, info) =>
