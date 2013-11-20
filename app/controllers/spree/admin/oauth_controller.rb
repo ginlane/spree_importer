@@ -1,9 +1,27 @@
 module Spree
   module Admin
     class OauthController < Spree::Admin::BaseController
+      def check_google
+        if spree_current_user.google_token.nil?
+          render json: false and return
+        end
+
+        begin
+          GoogleDrive.login_with_oauth spree_current_user.google_token
+        rescue GoogleDrive::AuthenticationError
+          render json: false and return
+        end
+
+        render json: true
+      end
+
       def google
         url    = oauth_client.auth_code.authorize_url redirect_uri: redirect_uri,
                                                       scope: scopes
+
+        if params[:redirect]
+          session[:google_oauth_return_path] = params[:redirect]
+        end
 
         redirect_to url
       end
@@ -14,7 +32,7 @@ module Spree
         spree_current_user.update_attribute :google_token, token.token
 
         flash[:notice] = "Authenticated with Google."
-        redirect_to session.delete(:google_oauth_return_path)
+        redirect_to session.delete(:google_oauth_return_path)||admin_import_source_files_url
       end
 
       protected

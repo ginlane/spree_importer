@@ -15,9 +15,12 @@
     @dropzone.on "success", @handleSuccess
     @dropzone.on "sending", @startProgress
 
+    @urlImport = $ "#import_from_url"
+    @urlImport.on "submit", @createImportFile
+    @oAuthCheck()
 
   initializeWarningsTable: =>
-    $table = $("#import_table table")
+    $table = $ "#import_table table"
     return unless !!$table.length
 
     @info  = $("#import_table").data("import")
@@ -35,7 +38,6 @@
 
   handleError: (f, err) =>
     @stopProgress()
-    console.log err
     if err.data
       $("#error_message p:first").html "Duplicate upload"
       $("#error_message").fadeIn()
@@ -81,6 +83,42 @@
     spinner = new Spinner(@progressOpts).spin(document.getElementById("spinner"))
   stopProgress: =>
     $("#progress").fadeOut()
+
+  oAuthCheck: =>
+    $check   = $("#oauth_check")
+    ajaxOpts =
+      type: "get"
+      dataType: "json"
+      url: $check.data("check-google")
+      success: (authorized) =>
+        if authorized
+          $check.hide()
+        else
+          $("#import_from_url").hide()
+
+    $.ajax ajaxOpts
+
+  createImportFile: (e) =>
+    e.preventDefault()
+    ajaxOpts =
+      type: "post"
+      dataType: "json"
+      data: { "import_source_file[spreadsheet_url]": $("#human_url").val() }
+      url: $("#import_from_url").attr("action")
+      success: (response) =>
+        if response.redirect
+          window.location = response.redirect
+        else
+          @handleSuccess response
+      error: (xhr) =>
+        response = JSON.parse xhr.responseText
+        if response.redirect
+          window.location = response.redirect
+        else
+          @handleError response
+
+    $.ajax ajaxOpts
+
 
   progressOpts:
     lines: 11

@@ -2,7 +2,10 @@
   = Spree.t :imported_csv
 
 = content_for :page_actions do
-  = button_link_to "Download", admin_import_source_file_path(@resource, format: "text")
+  = button_to "Edit in Google", admin_import_source_file_edit_in_google_path(@resource), method: :put, form: { target: "_blank" }
+  - unless @resource.spreadsheet_url.nil?
+    = button_to "Import from Google", admin_import_source_file_import_from_google_path(@resource), method: :post
+  = button_to "Download", admin_import_source_file_path(@resource, format: "text")
 
 = render partial: "spree/admin/shared/product_sub_menu"
 

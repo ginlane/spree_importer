@@ -1,6 +1,6 @@
 class Spree::ImportSourceFile < ActiveRecord::Base
   include Enumerable
-  validates_uniqueness_of :data
+  validates_uniqueness_of :data, allow_nil: true
 
   serialize :import_warnings
   serialize :import_errors
@@ -19,6 +19,8 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   end
 
   def import_from_google!(token)
+    set_feed_url_from_human_url if spreadsheet_feed_url.nil?
+
     session   = GoogleDrive.login_with_oauth token
     ss        = GoogleDrive::Spreadsheet.new session, spreadsheet_feed_url
     self.data = ss.export_as_string "csv"
@@ -95,5 +97,14 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       @importer.parse
     end
     @importer
+  end
+
+  protected
+  def set_feed_url_from_human_url
+    return if spreadsheet_url.nil?
+
+    parsed                    = Rack::Utils.parse_query spreadsheet_url.split("?").last
+    key                       = parsed["key"]
+    self.spreadsheet_feed_url = "https://spreadsheets.google.com/feeds/worksheets/#{key}/private/"
   end
 end

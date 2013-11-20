@@ -24,16 +24,23 @@ describe Spree::Admin::ImportSourceFilesController do
     }.to change(Spree::ImportSourceFile, :count).by(1)
   end
 
+  it "should import from a spreadsheet url" do
+    Spree::ImportSourceFile.any_instance.expects(:import_from_google!).with "TOKEN"
+    controller.spree_current_user.stubs(:google_token).returns "TOKEN"
+    spree_post :create_from_url, import_source_file: {
+      spreadsheet_url: "http://google.stuff?key=KEY"
+    }
+  end
+
   context "import commands" do
     before :each do
       Spree::ImportSourceFile.any_instance.expects :import!
     end
+
     it "should create a new import source file and call #create!" do
-      expect {
-        spree_post :create, import: true, import_source_file: {
-          data: fixture_file_upload("/files/simple-sheet-annotated.csv")
-        }
-      }.to change(Spree::ImportSourceFile, :count).by(1)
+      spree_post :create, import: true, import_source_file: {
+        data: fixture_file_upload("/files/simple-sheet-annotated.csv")
+      }
     end
 
     it "should call #import! on an import source file" do
