@@ -24,13 +24,6 @@ describe SpreeImporter::Exporter do
                    [option](foo-size)Size [option](fnord)Gregg [property]fnordprop category |
   end
 
-  it "should return the correct kind of exporters" do
-    exporter = SpreeImporter::Exporter.new
-    exporter.get_exporters(nil).map(&:class).should_not include(SpreeImporter::Exporters::Variant)
-    exporter.variant_export!
-    exporter.get_exporters(nil).map(&:class).should_not include(SpreeImporter::Exporters::Product)
-  end
-
   it "should generate headers" do
     exporter = SpreeImporter::Exporter.new
     string   = exporter.export
@@ -113,7 +106,7 @@ describe SpreeImporter::Exporter do
     end
 
     exporter = SpreeImporter::Exporter.new
-    csv_text = exporter.export variants: true
+    csv_text = exporter.export target: :variant
     csv      = CSV.new csv_text, headers: true
     rows     = csv.read
 
@@ -125,5 +118,28 @@ describe SpreeImporter::Exporter do
     first_row["sku_pattern"].should eql @product.sku_pattern
     first_row["master_sku"].should_not be_nil
     first_row["(Default)quantity"].should eql "1"
+  end
+
+  context "order exporters" do
+    before :each do
+      @tax_rate = FactoryGirl.create(:tax_rate,
+        calculator: FactoryGirl.create(:default_tax_calculator))
+      @order    = FactoryGirl.create :shipped_order
+    end
+
+    it "should export a row for each line item" do
+      exporter = SpreeImporter::Exporter.new search: :all, target: :order
+      csv_text = exporter.export
+      csv      = CSV.new csv_text, headers: true
+      rows     = csv.read
+
+      csv.rewind
+
+      rows.length.should eql @order.line_items.count
+      first_row = csv.gets
+      first_row["sku"].should eql @order.line_items.first.variant.sku
+      first_row["number"].should eql @order.number
+      first_row["completed_at"].should eql @order.completed_at.strftime(SpreeImporter.config.date_format)
+    end
   end
 end

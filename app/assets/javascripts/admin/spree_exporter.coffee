@@ -1,6 +1,6 @@
 (exports ? this).SpreeExporter = class SpreeExporter
   constructor: ->
-    $("#admin_export_product").on "click", @addQueryString
+    $("#admin_export_product,#admin_export_order").on "click", @addQueryString
 
   addQueryString: (e) =>
 
@@ -8,5 +8,4 @@
     url = $a.attr "href"
     loc = window.location.search
     if !!loc
-      console.log(url + loc)
       $a.attr "href", url + loc

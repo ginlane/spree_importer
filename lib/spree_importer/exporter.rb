@@ -5,30 +5,22 @@ class SpreeImporter::Exporter
   include Enumerable
   attr_accessor :headers
 
-  def variant_export!
-    @variant_export = true
-  end
-
-  def variant_export?
-    !!@variant_export
-  end
-
-  def initialize(default_options = { })
+  def initialize(default_options = { target: :product })
     @default_options = default_options
   end
 
-  def export(options = @default_options)
-    variant_export! if options[:variants]
-    exporters    = get_exporters options[:exporters]
+  def export(options = @default_options.dup)
+    target_exporter = SpreeImporter.config.exporters[options.delete(:target) || :product].new
+    exporters       = target_exporter.get_exporters options[:exporters]
     self.headers = [ ]
 
 
     # horrifyingly inefficient. Not much way around it since
     # individual products can have arbitrary properties and
     # option_types that aren't connected to a prototype.
-    each_export_item options[:search] do |product|
+    target_exporter.each_export_item options[:search] do |export_item|
       exporters.each do |exporter|
-        self.headers |= exporter.headers(product)
+        self.headers |= exporter.headers(export_item)
       end
     end
 
@@ -39,11 +31,11 @@ class SpreeImporter::Exporter
         yield CSV.generate_line headers
       end
 
-      each_export_item options[:search] do |product|
+      target_exporter.each_export_item options[:search] do |export_item|
         row = CSV::Row.new headers, [ ]
 
         exporters.each do |exporter|
-          exporter.append row, product
+          exporter.append row, export_item
         end
 
         if block_given?
@@ -59,44 +51,6 @@ class SpreeImporter::Exporter
     export @default_options do |row|
       yield row
     end
-  end
-
-  def each_export_item(search, &block)
-    if variant_export?
-      each_variant search, &block
-    else
-      each_product search, &block
-    end
-  end
-
-  def each_product(search, &block)
-    case search
-    when :all, nil
-      Spree::Product.find_each &block
-    when :dummy
-      block.call SpreeImporter::DummyProduct.new
-    else
-      Spree::Product.ransack(search).result.group_by_products_id.find_each &block
-    end
-  end
-
-  def each_variant(search, &block)
-    each_product search do |product|
-      product.variants.each &block
-    end
-  end
-
-  def get_exporters(exporters)
-    if exporters.nil?
-      exporters = SpreeImporter.config.exporters
-      if variant_export?
-        exporters.reject {|k, _| k == "product" }.values
-      else # product_export
-        exporters.reject {|k, _| k == "variant" }.values
-      end
-    else
-      SpreeImporter.config.exporters.slice *exporters
-    end.map &:new
   end
 
   def with_csv(file, &block)
