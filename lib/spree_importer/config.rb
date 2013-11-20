@@ -58,6 +58,7 @@ module SpreeImporter
         property:  SpreeImporter::Exporters::Property,
         taxonomy:  SpreeImporter::Exporters::Taxonomy,
         variant:   SpreeImporter::Exporters::Variant,
+        order:     SpreeImporter::Exporters::Order,
         # prototype: SpreeImporter::Exporters::Prototype
       }.with_indifferent_access
     end

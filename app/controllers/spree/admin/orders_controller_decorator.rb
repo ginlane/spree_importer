@@ -1,17 +1,17 @@
 module Spree
   module Admin
-    ProductsController.class_eval do
+    OrdersController.class_eval do
       def export
         respond_to do |format|
           format.csv do
-            self.response_body = SpreeImporter::Exporter.new search: search, target: :variant
+            self.response_body = SpreeImporter::Exporter.new search: search, target: :order
           end
         end
       end
 
       protected
       def search
-        return :dummy unless Spree::Product.exists?
+        return :dummy unless Spree::Order.exists?
 
         if params[:q]
           params[:q][:deleted_at_null] ||= "1"
