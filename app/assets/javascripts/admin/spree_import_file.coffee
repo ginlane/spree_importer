@@ -15,12 +15,15 @@
     @dropzone.on "success", @handleSuccess
     @dropzone.on "sending", @startProgress
 
+    @urlImport = $ "#import_from_url"
+    @urlImport.on "submit", @createImportFile
+    @oAuthCheck()
 
   initializeWarningsTable: =>
-    $table = $("#import_table table")
+    $table = $ "#import_table table"
     return unless !!$table.length
 
-    @info  = $("#import_table").data("import")
+    @info  = $("#import_table").data "import"
     @formatTable $table, @info
 
   formatTable: ($table, info) =>
@@ -35,12 +38,11 @@
 
   handleError: (f, err) =>
     @stopProgress()
-    console.log err
     if err.data
       $("#error_message p:first").html "Duplicate upload"
       $("#error_message").fadeIn()
     else
-      @formatErrors(err.errors)
+      @formatErrors(err)
 
   handleSuccess: (file, info) =>
     @stopProgress()
@@ -48,9 +50,9 @@
     $table = $("#last_import table")
     @formatTable $table, info
 
-  formatErrors: (errors) =>
-    html = "<tr><th>CSV Formatting Errors</th><th></th></tr>"
-    errors.forEach (e) =>
+  formatErrors: (error) =>
+    html = "<tr><th>CSV Formatting Errors</th><th>#{@editButton(error.file_id)}</th></tr>"
+    error.errors.forEach (e) =>
       html += "<tr class='odd'><td colspan=2>" + e.message + "</td></tr>"
     $("#last_import table").html(html)
     $("#last_import").fadeIn()
@@ -82,6 +84,42 @@
   stopProgress: =>
     $("#progress").fadeOut()
 
+  oAuthCheck: =>
+    $check   = $("#oauth_check")
+    ajaxOpts =
+      type: "get"
+      dataType: "json"
+      url: $check.data("check-google")
+      success: (authorized) =>
+        if authorized
+          $check.hide()
+        else
+          $("#import_from_url").hide()
+
+    $.ajax ajaxOpts
+
+  createImportFile: (e) =>
+    e.preventDefault()
+    ajaxOpts =
+      type: "post"
+      dataType: "json"
+      data: { "import_source_file[spreadsheet_url]": $("#human_url").val() }
+      url: $("#import_from_url").attr("action")
+      success: (response) =>
+        if response.redirect
+          window.location = response.redirect
+        else
+          @handleSuccess response
+      error: (xhr) =>
+        response = JSON.parse xhr.responseText
+        if response.redirect
+          window.location = response.redirect
+        else
+          @handleError response
+
+    $.ajax ajaxOpts
+
+
   progressOpts:
     lines: 11
     length: 2
@@ -98,3 +136,15 @@
     zIndex: 2e9
     top: 'auto'
     left: 'auto'
+
+
+  editButton: (fileId) =>
+    """
+    <form target="_blank"
+          action="/admin/import_source_files/#{fileId}/edit_in_google" class="button_to" method="post">
+      <div><input name="_method" type="hidden" value="put">
+        <input type="submit" value="Edit">
+        <input name="authenticity_token" type="hidden" value="#{AUTH_TOKEN}">
+      </div>
+    </form>
+    """

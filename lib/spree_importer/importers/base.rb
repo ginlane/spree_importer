@@ -2,7 +2,9 @@
   module Importers
     module Base
       extend ActiveSupport::Concern
+
       attr_writer :warnings
+      attr_writer :errors
 
       module ClassMethods
         def target(klass)
@@ -26,6 +28,10 @@
 
       def warnings
         @warnings ||= [ ]
+      end
+
+      def errors
+        @errors ||= [ ]
       end
 
       def fetch_instance(params)

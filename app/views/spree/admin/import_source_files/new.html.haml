@@ -5,11 +5,13 @@
 
 = render partial: "spree/admin/shared/product_sub_menu"
 
-= form_for [:admin, @import_source_file ], html: { class: "dropzone", multipart: true } do |f|
-  .import
-    %label{ for: "dont_import" } Only upload (Don't import products)
-    %input{ type: "hidden", name: "import", value: true }
-    = check_box_tag :import, false, false, id: "dont_import"
+
+%h3 Import from CSV file (drag and drop)
+= form_for [ :admin, @import_source_file ], html: { class: "dropzone", multipart: true } do |f|
+  -# .import
+  -#   %label{ for: "dont_import" } Only upload (Don't import products)
+  -#   %input{ type: "hidden", name: "import", value: true }
+  -#   = check_box_tag :import, false, false, id: "dont_import"
 
   .fallback
     = f.label :data, "Data File"
@@ -23,3 +25,15 @@
 #last_import.hidden
   %h3 Last Import
   = render partial: "spree/admin/import_source_files/warning_table"
+
+#oauth_check{ data: { check_google: admin_check_google_url }, class: spree_current_user.google_token? && "hidden" }
+  = link_to "Authorize With Google to import directly from Google Spreadsheet", admin_google_auth_url(redirect: new_admin_import_source_file_url)
+
+= form_tag create_from_url_admin_import_source_files_url, id: "import_from_url" do
+  .field
+    %label{ for: "human_url" }
+      Or Import from Google Docs Spreadsheet
+
+    %input{ size: 130, type: "text", name: "import_source_file[spreadsheet_url]", id: "human_url" }
+  .field
+    %input{ type: "submit", value: "Import" }

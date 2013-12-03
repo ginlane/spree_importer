@@ -31,7 +31,9 @@ module SpreeImporter
                                date_format: "%m/%d/%Y",
                                date_columns: %w[ available_on ],
                                taxon_separator: "->",
-                               default_sku: "<master>-*"
+                               default_sku: "<master>-*",
+                               google_client_id: "647628910149.apps.googleusercontent.com",
+                               google_client_secret: "UIHqKxV1rYjN6BzaETmnY09_"
 
 
     def register_importer(key, klass)
