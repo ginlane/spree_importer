@@ -8,7 +8,7 @@ module SpreeImporter
       field          = field.strip
       self.raw       = field.strip
       self.index     = options[:index]
-      self.sanitized = label.parameterize "_"
+      self.sanitized = label.parameterize SpreeImporter.config.field_space_delemiter
       self.option    = field.scan(/\((.+?)\)/).last.try :last
       self.kind      = field.scan(/\[(.+?)\]/).last.try :last
     end
