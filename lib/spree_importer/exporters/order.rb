@@ -40,15 +40,15 @@ module SpreeImporter
       end
 
       def each_export_item(search, &block)
-        includes = [ :ship_address, :bill_address, { line_items: :variant } ]
+        includes = [ {order: [ :ship_address, :bill_address ] }, :variant ]
         case search
         when :all, nil
-          Spree::Order.joins(:line_items).includes(includes).find_each do |order|
-            order.line_items.each &block
+          Spree::LineItem.includes(includes).find_each do |line_item|
+            block.call line_item
           end
         else
-          Spree::Order.joins(:line_items).includes(includes).ransack(search).result.find_each do |order|
-            order.line_items.each &block
+          Spree::LineItem.includes(includes).ransack(search).result.find_each do |order|
+            block.call line_item
           end
         end
       end

@@ -132,7 +132,7 @@ describe SpreeImporter::Exporter do
       csv_text = exporter.export
       csv      = CSV.new csv_text, headers: true
       rows     = csv.read
-
+      binding.pry
       csv.rewind
 
       rows.length.should eql @order.line_items.count
