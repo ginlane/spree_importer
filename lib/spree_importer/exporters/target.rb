@@ -5,6 +5,11 @@ module SpreeImporter
       extend ActiveSupport::Concern
 
       module ClassMethods
+        def fixed_headers
+          define_method :fixed_headers? do
+            true
+          end
+        end
         # reject incompatible exporters
         def rejects(*exporters)
           define_method :rejects do
@@ -23,6 +28,10 @@ module SpreeImporter
             exporters
           end
         end
+      end
+
+      def fixed_headers?
+        false
       end
 
       def get_exporters(exporter_names)

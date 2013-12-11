@@ -18,10 +18,14 @@ class SpreeImporter::Exporter
     # horrifyingly inefficient. Not much way around it since
     # individual products can have arbitrary properties and
     # option_types that aren't connected to a prototype.
-    target_exporter.each_export_item options[:search] do |export_item|
-      exporters.each do |exporter|
-        self.headers |= exporter.headers(export_item)
+    self.headers = Rails.cache.fetch("#{target_exporter.class}-#{options[:search].hash}") do
+      hs = [ ]
+      target_exporter.each_export_item options[:search] do |export_item|
+        exporters.each do |exporter|
+          hs |= exporter.headers(export_item)
+        end
       end
+      hs
     end
 
     with_csv options[:file] do |csv|
