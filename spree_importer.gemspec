@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree'
   s.add_dependency 'haml-rails'
   s.add_dependency 'google_drive'
   s.add_dependency 'oauth2'
