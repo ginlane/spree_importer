@@ -27,7 +27,7 @@ describe SpreeImporter::Importers::Variant do
     opt_vals           = variant.option_values.to_a
 
     exporter           = SpreeImporter::Exporter.new variants: true
-    import_source_file = Spree::ImportSourceFile.new data: exporter.export
+    import_source_file = Spree::ImportSourceFile.new.tap {|sf| sf.data = exporter.export }
     import_source_file.import!
 
     var_check          = Spree::Variant.find_by_sku var_sku

@@ -47,7 +47,7 @@ describe SpreeImporter::Exporter do
 
     [ Spree::Variant, Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
-    importer = Spree::ImportSourceFile.new data: csv_text
+    importer = Spree::ImportSourceFile.new.tap {|sf| sf.data = csv_text }
 
     importer.import!
 

@@ -18,10 +18,10 @@ module SpreeImporter
 
             value.split(delimiter).each do |heirarchy|
               heirarchy = heirarchy.split(sep).map &:strip
-              taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift
+              taxonomy  = find_or_create_taxonomy heirarchy.shift
 
               heirarchy.inject(taxonomy.root) do |taxon, sub|
-                sub_taxon = ::Spree::Taxon.find_or_create_by name: sub
+                sub_taxon = find_or_create_taxon sub
                 sub_taxon.move_to_child_of taxon
                 sub_taxon
               end
@@ -40,6 +40,12 @@ module SpreeImporter
       end
       def sep
         SpreeImporter.config.taxon_separator
+      end
+      def find_or_create_taxon(name)
+        ::Spree::Taxon.find_by_name(name) || ::Spree::Taxon.create(name: name)
+      end
+      def find_or_create_taxonomy(name)
+        ::Spree::Taxonomy.find_by_name(name) || ::Spree::Taxonomy.create(name: name)
       end
     end
   end

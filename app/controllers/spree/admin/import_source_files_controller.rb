@@ -22,7 +22,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     end
 
     @return_path = admin_import_source_files_url # in case google bombs out.
-    @source_file = Spree::ImportSourceFile.new spreadsheet_url: human_url
+    @source_file = Spree::ImportSourceFile.new.tap {|sf| sf.spreadsheet_url = human_url }
     @source_file.import_from_google! spree_current_user.google_token
 
     render_source_file
@@ -33,11 +33,12 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def create
     file         = sanitized[:import_source_file][:data]
-    @source_file = Spree::ImportSourceFile.new({
-          data: file.read,
-          mime: "text/csv",
-          file_name: file.original_filename
-      })
+
+    @source_file = Spree::ImportSourceFile.new.tap do |sf|
+      sf.data      = file.read
+      sf.mime      = "text/csv"
+      sf.file_name = file.original_filename
+    end
 
     if @source_file.save
       @source_file.import!
