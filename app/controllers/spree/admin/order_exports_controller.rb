@@ -1,7 +1,8 @@
 module Spree
   module Admin
-    OrdersController.class_eval do
-      before_filter :set_streaming_headers, only: [:export]
+    class OrderExportsController < Spree::Admin::BaseController
+      before_filter :set_streaming_headers, only: [ :export ]
+
       def export
         respond_to do |format|
           format.csv do
@@ -27,6 +28,7 @@ module Spree
           params[:q]
         end
       end
+
     end
   end
 end

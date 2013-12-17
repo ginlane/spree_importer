@@ -1,7 +1,7 @@
 Spree::Core::Engine.routes.draw do
   routes = lambda do
     get "/admin/products/export"  => "admin/products#export", as: :admin_export_products
-    get "/admin/orders/export"    => "admin/orders#export", as: :admin_export_orders
+    get "/admin/orders/export"    => "admin/order_exports#export", as: :admin_export_orders
 
     namespace :admin do
       resources :imports
