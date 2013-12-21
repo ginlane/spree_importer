@@ -1,4 +1,4 @@
-Spree::Core::Engine.append_routes do
+Spree::Core::Engine.add_routes do
   get "/admin/products/export" => "admin/products#export", as: :admin_export_products
   get "/admin/orders/export"   => "admin/orders#export", as: :admin_export_orders
 
