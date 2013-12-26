@@ -73,7 +73,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
       importer.import :taxonomy
 
-      importer.import :product
+      importer.import :product, batch_id: id
       importer.import :variant
     end
 
