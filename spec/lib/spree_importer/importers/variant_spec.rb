@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe SpreeImporter::Importers::Variant do
+  it 'should set :batch_id on instances' do
+    import_source_file = get_import_source_file "gin-lane-variant-export"
+    import_source_file.import!
+    variant         = Spree::Variant.find_by_sku "STN-FW13-DUMMY-NO-SIZE"
+
+    variant.batch_id.should == 999 
+  end
+
   it "should import stock items in the proper quantity" do
     import_source_file = get_import_source_file "gin-lane-variant-export"
     import_source_file.import!
