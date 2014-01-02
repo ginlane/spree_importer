@@ -79,7 +79,6 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
     self.import_warnings  = importer.warnings
     self.imported_records = importer.records
-    self.rows             = rows
 
   rescue SpreeImporter::ImportException => e
     self.import_errors    = importer.errors.values.flatten
