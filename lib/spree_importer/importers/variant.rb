@@ -27,7 +27,7 @@ module SpreeImporter
             end
           end
 
-          instance.batch_id = self.batch_id # tie to a certain batch import
+          instance.batch_id = batch_id
 
           instance.save! # create stock item
           stock_headers(headers, row) do |location, value|

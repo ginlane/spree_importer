@@ -21,8 +21,8 @@ module SpreeImporter
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
-          product.batch_id = self.batch_id # tie to a certain batch import
-          product.master.batch_id = self.batch_id
+          product.batch_id        = batch_id
+          product.master.batch_id = batch_id
 
           if ::Spree::Variant.exists? sku: product.sku
             self.warnings << "Product exists for sku #{product.sku}, skipping product import"
