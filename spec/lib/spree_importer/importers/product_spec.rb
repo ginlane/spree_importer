@@ -16,6 +16,14 @@ describe SpreeImporter::Importers::Product do
     end
   end
 
+  it 'should set :batch_id on instances' do
+    base      = get_importer "gin-lane-product-list"
+    instances = base.import :product, {batch_id: 668}
+    instances.each do |i|
+      i.batch_id.should == 668
+    end
+  end
+
   it "should throw an exception for a badlly formatted date string" do
     csv      = CSV.parse "available_on\ninvalidate", headers: true
     headers  = { "available_on" => SpreeImporter::Field.new("available_on", headers: true, index: 0) }

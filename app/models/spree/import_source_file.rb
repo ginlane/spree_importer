@@ -73,8 +73,8 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
       importer.import :taxonomy
 
-      importer.import :product
-      importer.import :variant
+      importer.import :product, batch_id: id
+      importer.import :variant, batch_id: id
     end
 
     self.import_warnings  = importer.warnings
