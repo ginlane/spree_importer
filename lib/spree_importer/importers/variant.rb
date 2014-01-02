@@ -3,6 +3,8 @@ module SpreeImporter
     class Variant
       include SpreeImporter::Importers::Base
 
+      attr_accessor :batch_id
+
       row_based
 
       import_attributes :sku
@@ -24,6 +26,8 @@ module SpreeImporter
               end
             end
           end
+
+          instance.batch_id = self.batch_id # tie to a certain batch import
 
           instance.save! # create stock item
           stock_headers(headers, row) do |location, value|

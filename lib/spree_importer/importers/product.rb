@@ -3,6 +3,8 @@ module SpreeImporter
     class Product
       include SpreeImporter::Importers::Base
 
+      attr_accessor :batch_id
+
       row_based
 
       import_attributes :sku_pattern, :sku, :name, :price, :available_on,
@@ -18,6 +20,9 @@ module SpreeImporter
           master_sku             = val headers, row, "master_sku"
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
+
+          product.batch_id = self.batch_id # tie to a certain batch import
+          product.master.batch_id = self.batch_id
 
           if ::Spree::Variant.exists? sku: product.sku
             self.warnings << "Product exists for sku #{product.sku}, skipping product import"

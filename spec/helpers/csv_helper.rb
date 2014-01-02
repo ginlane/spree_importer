@@ -6,7 +6,9 @@ def get_importer(path)
 end
 
 def get_import_source_file(path)
-  Spree::ImportSourceFile.new data: File.read(csv_path(path))
+  isf = Spree::ImportSourceFile.new data: File.read(csv_path(path))
+  isf.id = 999
+  isf
 end
 
 def csv_path(path)
