@@ -20,6 +20,7 @@
       %th
         = h.raw
   - @resource.each do |row|
-    %tr{ class: cycle("even", "odd") }
+    - clazz = cycle('even', 'odd')
+    %tr{ class: clazz}
       - @resource.headers.each do |_,h|
         %td= truncate row[h.raw]
