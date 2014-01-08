@@ -6,6 +6,8 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   serialize :import_errors
   serialize :imported_records
 
+  has_many :products, foreign_key: :batch_id
+
   default_scope -> {
     order "created_at desc"
   }
