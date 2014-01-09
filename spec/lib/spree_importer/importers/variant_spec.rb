@@ -4,7 +4,6 @@ describe SpreeImporter::Importers::Variant do
   it 'should set :batch_id on instances' do
     import_source_file = get_import_source_file "gin-lane-variant-export"
     import_source_file.import!
-
     master         = Spree::Variant.find_by_sku "STN-FW13-DUMMY-NO-SIZE"
     master.batch_id.should == 999
     master.product.variants.each do |v|
@@ -20,6 +19,7 @@ describe SpreeImporter::Importers::Variant do
 
     variants        = variant.product.variants
 
+    # binding.pry
     variants.length.should eql 4
 
     counts          = variants.map(&:stock_items).flatten.map &:count_on_hand

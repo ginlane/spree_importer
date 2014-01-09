@@ -35,7 +35,7 @@ describe SpreeImporter::Importers::Product do
     importer.each_instance(headers.with_indifferent_access, csv){ }
     importer.errors.length.should eql 1
     importer.errors.first.row.should eql 1
-    importer.errors.first.column.should eql "available_on"
+    importer.errors.first.column.should eql "available-on"
   end
 
   context "importing the whole shebang" do
