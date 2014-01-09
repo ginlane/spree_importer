@@ -22,7 +22,7 @@ describe SpreeImporter::Importers::Product do
     instances.each do |i|
       i.batch_id.should == 668
       i.variants.each do |v|
-        v.batch_id.should == v.batch_id
+        v.batch_id.should == 668
       end
     end
   end
