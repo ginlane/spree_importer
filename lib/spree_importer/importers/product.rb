@@ -87,6 +87,7 @@ module SpreeImporter
 
         product.save!
         product.variants.each &:generate_sku!
+        product.variants.each{|v| v.batch_id = batch_id }
       end
     end
 

@@ -21,6 +21,9 @@ describe SpreeImporter::Importers::Product do
     instances = base.import :product, {batch_id: 668}
     instances.each do |i|
       i.batch_id.should == 668
+      i.variants.each do |v|
+        v.batch_id.should == v.batch_id
+      end
     end
   end
 
