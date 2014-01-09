@@ -34,7 +34,7 @@ module SpreeImporter
                                default_sku: "<master>-*",
                                google_client_id: "647628910149.apps.googleusercontent.com",
                                google_client_secret: "UIHqKxV1rYjN6BzaETmnY09_",
-                               field_space_delemiter: '-'
+                               field_space_delimiter: '-'
 
 
     def register_importer(key, klass)

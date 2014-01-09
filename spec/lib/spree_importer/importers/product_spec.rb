@@ -29,7 +29,7 @@ describe SpreeImporter::Importers::Product do
 
   it "should throw an exception for a badlly formatted date string" do
     csv      = CSV.parse "available_on\ninvalidate", headers: true
-    headers  = { "available_on" => SpreeImporter::Field.new("available_on", headers: true, index: 0) }
+    headers  = { "available-on" => SpreeImporter::Field.new("available-on", headers: true, index: 0) }
     importer = SpreeImporter::Importers::Product.new
 
     importer.each_instance(headers.with_indifferent_access, csv){ }

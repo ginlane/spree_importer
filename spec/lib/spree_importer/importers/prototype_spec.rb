@@ -4,10 +4,10 @@ describe SpreeImporter::Importers::Prototype do
 
   it "should set attributes on prototype from csv file" do
     FactoryGirl.create :option_type, name: "fnord", presentation: "FNORD"
-    FactoryGirl.create :property, name: "red_herring", presentation: "Red Herring"
+    FactoryGirl.create :property, name: "red-herring", presentation: "Red Herring"
 
     sizes        = FactoryGirl.create :option_type, name: "sizes", presentation: "Sizes"
-    style_number = FactoryGirl.create :property, name: "style_number", presentation: "Style Number"
+    style_number = FactoryGirl.create :property, name: "style-number", presentation: "Style Number"
 
     base         = get_importer "go-live-order-list"
 
@@ -15,7 +15,7 @@ describe SpreeImporter::Importers::Prototype do
     prototype    = prototypes.first
     prototype.name.should eql "necklace"
     prototype.properties.length.should eql 1
-    prototype.properties.first.name.should eql "style_number"
+    prototype.properties.first.name.should eql "style-number"
     prototype.properties.first.presentation.should eql "Style Number"
     prototype.option_types.length.should eql 1
     prototype.option_types.first.name.should eql "sizes"

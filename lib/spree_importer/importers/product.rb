@@ -21,6 +21,7 @@ module SpreeImporter
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
+
           product.batch_id        = batch_id
           product.master.batch_id = batch_id
 

@@ -4,7 +4,7 @@ describe SpreeImporter::Field do
   it "should sanitize fields with options in parens" do
     field = SpreeImporter::Field.new "Fnord Poops(23skidoo)"
     field.index.should be_nil
-    field.sanitized.should eql "fnord_poops"
+    field.sanitized.should eql "fnord-poops"
     field.raw.should == "Fnord Poops(23skidoo)"
     field.option.should == "23skidoo"
     field.option?.should be_true
@@ -12,7 +12,7 @@ describe SpreeImporter::Field do
 
   it "should just do normal shiz with normal shiz" do
     field = SpreeImporter::Field.new "Fnord Poops"
-    field.sanitized.should eql "fnord_poops"
+    field.sanitized.should eql "fnord-poops"
   end
 
   it "should have hash/uniq equality" do

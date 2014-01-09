@@ -44,8 +44,8 @@ module SpreeImporter
                     message = "Invalid date `#{value}`. Expected format: `#{format}`"
                     raise SpreeImporter::ImportException.new message,
                       row: row_index,
-                      column: headers[attr].raw,
-                      column_index: headers[attr].index
+                      column: field(headers, attr).raw,
+                      column_index: field(headers, attr).index
                   end
                 end
                 instance.send "#{attr}=", value

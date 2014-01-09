@@ -45,11 +45,17 @@
       end
 
       def val(headers, row, key)
+        key      = key.to_s.gsub '_', SpreeImporter.config.field_space_delimiter
         header   = headers[key]
         return nil if header.nil?
 
         v = row.field(header.index).try :strip
         v.blank?? nil : v
+      end
+
+      def field(headers, key)
+        key      = key.to_s.gsub '_', SpreeImporter.config.field_space_delimiter
+        headers[key]
       end
 
       def props_and_ops_from_headers(headers, row)
