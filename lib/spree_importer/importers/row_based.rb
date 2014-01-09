@@ -48,6 +48,7 @@ module SpreeImporter
                       column_index: field(headers, attr).index
                   end
                 end
+
                 instance.send "#{attr}=", value
               end
             end

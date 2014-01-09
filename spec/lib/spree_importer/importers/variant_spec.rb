@@ -19,7 +19,6 @@ describe SpreeImporter::Importers::Variant do
 
     variants        = variant.product.variants
 
-    # binding.pry
     variants.length.should eql 4
 
     counts          = variants.map(&:stock_items).flatten.map &:count_on_hand

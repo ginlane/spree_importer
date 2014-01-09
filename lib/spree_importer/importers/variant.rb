@@ -13,7 +13,7 @@ module SpreeImporter
       target ::Spree::Variant
 
       def import(headers, csv)
-        return unless headers["master_sku"]
+        return unless field headers, "master_sku"
 
         each_instance headers, csv do |instance, row|
           if instance.new_record?
