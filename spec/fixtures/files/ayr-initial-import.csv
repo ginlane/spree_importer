@@ -1,13 +1,1 @@
-[option](waist_size)Waist Size,[option](inseam)Inseam,[property](color)Color,[property](style)Style,sku,name,price,available_on,description,meta_description,meta_keywords
-"24,25,26,27,28,29,30,31,32
-
-",30,Jac's Jean,13942,13942-BLC11,The Skinny - Jac's Jean,$175,11/13/2013,pants,,
-"24,25,26,27,28,29,30,31,32
-
-",30,Little Fishes Wash,13942,13942-BLC13,The Skinny - Little Fishes Wash,$175,11/13/2013,pants,,
-"24,25,26,27,28,29,30,31,32
-
-",27,Dove Wings,13943,13943-BLC15,The Ciggi - Dove Wings,$165,11/13/2013,pants,,
-"24,25,26,27,28,29,30,31,32
-
-",27,Black G/D,13943,13943-BK207,The Ciggi - Black G/D,$165,12/9/2013,pants,,
+[option](waist_size)Waist Size,[option](inseam)Inseam,[property](color)Color,[property](style)Style,master sku,name,price,available on,description,meta description,meta keywords"24,25,26,27,28,29,30,31,32",30,Jac's Jean,13942,13942-BLC11,The Skinny - Jac's Jean,$175 ,11/13/13,pants,,"24,25,26,27,28,29,30,31,32",30,Little Fishes Wash,13942,13942-BLC13,The Skinny - Little Fishes Wash,$175 ,11/13/13,pants,,"24,25,26,27,28,29,30,31,32",27,Dove Wings,13943,13943-BLC15,The Ciggi - Dove Wings,$165 ,11/13/13,pants,,"24,25,26,27,28,29,30,31,32",27,Black G/D,13943,13943-BK207,The Ciggi - Black G/D,$165 ,12/9/13,pants,,
