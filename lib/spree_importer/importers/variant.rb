@@ -13,16 +13,20 @@ module SpreeImporter
       target ::Spree::Variant
 
       def import(headers, csv)
-        return unless field headers, "master_sku"
-
+        return unless field headers, "master-sku"
+        
         each_instance headers, csv do |instance, row|
           if instance.new_record?
             product          = master_variant(headers, row).product
             instance.product = product
-
             instance.option_types.each do |type|
-              if field = val(headers, row, type.name)
-                instance.option_values << type.option_values.select{|v| v.name == Field.new(field).key }.first
+              if f = val(headers, row, type.name)
+                ov = type.option_values.select{|v| v.name == Field.new(f).key }.first
+                if ov
+                  instance.option_values << ov 
+                else
+                  puts "no ov for #{row} for #{instance.product}"
+                end
               end
             end
           end
@@ -42,7 +46,7 @@ module SpreeImporter
       end
 
       def master_variant(headers, row)
-        target.find_by_sku val(headers, row, "master_sku")
+        target.find_by_sku val(headers, row, "master-sku")
       end
 
       # stock headers are in the format (location)quantity if there is

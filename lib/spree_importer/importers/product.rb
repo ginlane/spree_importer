@@ -14,7 +14,7 @@ module SpreeImporter
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
-          master_sku             = val headers, row, "master_sku"
+          master_sku             = val headers, row, "master-sku"
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
