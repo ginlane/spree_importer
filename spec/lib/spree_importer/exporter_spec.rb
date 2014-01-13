@@ -20,8 +20,7 @@ describe SpreeImporter::Exporter do
                 FactoryGirl.build(:option_value, position: 2, name: "Skidoo", presentation: "S")
              ])
     @product.set_property "fnordprop", "fliff"
-    @headers = %w| sku_pattern sku name price available_on description meta_description meta_keywords cost_price
-                   [option](foo-size)Size [option](fnord)Gregg [property]fnordprop category |
+    @headers = ['sku pattern', 'sku', 'name', 'price', 'available on', 'description', 'meta description', 'meta keywords', 'cost price','[option](foo-size)Size', '[option](fnord)Gregg', '[property]fnordprop', 'category']
   end
 
   it "should generate headers" do
@@ -48,7 +47,8 @@ describe SpreeImporter::Exporter do
     [ Spree::Variant, Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
 
     importer = Spree::ImportSourceFile.new data: csv_text
-
+    puts csv_text
+    
     importer.import!
 
     product = Spree::Product.first
@@ -71,6 +71,7 @@ describe SpreeImporter::Exporter do
     dummeh   = SpreeImporter::DummyProduct.new
     exporter = SpreeImporter::Exporter.new
     csv_text = exporter.export search: :dummy
+
     csv      = CSV.new csv_text, headers: true
     rows     = csv.read
     csv.rewind
@@ -80,9 +81,11 @@ describe SpreeImporter::Exporter do
     rows.length.should eql 1
     row.headers.length.should eql 12
 
-    %w[ sku name price description meta_description
-        meta_keywords cost_price ].each do |header|
-      row[header].should eql dummeh.send(header).to_s
+    [ 'sku', 'name', 'price', 'description', 'meta description',
+        'meta keywords', 'cost price' ].each do |header|
+      method = header.parameterize SpreeImporter.config.field_space_delimiter
+      method = method.underscore
+      row[header].should eql dummeh.send(method).to_s
     end
 
     row["[option](option_type)Option Type"].should eql "(option1)O1,(option2)O2"
@@ -115,8 +118,8 @@ describe SpreeImporter::Exporter do
 
     first_row = csv.gets
 
-    first_row["sku_pattern"].should eql @product.sku_pattern
-    first_row["master_sku"].should_not be_nil
+    first_row["sku pattern"].should eql @product.sku_pattern
+    first_row["master sku"].should_not be_nil
     first_row["(Default)quantity"].should eql "1"
   end
 

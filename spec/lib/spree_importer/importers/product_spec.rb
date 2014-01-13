@@ -1,6 +1,17 @@
 require 'spec_helper'
 
 describe SpreeImporter::Importers::Product do
+
+  it "should import csv with multiple lines sharing master sku but with custom variant skus as single product" do
+    [ Spree::Variant, Spree::Product, Spree::Property, Spree::OptionType ].each &:destroy_all
+    
+    import_source_file         = get_import_source_file "single-product-custom-sku"
+    import_source_file.import!
+    
+    Spree::Product.count.should eq(1)
+    # Spree::Product.last.variants.count.should eq import_source_file.imported_records['variant'] 
+  end  
+
   it "should target Spree::Products" do
     @importer = SpreeImporter::Importers::Product.new
     @importer.target.should == Spree::Product
