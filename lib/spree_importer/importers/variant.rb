@@ -22,11 +22,9 @@ module SpreeImporter
             instance.option_types.each do |type|
               if f = val(headers, row, type.name)
                 ov = type.option_values.select{|v| v.name == Field.new(f).key }.first
-                if ov
-                  instance.option_values << ov 
-                else
-                  puts "no ov for #{row} for #{instance.product}"
-                end
+              
+                # there's issue where where ov doesnt exist 
+                instance.option_values << ov if ov
               end
             end
           end

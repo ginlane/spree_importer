@@ -9,6 +9,9 @@ describe SpreeImporter::Importers::Product do
     import_source_file.import!
     
     Spree::Product.count.should eq(1)
+    # importer generates a new variant using sku-pattern even when importing custom sku variants
+    # causes 1 extra variant bug
+
     # Spree::Product.last.variants.count.should eq import_source_file.imported_records['variant'] 
   end  
 
