@@ -12,7 +12,7 @@ module SpreeImporter
 
         taxonomies   = [ ]
 
-        pbar = ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+        pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
 
         csv.each do |row|
           pbar.inc

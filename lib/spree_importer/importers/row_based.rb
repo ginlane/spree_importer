@@ -29,7 +29,7 @@ module SpreeImporter
         instances = [ ]
         row_index = 0
 
-        pbar = ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+        pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
         csv.each do |row|
           row_index += 1
           pbar.inc
