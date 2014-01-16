@@ -14,7 +14,7 @@ module SpreeImporter
       def append(row, product)
         headers(product).each do |h|
           m = header_to_method(h)
-
+          
           next unless product.respond_to? m
 
           if date_column? m

@@ -9,5 +9,7 @@ gem "sass"
 gem "cancan", "~>1.6.10"
 
 gem "pry"
+gem "pry-debugger"
 gem "binding_of_caller"
+gem 'awesome_print'
 gemspec
