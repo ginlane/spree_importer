@@ -14,7 +14,7 @@ module SpreeImporter
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
-          master_sku             = val headers, row, "master-sku"
+          master_sku             = val headers, row, :master_sku
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
@@ -25,8 +25,8 @@ module SpreeImporter
             next
           end
 
-          category    = Field.new(val(headers, row, "category")).sanitized
-          shipping    = val headers, row, "shipping"
+          category    = Field.new(val(headers, row, :category)).sanitized
+          shipping    = val headers, row, :shipping
 
           if shipping.nil?
             shipping = ::Spree::ShippingCategory.find_by_name "Default"
@@ -41,7 +41,7 @@ module SpreeImporter
 
           setup_variants product,   option_types, headers, row
           setup_properties product, properties, headers, row
-          setup_taxonomies product, val(headers, row, "category")
+          setup_taxonomies product, val(headers, row, :category)
 
           product.save!
         end
@@ -82,7 +82,7 @@ module SpreeImporter
         end
 
         product.save!
-        if val headers, row, "sku"
+        if val headers, row, :sku
           product.variants.destroy_all
         else
           product.variants.each &:generate_sku!
@@ -91,8 +91,6 @@ module SpreeImporter
         product.master.update_attribute :batch_id, batch_id
       end
     end
-
-
-
+    
   end
 end
