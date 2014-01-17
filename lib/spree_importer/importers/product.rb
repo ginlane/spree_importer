@@ -21,7 +21,7 @@ module SpreeImporter
           product.batch_id        = batch_id
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
-            self.warnings << "Product exists for sku #{product.sku}, skipping product import"
+            # self.warnings << "Product exists for sku #{product.sku}, skipping product import"
             next
           end
 
@@ -82,8 +82,12 @@ module SpreeImporter
         end
 
         product.save!
-        product.variants.each &:generate_sku!
-        product.variants.each{|v| v.batch_id = batch_id }
+        if val headers, row, "sku"
+          product.variants.destroy_all
+        else
+          product.variants.each &:generate_sku!
+          product.variants.each{|v| v.batch_id = batch_id }
+        end
         product.master.update_attribute :batch_id, batch_id
       end
     end
