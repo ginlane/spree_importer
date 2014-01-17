@@ -44,7 +44,7 @@ module SpreeImporter
       end
 
       def master_variant(headers, row)
-        target.find_by_sku val(headers, row, "master-sku")
+        target.find_by_sku val(headers, row, :master_sku)
       end
 
       # stock headers are in the format (location)quantity if there is
