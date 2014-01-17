@@ -6,6 +6,10 @@
         nil
       end
 
+      def header_to_method(h)
+        h.parameterize(SpreeImporter.config.field_space_delimiter).underscore        
+      end
+
       module ClassMethods
         def target(klass)
           define_method :target do

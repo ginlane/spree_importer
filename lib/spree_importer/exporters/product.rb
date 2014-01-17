@@ -8,17 +8,19 @@ module SpreeImporter
 
       # static
       def headers(product_or_variant)
-        %w[ sku_pattern sku name price available_on description meta_description meta_keywords cost_price ]
+        ['sku pattern', 'sku', 'name', 'price', 'available on', 'description', 'meta description', 'meta keywords', 'cost price']
       end
 
       def append(row, product)
         headers(product).each do |h|
-          next unless product.respond_to? h
+          m = header_to_method(h)
+          
+          next unless product.respond_to? m
 
-          if date_column? h
-            row[h] = product.send(h).try :strftime, SpreeImporter.config.date_format
+          if date_column? m
+            row[h] = product.send(m).try :strftime, SpreeImporter.config.date_format
           else
-            row[h] = product.send h
+            row[h] = product.send m
           end
         end
       end

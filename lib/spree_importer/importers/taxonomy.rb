@@ -12,8 +12,10 @@ module SpreeImporter
 
         taxonomies   = [ ]
 
-        csv.each do |row|
+        pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
 
+        csv.each do |row|
+          pbar.inc
           if value = val(headers, row, taxon_header.key)
 
             value.split(delimiter).each do |heirarchy|
@@ -26,13 +28,12 @@ module SpreeImporter
                 sub_taxon
               end
 
-              taxonomies << taxonomy
+              taxonomies << taxonomy 
             end
           end
-
         end
-
         taxonomies.uniq
+        pbar.finish        
       end
 
       def delimiter
