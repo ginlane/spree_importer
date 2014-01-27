@@ -13,8 +13,8 @@ module SpreeImporter
       target ::Spree::Variant
 
       def import(headers, csv)
-        return unless field headers, "master-sku"
-        
+        return unless field headers, "quantity"
+        puts "importing"
         each_instance headers, csv do |instance, row|
           if instance.new_record?
             product          = master_variant(headers, row).product

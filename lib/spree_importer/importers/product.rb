@@ -65,7 +65,6 @@ module SpreeImporter
         end
       end
 
-
       def setup_variants(product, option_types, headers, row)
         option_values_hash = { }
 
@@ -86,8 +85,9 @@ module SpreeImporter
           product.variants.destroy_all
         else
           product.variants.each &:generate_sku!
-          product.variants.each{|v| v.batch_id = batch_id }
         end
+
+        product.variants.each{|v| v.update_attribute :batch_id, batch_id }        
         product.master.update_attribute :batch_id, batch_id
       end
     end
