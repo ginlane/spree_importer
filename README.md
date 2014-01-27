@@ -1,7 +1,7 @@
 SpreeImporter
 =============
 
-Introduction goes here.
+An importer for CSV files to Spree data.
 
 Installation
 ------------
@@ -9,7 +9,7 @@ Installation
 Add spree_importer to your Gemfile:
 
 ```ruby
-gem 'spree_importer'
+gem 'spree_importer', :git => 'git://github.com/ginlane/spree_importer.git', :branch => 'master'
 ```
 
 Bundle your dependencies and run the installation generator:
@@ -37,7 +37,7 @@ Simply add this require statement to your spec_helper:
 require 'spree_importer/factories'
 ```
 
-Copyright (c) 2013 [name of extension creator], released under the New BSD License
+Copyright (c) 2013 Gin Lane, released under the New BSD License
 =======
 spree_importer
 ==============
