@@ -1,6 +1,14 @@
 require 'spec_helper'
 
 describe SpreeImporter::Importers::Variant do
+
+
+  it "should import per variant with stock" do
+    import_source_file = get_import_source_file "import-reformation-slice"
+    import_source_file.import!
+    Spree::StockLocation.count.should == 2
+  end
+  
   it 'should set :batch_id on instances' do
     import_source_file = get_import_source_file "gin-lane-variant-export"
     import_source_file.import!
@@ -25,7 +33,6 @@ describe SpreeImporter::Importers::Variant do
 
     counts          = variants.map(&:stock_items).flatten.map &:count_on_hand
     expected_counts = [ 0, 1, 32, 3 ]
-
     (expected_counts & counts).should eql expected_counts
   end
 
@@ -45,4 +52,6 @@ describe SpreeImporter::Importers::Variant do
     var_check          = Spree::Variant.find_by_sku var_sku
     var_check.option_values.to_a.should eql opt_vals
   end
+
+
 end
