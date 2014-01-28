@@ -13,9 +13,10 @@ module SpreeImporter
       target ::Spree::Variant
 
       def import(headers, csv)
-        return unless field headers, "quantity"
-        puts "importing"
         each_instance headers, csv do |instance, row|
+          # puts val(headers, row, :sku) + " => " + val(headers, row, :master_sku)
+          next if val(headers, row, :sku) == val(headers, row, :master_sku)
+
           if instance.new_record?
             product          = master_variant(headers, row).product
             instance.product = product
@@ -54,7 +55,12 @@ module SpreeImporter
       def stock_headers(headers, row)
         headers.values.each do |header|
           if header =~ /quantity/
-            location = locations[header.option || "Default"]
+            stock_name = header.option || "Default"
+
+            locations[stock_name] ||= Spree::StockLocation.create name: stock_name, active: true
+            
+            location = locations[stock_name]
+
             yield location, val(headers, row, header.key) unless location.nil?
           end
         end
