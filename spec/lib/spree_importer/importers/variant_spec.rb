@@ -6,7 +6,7 @@ describe SpreeImporter::Importers::Variant do
   it "should import per variant with stock" do
     import_source_file = get_import_source_file "import-reformation-slice"
     import_source_file.import!
-    ap import_source_file
+    Spree::StockLocation.count.should == 2
   end
   
   it 'should set :batch_id on instances' do
@@ -33,7 +33,6 @@ describe SpreeImporter::Importers::Variant do
 
     counts          = variants.map(&:stock_items).flatten.map &:count_on_hand
     expected_counts = [ 0, 1, 32, 3 ]
-    ap counts
     (expected_counts & counts).should eql expected_counts
   end
 
