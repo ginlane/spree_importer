@@ -36,7 +36,7 @@ module SpreeImporter
         when :dummy
           block.call SpreeImporter::DummyProduct.new
         else
-          Spree::Product.ransack(search).result.group_by_products_id.find_each &block
+          Spree::Product.ransack(search).result.find_each &block
         end
       end
 
