@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_importer'
-  s.version     = '0.1'
+  s.version     = '0.2'
   s.summary     = 'SUMMARY YES'
   s.description = 'I AM A DESCRIPTION AND I AM AWESOME'
   s.required_ruby_version = '>= 1.9.3'
