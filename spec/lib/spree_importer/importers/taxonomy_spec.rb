@@ -14,4 +14,13 @@ describe SpreeImporter::Importers::Variant do
     names = %w[ SUBHAT UBERHAT ]
     (subs.map(&:name) & names).should eql names
   end
+  it "should assign taxonomy_id" do
+    Spree::Taxonomy.count.should eql 4
+    hatz = Spree::Taxonomy.find_by_name "Hat"
+    hatz.root.name.should == "Hat"
+    subs  = hatz.root.children
+    subs.each do |t|
+      t.taxonomy_id.should == hatz.id
+    end
+  end  
 end
