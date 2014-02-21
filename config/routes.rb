@@ -5,10 +5,12 @@ Spree::Core::Engine.add_routes do
   namespace :admin do
     resources :imports
     resources :import_source_files do
-      put  :edit_in_google
+      get  :edit_in_google
       post :create_from_url, on: :collection
-      post :import_from_google
+      get :import_from_google
       get  :show_in_google
+      get  :export_to_google
+      get :create_google, on: :collection
     end
     get "/auth/check_google" => "oauth#check_google", as: :check_google
     get "/auth/google" => "oauth#google", as: :google_auth
