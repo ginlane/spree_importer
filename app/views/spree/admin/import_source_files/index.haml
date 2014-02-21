@@ -9,23 +9,25 @@
 
 %table.index
   %tr.odd
-    %th
-      Edit
-    %th
-      Import from Google
-    %th
-      Upload Date
-    %th
-      File Name
-    %th
-      Rows
+    %th #
+    %th File Name  
+    %th Edit
+    %th Import
+    %th Export
+    %th="#Products/#Variants"
 
   - @collection.each do |import_source_file|
     %tr{ class: cycle("even", "odd") }
-      %td= button_to "Edit", admin_import_source_file_edit_in_google_path(import_source_file), method: :put, form: { target: "_blank" }
+      %td= import_source_file.id
+      %td= link_to import_source_file.file_name, admin_import_source_file_path(import_source_file) 
+      %td
+        = button_to "Edit", admin_import_source_file_edit_in_google_path(import_source_file), method: :put, form: { target: "_blank" }
       %td
         - unless import_source_file.spreadsheet_url.nil?
-          = button_to "Import", admin_import_source_file_import_from_google_path(import_source_file), method: :post
-      %td= link_to import_source_file.created_at.strftime("%m/%d/%Y %H:%M"), admin_import_source_file_path(import_source_file)
-      %td= import_source_file.file_name
-      %td= import_source_file.rows
+          = button_to "Import", admin_import_source_file_import_from_google_path(import_source_file), method: :post, style: 'display-inline'
+        - else
+          = button_to "Import", admin_import_source_file_path(import_source_file), method: :put,style: 'display-inline'
+      %td
+        = button_to "Export", admin_import_source_file_export_to_google_path(import_source_file), form: { target: "_blank" }
+      %td
+        = link_to "#{import_source_file.products.count}/#{import_source_file.variants.count}", admin_products_path(q:{batch_id_eq:import_source_file.id})
