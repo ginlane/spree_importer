@@ -15,14 +15,14 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def create_from_url
-    human_url = sanitized[:import_source_file][:spreadsheet_url]
+    ss_key = sanitized[:spreadsheet_key]
 
-    if @source_file = Spree::ImportSourceFile.find_by_spreadsheet_url(human_url)
+    if @source_file = Spree::ImportSourceFile.find_by_spreadsheet_key(ss_key)
       render json: { redirect:  admin_import_source_file_url(@source_file) } and return
     end
 
     @return_path = admin_import_source_files_url # in case google bombs out.
-    @source_file = Spree::ImportSourceFile.new spreadsheet_url: human_url
+    @source_file = Spree::ImportSourceFile.new spreadsheet_key: ss_key
     @source_file.import_from_google! spree_current_user.google_token
 
     render_source_file
@@ -39,8 +39,11 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
           file_name: file.original_filename
       })
 
-    if @source_file.save
-      @source_file.import!
+    @source_file.save
+    @source_file.import!
+    @source_file.save
+    
+    if @source_file.errors.blank?
       render_source_file
     else
       render json: @source_file.errors, status: :unprocessable_entity
@@ -49,8 +52,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def import_from_google
     raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
-
-    resource.import_from_google! spree_current_user.google_token
+    resource.import_from_google! spree_current_user.google_token, params[:worksheet]
     redirect_to admin_import_source_files_path
   end
 
@@ -72,16 +74,63 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     end
   end
 
+  def create_google
+    raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
+    session   = GoogleDrive.login_with_oauth spree_current_user.google_token
+    
+    next_id = Spree::ImportSourceFile.last.try(:id) || 0
+    next_id += 1
+    ss = session.create_spreadsheet("#{Spree::Config[:site_name]} Batch Import ##{next_id}")
+    ws = ss.worksheets.first
+    ws.title = 'Initial'
+
+    columns = ['master sku', 'name', 'description', 'price', 'available on', 'meta keywords', 'meta description', 'category', '[option](color)Color', '[option](size)Size', '[property](material)Material']
+
+    columns.each_with_index do |c,i|
+      ws[1,i+1] = c
+    end
+
+    # # ws = resource.flat_worksheet spree_current_user.google_token
+    # SpreeImporter::Exporter.new(search: :dummy, target: :product).each_with_index do |r,y| 
+    #   CSV.parse(r).first.each_with_index do |c,x| 
+    #     ws[(y+1),(x+1)] = c
+    #   end
+    # end
+
+    ws.save
+
+    isf = Spree::ImportSourceFile.create spreadsheet_key: ss.key
+    # isf.import_from_google! spree_current_user.google_token
+
+    redirect_to ss.human_url
+  end
+
+  def export_to_google
+    raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
+
+    ws = resource.flat_worksheet spree_current_user.google_token
+    SpreeImporter::Exporter.new(search: {q:{batch_id_eq:resource.id}}, target: :variant).each_with_index do |r,y| 
+      CSV.parse(r).first.each_with_index do |c,x| 
+        ws[(y+1),(x+1)] = c
+      end
+    end
+    ws.save 
+    redirect_to :back
+  end
+
   def update
     source_file = Spree::ImportSourceFile.find params[:id]
     source_file.import!
     render json: true
   end
 
-  def index
-    respond_with @collection
-  end
+  # def index
+  #   respond_with @collection
+  # end
 
+  def collection
+    super.includes({products: [:taxons, {master: :default_price}]}, :variants)
+  end
   protected
 
   attr_accessor :sanitized
@@ -100,7 +149,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def sanitized
-    @sanitized ||= params.slice :import_source_file, :import
+    @sanitized ||= params.require(:import_source_file).permit(:data, :spreadsheet_key)
   end
 
   def render_source_file

@@ -21,13 +21,32 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     importer.csv.each { |*args| yield *args }
   end
 
-  def import_from_google!(token)
-    set_feed_url_from_human_url if spreadsheet_feed_url.nil?
-
+  def import_from_google!(token, worksheet_title=nil)
     session   = GoogleDrive.login_with_oauth token
-    ss        = GoogleDrive::Spreadsheet.new session, spreadsheet_feed_url
-    self.data = ss.export_as_string "csv"
+    ss        = session.spreadsheet_by_key spreadsheet_key
+    ws        = ss.worksheet_by_title(worksheet_title) || ss.worksheets.first
+    wid       = File.basename(ws.worksheet_feed_url)
+    gid       = wid
+    csv       = ss.export_as_string :csv, ss.worksheets.find_index {|w|w.title == ws.title}
+
+    self.data = csv.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").encode("UTF-8")
+    self.file_name = "#{ss.title} - #{ws.title}"
+    self.spreadsheet_url = ss.human_url
+    save
+
+    # importer.import :variant, batch_id: id
+
     import!
+  end
+
+  def google_spreadsheet(token)
+    session   = GoogleDrive.login_with_oauth token
+    session.spreadsheet_by_key spreadsheet_key
+  end
+
+  def flat_worksheet(token)
+    ss = google_spreadsheet(token)
+    ss.worksheet_by_title('Flat') || ss.add_worksheet('Flat')
   end
 
   def create_in_google!(token)
@@ -51,7 +70,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
     worksheet.save
     update_attribute :spreadsheet_url, ss.human_url
-    update_attribute :spreadsheet_feed_url, ss.worksheets_feed_url
+    update_attribute :spreadsheet_key, ss.key
   end
 
   def headers
@@ -102,11 +121,11 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   end
 
   protected
-  def set_feed_url_from_human_url
-    return if spreadsheet_url.nil?
+  # def set_feed_url_from_human_url
+  #   return if spreadsheet_url.nil?
+  #   parsed                    = Rack::Utils.parse_query spreadsheet_url.split("?").last
 
-    parsed                    = Rack::Utils.parse_query spreadsheet_url.split("?").last
-    key                       = parsed["key"]
-    self.spreadsheet_feed_url = "https://spreadsheets.google.com/feeds/worksheets/#{key}/private/"
-  end
+  #   ap parsed
+  #   self.spreadsheet_key =  parsed["key"]
+  # end
 end
