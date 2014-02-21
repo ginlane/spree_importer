@@ -17,7 +17,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   def create_from_url
     ss_key = sanitized[:spreadsheet_key]
 
-    if @source_file = Spree::ImportSourceFile.find_by_spreadsheet_key(ss_key)
+    if @source_file = Spree::ImportSourceFile.find_by(spreadsheet_key: ss_key)
       render json: { redirect:  admin_import_source_file_url(@source_file) } and return
     end
 
@@ -32,7 +32,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def create
-    file         = sanitized[:import_source_file][:data]
+    file         = sanitized[:data]
     @source_file = Spree::ImportSourceFile.new({
           data: file.read,
           mime: "text/csv",

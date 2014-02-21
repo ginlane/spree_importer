@@ -28,7 +28,7 @@ describe Spree::Admin::ImportSourceFilesController do
     Spree::ImportSourceFile.any_instance.expects(:import_from_google!).with "TOKEN"
     controller.spree_current_user.stubs(:google_token).returns "TOKEN"
     spree_post :create_from_url, import_source_file: {
-      spreadsheet_url: "http://google.stuff?key=KEY"
+      spreadsheet_key: "KEY"
     }
   end
 
