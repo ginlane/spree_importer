@@ -103,7 +103,7 @@
     ajaxOpts =
       type: "post"
       dataType: "json"
-      data: { "import_source_file[spreadsheet_url]": $("#human_url").val() }
+      data: { "import_source_file[spreadsheet_key]": $("#human_url").val() }
       url: $("#import_from_url").attr("action")
       success: (response) =>
         if response.redirect
