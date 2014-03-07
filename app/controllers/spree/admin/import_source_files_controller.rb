@@ -109,7 +109,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
 
     ws = resource.flat_worksheet spree_current_user.google_token
-    SpreeImporter::Exporter.new(search: {q:{batch_id_eq:resource.id}}, target: :variant).each_with_index do |r,y| 
+    SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).each_with_index do |r,y| 
       CSV.parse(r).first.each_with_index do |c,x| 
         ws[(y+1),(x+1)] = c
       end
