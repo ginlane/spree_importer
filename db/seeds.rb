@@ -1,6 +1,6 @@
 
-Spree::StockLocation.create(name: "Default")    unless Spree::StockLocation.any?
-Spree::ShippingCategory.create(name: "Default") unless Spree::ShippingCategory.any?
+Spree::StockLocation.where(name: "Default").first_or_create   
+Spree::ShippingCategory.where(name: "Default").first_or_create
 
 import_path = "#{Rails.root}/db/import.csv"
 if File.exist?(import_path)
