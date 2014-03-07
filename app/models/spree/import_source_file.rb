@@ -1,6 +1,6 @@
 class Spree::ImportSourceFile < ActiveRecord::Base
   include Enumerable
-  validates_uniqueness_of :data, allow_nil: true
+
 
   serialize :import_warnings
   serialize :import_errors
