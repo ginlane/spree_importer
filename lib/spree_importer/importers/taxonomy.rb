@@ -16,7 +16,7 @@ module SpreeImporter
         end
         csv.each do |row|
           pbar.inc if SpreeImporter.config.progress_logging_enabled
-          if value = val(headers, row, taxon_header.key)
+          if value = row[taxon_header.key]
             value.split(delimiter).each do |heirarchy|
               heirarchy = heirarchy.split(sep).map &:strip
               taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift
