@@ -124,14 +124,6 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     @importer
   end
 
-  protected
-  # def set_feed_url_from_human_url
-  #   return if spreadsheet_url.nil?
-  #   parsed                    = Rack::Utils.parse_query spreadsheet_url.split("?").last
-
-  #   ap parsed
-  #   self.spreadsheet_key =  parsed["key"]
-  # end
   GID_TABLE = {
     od6: 0, 
     od7: 1, 
