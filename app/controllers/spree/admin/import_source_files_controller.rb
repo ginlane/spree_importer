@@ -84,19 +84,6 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     ws = ss.worksheets.first
     ws.title = 'Initial'
 
-    columns = ['master sku', 'name', 'description', 'price', 'available on', 'meta keywords', 'meta description', 'category', '[option](color)Color', '[option](size)Size', '[property](material)Material']
-
-    columns.each_with_index do |c,i|
-      ws[1,i+1] = c
-    end
-
-    # # ws = resource.flat_worksheet spree_current_user.google_token
-    # SpreeImporter::Exporter.new(search: :dummy, target: :product).each_with_index do |r,y| 
-    #   CSV.parse(r).first.each_with_index do |c,x| 
-    #     ws[(y+1),(x+1)] = c
-    #   end
-    # end
-
     ws.save
 
     isf = Spree::ImportSourceFile.create spreadsheet_key: ss.key
@@ -124,16 +111,13 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     render json: true
   end
 
-  # def index
-  #   respond_with @collection
-  # end
 
   def collection
     super.includes({products: [:taxons, {master: :default_price}]}, :variants)
   end
+
   protected
 
-  attr_accessor :sanitized
 
   def google_authenticate
     session[:google_oauth_return_path] = return_path || request.referer
@@ -146,10 +130,6 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def return_path
     @return_path
-  end
-
-  def sanitized
-    @sanitized ||= params.require(:import_source_file).permit(:data, :spreadsheet_key)
   end
 
   def render_source_file
