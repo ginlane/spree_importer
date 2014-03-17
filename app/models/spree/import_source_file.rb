@@ -9,7 +9,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   has_many :products, foreign_key: :batch_id
   has_many :variants, foreign_key: :batch_id
 
-  has_many :taxons, through: :products, group: :taxon_id
+  has_many :taxons, -> { group(:taxon_id) }, through: :products
 
   default_scope -> {
     order "created_at desc"
@@ -113,8 +113,6 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.rows             = 0
   ensure
     save
-    puts "saved!"
-    ap self
   end
 
   def importer(force = false)
