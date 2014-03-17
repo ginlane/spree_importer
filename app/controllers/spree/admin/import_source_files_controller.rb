@@ -117,6 +117,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   protected
 
+  attr_accessor :sanitized
 
   def google_authenticate
     session[:google_oauth_return_path] = return_path || request.referer
@@ -129,6 +130,10 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def return_path
     @return_path
+  end
+
+  def sanitized
+    @sanitized ||= params.require(:import_source_file).permit(:data, :spreadsheet_key)
   end
 
   def render_source_file
