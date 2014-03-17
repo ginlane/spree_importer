@@ -31,14 +31,14 @@ module SpreeImporter
           end
 
           instance.batch_id = batch_id
-
           instance.save! # create stock item
+          
           stock_headers(headers, row) do |location, value|
             if value.nil?
               instance.destroy
             else
-              stock_item = location.stock_items.where(variant_id: instance.id).first
-              stock_item.update_column :count_on_hand, value
+              item = location.stock_items.find_by(variant_id: instance.id)
+              item.set_count_on_hand(value) if item.respond_to? :set_count_on_hand
             end
           end
         end
