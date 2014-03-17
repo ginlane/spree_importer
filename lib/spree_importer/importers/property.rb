@@ -8,7 +8,7 @@ module SpreeImporter
       attr_accessor :property_name
 
       def import(headers, csv)
-        property_header       = headers[property_name.parameterize]
+        property_header       = headers[property_name]
         names                 = [ property_header.option, property_header.sanitized ].compact
         property              = fetch_instance name: names
         property.name         = property_header.option || property_header.sanitized
