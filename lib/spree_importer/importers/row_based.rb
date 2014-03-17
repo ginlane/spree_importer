@@ -29,10 +29,12 @@ module SpreeImporter
         instances = [ ]
         row_index = 0
 
-        pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+        if SpreeImporter.config.progress_logging_enabled
+          pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+        end
         csv.each do |row|
           row_index += 1
-          pbar.inc
+          pbar.inc if SpreeImporter.config.progress_logging_enabled
           begin
             instance = fetch_instance headers, row
             import_attributes.each do |attr|
@@ -51,7 +53,6 @@ module SpreeImporter
                       column_index: field(headers, attr).index
                   end
                 end
-
                 instance.send "#{attr}=", value
               end
             end
@@ -63,11 +64,12 @@ module SpreeImporter
             errors << e
           end
         end
-        pbar.finish
+        pbar.finish if SpreeImporter.config.progress_logging_enabled
         instances
       end
 
       def fetch_instance(headers, row)
+        return find_uniq(headers,row) if self.respond_to? :find_uniq
         return target.new if unique_keys.nil?
 
         params = unique_keys.inject({ }) do |hash, key|
