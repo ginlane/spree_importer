@@ -9,6 +9,8 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   has_many :products, foreign_key: :batch_id
   has_many :variants, foreign_key: :batch_id
 
+  has_many :taxons, through: :products, group: :taxon_id
+
   default_scope -> {
     order "created_at desc"
   }
@@ -21,22 +23,24 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     importer.csv.each { |*args| yield *args }
   end
 
-  def import_from_google!(token, worksheet_title=nil)
+  def import_from_google!(token, worksheet_title='Initial')
     session   = GoogleDrive.login_with_oauth token
     ss        = session.spreadsheet_by_key spreadsheet_key
-    ws        = ss.worksheet_by_title(worksheet_title) || ss.worksheets.first
+    ws        = ss.worksheet_by_title(worksheet_title)
     wid       = File.basename(ws.worksheet_feed_url)
-    gid       = wid
-    csv       = ss.export_as_string :csv, ss.worksheets.find_index {|w|w.title == ws.title}
+    gid       = GID_TABLE[wid.to_sym]
+    csv       = ss.export_as_string :csv, gid #ss.worksheets.find_index {|w|w.title == ws.title}
 
     self.data = csv.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").encode("UTF-8")
     self.file_name = "#{ss.title} - #{ws.title}"
     self.spreadsheet_url = ss.human_url
     save
 
-    # importer.import :variant, batch_id: id
-
-    import!
+    if worksheet_title == 'Flat'
+      importer.import :variant, batch_id: id
+    else
+      import!
+    end
   end
 
   def google_spreadsheet(token)
@@ -108,7 +112,9 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.imported_records = { }
     self.rows             = 0
   ensure
-    save!
+    save
+    puts "saved!"
+    ap self
   end
 
   def importer(force = false)
@@ -128,4 +134,106 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   #   ap parsed
   #   self.spreadsheet_key =  parsed["key"]
   # end
+  GID_TABLE = {
+    od6: 0, 
+    od7: 1, 
+    od4: 2, 
+    od5: 3, 
+    oda: 4, 
+    odb: 5, 
+    od8: 6, 
+    od9: 7, 
+    ocy: 8, 
+    ocz: 9, 
+    ocw: 10, 
+    ocx: 11, 
+    od2: 12, 
+    od3: 13, 
+    od0: 14, 
+    od1: 15, 
+    ocq: 16, 
+    ocr: 17, 
+    oco: 18, 
+    ocp: 19, 
+    ocu: 20, 
+    ocv: 21, 
+    ocs: 22, 
+    oct: 23, 
+    oci: 24, 
+    ocj: 25, 
+    ocg: 26, 
+    och: 27, 
+    ocm: 28, 
+    ocn: 29, 
+    ock: 30, 
+    ocl: 31, 
+    oe2: 32, 
+    oe3: 33, 
+    oe0: 34, 
+    oe1: 35, 
+    oe6: 36, 
+    oe7: 37, 
+    oe4: 38, 
+    oe5: 39, 
+    odu: 40, 
+    odv: 41, 
+    ods: 42, 
+    odt: 43, 
+    ody: 44, 
+    odz: 45, 
+    odw: 46, 
+    odx: 47, 
+    odm: 48, 
+    odn: 49, 
+    odk: 50, 
+    odl: 51, 
+    odq: 52, 
+    odr: 53, 
+    odo: 54, 
+    odp: 55, 
+    ode: 56, 
+    odf: 57, 
+    odc: 58, 
+    odd: 59, 
+    odi: 60, 
+    odj: 61, 
+    odg: 62, 
+    odh: 63, 
+    obe: 64, 
+    obf: 65, 
+    obc: 66, 
+    obd: 67, 
+    obi: 68, 
+    obj: 69, 
+    obg: 70, 
+    obh: 71, 
+    ob6: 72, 
+    ob7: 73, 
+    ob4: 74, 
+    ob5: 75, 
+    oba: 76, 
+    obb: 77, 
+    ob8: 78, 
+    ob9: 79, 
+    oay: 80, 
+    oaz: 81, 
+    oaw: 82, 
+    oax: 83, 
+    ob2: 84, 
+    ob3: 85, 
+    ob0: 86, 
+    ob1: 87, 
+    oaq: 88, 
+    oar: 89, 
+    oao: 90, 
+    oap: 91, 
+    oau: 92, 
+    oav: 93, 
+    oas: 94, 
+    oat: 95, 
+    oca: 96, 
+    ocb: 97, 
+    oc8: 98, 
+    oc9: 99
+  }
 end
