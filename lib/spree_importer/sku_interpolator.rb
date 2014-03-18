@@ -20,8 +20,6 @@ module SpreeImporter
       if @pattern =~ /\*$/
         @pattern.chop!
         @wildcard = true
-        @last_sep = @pattern.last
-        @pattern.chop!
       end
 
       @structure = @pattern.scan(/<([a-z_]+)>/).flatten
@@ -46,7 +44,6 @@ module SpreeImporter
 
       if @wildcard
         option_pairs.each do |(name, option)|
-          sku << @last_sep
           sku << option.name.upcase
         end
       end
