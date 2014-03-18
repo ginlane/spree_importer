@@ -19,6 +19,9 @@ module SpreeImporter
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
           product.batch_id        = batch_id
+
+          setup_taxonomies(product, row['category'])
+
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
             # self.warnings << "Product exists for sku #{product.sku}, skipping product import"
@@ -41,18 +44,19 @@ module SpreeImporter
 
           setup_variants product,   option_types, headers, row
           setup_properties product, properties, headers, row
-          setup_taxonomies product, val(headers, row, :category)
 
           product.save!
         end
       end
 
-      def setup_taxonomies(product, taxonomy)
-        if taxonomy
-          taxon_names = taxonomy.split(SpreeImporter.config.delimiter).map do |tax|
+      def setup_taxonomies(product, taxonomies)
+        if taxonomies
+          taxon_names = taxonomies.split(SpreeImporter.config.delimiter).map do |tax|
             tax.split(SpreeImporter.config.taxon_separator).last.strip
           end.uniq
-          product.taxons = Spree::Taxon.where name: taxon_names
+          Spree::Taxon.where(name: taxon_names).each do |t|
+            t.products << product
+          end
         end
       end
 
