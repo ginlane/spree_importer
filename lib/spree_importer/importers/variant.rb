@@ -32,14 +32,27 @@ module SpreeImporter
 
           instance.batch_id = batch_id
           instance.save! # create stock item
-          
-          stock_headers(headers, row) do |location, value|
-            if value.nil?
-              instance.destroy
-            else
-              item = location.stock_items.find_by(variant_id: instance.id)
-              item.set_count_on_hand(value) if item.respond_to? :set_count_on_hand
-            end
+
+          default_location = default_stock_location(headers,row) do |location, value|
+            next if value.nil? || value == 0
+
+            stock_transfer = 
+            Spree::StockTransfer.where(
+                reference:            "Batch ##{batch_id} - Initial",
+                destination_location: location).first_or_create      
+
+            stock_transfer.transfer(nil, location, {instance.id => value})                    
+          end
+
+          stock_headers(headers, row) do |location, value|  
+            next if value.nil? || value == 0
+
+            stock_transfer = 
+            Spree::StockTransfer.where(
+                reference:            "Batch ##{batch_id}",
+                destination_location: location).first_or_create
+
+            stock_transfer.transfer(default_location, location, {instance.id => value})
           end
         end
       end
@@ -48,6 +61,16 @@ module SpreeImporter
         target.find_by_sku val(headers, row, :master_sku)
       end
 
+      def default_stock_location(headers,row)
+        headers.values.each do |header|
+          if header =~ /total/ && header.option
+            stock_name = header.option 
+            location = locations[stock_name]
+            yield location, val(headers, row, header.key).try(:to_i) unless location.nil?
+            return location
+          end
+        end
+      end
       # stock headers are in the format (location)quantity if there is
       # only one location the header can be just "quantity", however
       # if there are more than one the location needs to be specified
@@ -56,12 +79,12 @@ module SpreeImporter
         headers.values.each do |header|
           if header =~ /quantity/
             stock_name = header.option || "Default"
-
+            puts "stock name: #{stock_name}"
             locations[stock_name] ||= Spree::StockLocation.create name: stock_name, active: true
 
             location = locations[stock_name]
 
-            yield location, val(headers, row, header.key) unless location.nil?
+            yield location, val(headers, row, header.key).try(:to_i) unless location.nil?
           end
         end
       end
