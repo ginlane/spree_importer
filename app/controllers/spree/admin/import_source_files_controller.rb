@@ -7,7 +7,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def show
-    @resource = @import_source_file = Spree::ImportSourceFile.find params[:id]
+    @resource = @import_source_file = Spree::ImportSourceFile.find(params[:id])
     respond_with(@resource) do |format|
       format.html
       format.text { render text: @resource.data }
@@ -25,10 +25,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     @source_file = Spree::ImportSourceFile.new spreadsheet_key: ss_key
     @source_file.import_from_google! spree_current_user.google_token
 
-    render_source_file
-
-  rescue GoogleDrive::AuthenticationError
-    render json: { error: :invalid_token }, status: :unauthorized
+    redirect_to admin_import_source_files_url
   end
 
   def create
@@ -95,9 +92,15 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
 
     ws = resource.flat_worksheet spree_current_user.google_token
-    SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).each_with_index do |r,y| 
+    y = 0
+    SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).export do |r| 
       CSV.parse(r).first.each_with_index do |c,x| 
         ws[(y+1),(x+1)] = c
+      end
+      y += 1
+
+      if y % 300 == 0
+        ws.save
       end
     end
     ws.save 
@@ -112,7 +115,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
 
   def collection
-    super.includes({products: [:taxons, {master: :default_price}]}, :variants)
+    super.includes(products:[{variants: :stock_items}, :assets, :taxons]) #.includes({products: [:taxons, {master: :default_price}]}, :variants)
   end
 
   protected
