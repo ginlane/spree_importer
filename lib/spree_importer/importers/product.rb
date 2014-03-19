@@ -20,15 +20,15 @@ module SpreeImporter
 
           product.batch_id        = batch_id
 
-          setup_taxonomies(product, row['category'])
 
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
+            puts "PROD EXISTS"
+            ap product
             # self.warnings << "Product exists for sku #{product.sku}, skipping product import"
             next
           end
 
-          category    = Field.new(val(headers, row, :category)).sanitized
           shipping    = val headers, row, :shipping
 
           if shipping.nil?
@@ -38,12 +38,12 @@ module SpreeImporter
           end
 
           product.shipping_category_id = shipping.id
-          properties                   = [ ]
 
-          properties, option_types     = props_and_ops_from_headers headers, row
-
+          properties, option_types     = props_and_ops_from_headers headers, row        
+          
           setup_variants product,   option_types, headers, row
           setup_properties product, properties, headers, row
+          setup_taxonomies product, row['category']
 
           product.save!
         end
@@ -84,7 +84,8 @@ module SpreeImporter
           product.option_values_hash  = option_values_hash
         end
 
-        product.save!
+        product.save
+        
         if val headers, row, :sku
           product.variants.destroy_all
         else

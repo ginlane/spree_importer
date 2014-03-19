@@ -70,6 +70,7 @@ module SpreeImporter
             return location
           end
         end
+        return nil
       end
       # stock headers are in the format (location)quantity if there is
       # only one location the header can be just "quantity", however
@@ -79,9 +80,8 @@ module SpreeImporter
         headers.values.each do |header|
           if header =~ /quantity/
             stock_name = header.option || "Default"
-            puts "stock name: #{stock_name}"
-            locations[stock_name] ||= Spree::StockLocation.create name: stock_name, active: true
 
+            locations[stock_name] ||= Spree::StockLocation.create name: stock_name, active: true
             location = locations[stock_name]
 
             yield location, val(headers, row, header.key).try(:to_i) unless location.nil?
