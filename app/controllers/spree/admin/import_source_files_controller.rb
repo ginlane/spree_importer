@@ -115,7 +115,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
 
   def collection
-    super.includes(products:[{variants: :stock_items}, :assets, :taxons]) #.includes({products: [:taxons, {master: :default_price}]}, :variants)
+    super.includes(products:[{variants: :stock_items}, :assets, :taxons])
   end
 
   protected
