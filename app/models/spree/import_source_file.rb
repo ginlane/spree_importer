@@ -6,7 +6,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   serialize :import_errors
   serialize :imported_records
 
-  has_many :products, foreign_key: :batch_id
+  has_many :products, foreign_key: :batch_id, dependent: :destroy
   has_many :variants, foreign_key: :batch_id
 
   has_many :taxons, -> { group(:taxon_id) }, through: :products
@@ -88,7 +88,6 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       importer.option_headers.each do |header|
         importer.import :option, option_name: header.key, create_record: true
       end
-
       importer.property_headers.each do |header|
         importer.import :property, property_name: header.key, create_record: true
       end
@@ -96,9 +95,11 @@ class Spree::ImportSourceFile < ActiveRecord::Base
       importer.prototype_headers.each do |header|
         importer.import :prototype, prototype_name: header.key, create_record: true
       end
-
+    end
+    self.class.transaction do
       importer.import :taxonomy
-
+    end
+    self.class.transaction do
       importer.import :product, batch_id: id
       importer.import :variant, batch_id: id
     end
