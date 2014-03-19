@@ -15,8 +15,8 @@
     @dropzone.on "success", @handleSuccess
     @dropzone.on "sending", @startProgress
 
-    @urlImport = $ "#import_from_url"
-    @urlImport.on "submit", @createImportFile
+    #@urlImport = $ "#import_from_url"
+    #@urlImport.on "submit", @createImportFile
     @oAuthCheck()
 
   initializeWarningsTable: =>
