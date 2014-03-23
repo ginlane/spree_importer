@@ -32,7 +32,7 @@ module SpreeImporter
                                date_columns: %w[ available_on ],
                                taxon_separator: "->",
                                default_sku: "<master>*",
-                               google_client_id: "329185979586-rjjp5qdm1onlavepkj7cekdk6btfr43s.apps.googleusercontent.com",
+                               google_client_id: "329185979586-kkop4athah6sjj88tdgud05p2ncrlnr6.apps.googleusercontent.com",
                                google_client_secret: "QfTH8W6o867suDdAO6hoO4eT",
                                field_space_delimiter: '-',
                                progress_logging_enabled: false
