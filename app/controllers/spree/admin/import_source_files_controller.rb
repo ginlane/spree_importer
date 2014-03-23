@@ -7,7 +7,9 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def show
-    @resource = @import_source_file = Spree::ImportSourceFile.find(params[:id])
+    @resource = @import_source_file = 
+    Spree::ImportSourceFile.find(params[:id])
+
     respond_with(@resource) do |format|
       format.html
       format.text { render text: @resource.data }
@@ -38,6 +40,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
     @source_file.save
     @source_file.import!
+    @source_file.reload
     @source_file.save
     
     if @source_file.errors.blank?
