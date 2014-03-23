@@ -20,6 +20,7 @@ module SpreeImporter
 
       def each_export_item(search, &block)
         super search do |product|
+          self.collection = product.variants
           product.variants.each &block
         end
       end

@@ -5,6 +5,7 @@ module SpreeImporter
       include SpreeImporter::Exporters::Target
 
       default_exporters :product, :option, :property, :taxonomy
+      attr_accessor :collection
 
       # static
       def headers(product_or_variant)
@@ -28,16 +29,16 @@ module SpreeImporter
       def date_column?(column)
         SpreeImporter.config.date_columns.include? column
       end
-
       def each_export_item(search, &block)
         case search
         when :all, nil
-          Spree::Product.find_each &block
+          self.collection = Spree::Product
         when :dummy
-          block.call SpreeImporter::DummyProduct.new
+          self.collection = [SpreeImporter::DummyProduct.new]
         else
-          Spree::Product.ransack(search).result.find_each &block
+          self.collection = Spree::Product.ransack(search).result
         end
+        self.collection.find_each &block
       end
 
     end
