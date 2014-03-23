@@ -39,7 +39,8 @@ module SpreeImporter
             stock_transfer = 
             Spree::StockTransfer.where(
                 reference:            "Batch ##{batch_id} - Initial",
-                destination_location: location).first_or_create      
+                destination_location: location,
+                batch_id: batch_id).first_or_create      
 
             stock_transfer.transfer(nil, location, {instance.id => value})                    
           end
@@ -50,10 +51,17 @@ module SpreeImporter
             stock_transfer = 
             Spree::StockTransfer.where(
                 reference:            "Batch ##{batch_id}",
-                destination_location: location).first_or_create
+                destination_location: location,
+                batch_id: batch_id).first_or_create
 
             stock_transfer.transfer(default_location, location, {instance.id => value})
           end
+
+          reset_headers(headers, row) do |location, value|  
+            next if value.nil? || value == 0
+
+            instance.stock_items.find_by(stock_location_id:location.id).set_count_on_hand(value)
+          end          
         end
       end
 
@@ -88,7 +96,18 @@ module SpreeImporter
           end
         end
       end
+      def reset_headers(headers, row)
+        headers.values.each do |header|
+          if header =~ /reset/
+            stock_name = header.option || "Default"
 
+            locations[stock_name] ||= Spree::StockLocation.create name: stock_name, active: true
+            location = locations[stock_name]
+
+            yield location, val(headers, row, header.key).try(:to_i) unless location.nil?
+          end
+        end
+      end
       def locations
         @locations ||= Spree::StockLocation.all.inject({ }) { |acc, l| acc[l.name] = l; acc }
       end
