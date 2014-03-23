@@ -12,12 +12,13 @@ module SpreeImporter
 
         taxonomies   = [ ]
         if SpreeImporter.config.progress_logging_enabled
-          pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+          pbar = ::ProgressBar. create(title:self.class.name.demodulize.pluralize, total:csv.size)      
         end
         csv.each do |row|
-          pbar.inc if SpreeImporter.config.progress_logging_enabled
+          pbar.increment if SpreeImporter.config.progress_logging_enabled
           if value = row[taxon_header.key]
             next if value == '--'
+
             value.split(delimiter).each do |heirarchy|
               heirarchy = heirarchy.split(sep).map &:strip
               taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift

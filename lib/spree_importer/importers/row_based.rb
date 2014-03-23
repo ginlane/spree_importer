@@ -30,11 +30,11 @@ module SpreeImporter
         row_index = 0
 
         if SpreeImporter.config.progress_logging_enabled
-          pbar = ::ProgressBar.new(self.class.name.demodulize.pluralize, csv.size)      
+          pbar = ::ProgressBar.create(title:self.class.name.demodulize.pluralize, total:csv.size)      
         end
         csv.each do |row|
           row_index += 1
-          pbar.inc if SpreeImporter.config.progress_logging_enabled
+          pbar.increment if SpreeImporter.config.progress_logging_enabled
           begin
             instance = fetch_instance headers, row
             import_attributes.each do |attr|
