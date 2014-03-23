@@ -8,6 +8,9 @@ class Spree::ImportSourceFile < ActiveRecord::Base
 
   has_many :products, foreign_key: :batch_id, dependent: :destroy
   has_many :variants, foreign_key: :batch_id
+  
+  has_many :stock_transfers, foreign_key: :batch_id#, dependent: :destroy
+  has_many :stock_movements, through: :stock_transfers#, dependent: :destroy
 
   has_many :taxons, -> { group(:taxon_id) }, through: :products
 
@@ -36,11 +39,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.spreadsheet_url = ss.human_url
     save
 
-    if worksheet_title == 'Flat'
-      importer.import :variant, batch_id: id
-    else
-      import!
-    end
+    import!
   end
 
   def google_spreadsheet(token)
@@ -96,9 +95,9 @@ class Spree::ImportSourceFile < ActiveRecord::Base
         importer.import :prototype, prototype_name: header.key, create_record: true
       end
     end
-    self.class.transaction do
+    # self.class.transaction do
       importer.import :taxonomy
-    end
+    # end
     self.class.transaction do
       importer.import :product, batch_id: id
       importer.import :variant, batch_id: id
