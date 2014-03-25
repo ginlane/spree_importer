@@ -15,7 +15,7 @@ module SpreeImporter
       def import(headers, csv)
         each_instance headers, csv do |instance, row|
           next if val(headers, row, :sku) == val(headers, row, :master_sku) ||
-                  val(headers, row, :sku).blank?
+                  val(headers, row, :sku).blank? ||
 
           if instance.new_record?
             product          = master_variant(headers, row).product
@@ -58,7 +58,7 @@ module SpreeImporter
           end
 
           reset_headers(headers, row) do |location, value|  
-            next if value.nil? || value == 0
+            next if value.nil? #|| value == 0
 
             instance.stock_items.find_by(stock_location_id:location.id).set_count_on_hand(value)
           end          

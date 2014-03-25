@@ -25,9 +25,9 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
     @return_path = admin_import_source_files_url # in case google bombs out.
     @source_file = Spree::ImportSourceFile.new spreadsheet_key: ss_key
-    @source_file.import_from_google! spree_current_user.google_token
+    @source_file.meta_from_google spree_current_user.google_token
 
-    redirect_to admin_import_source_files_url
+    redirect_to admin_import_source_file_url(@source_file)
   end
 
   def create
@@ -53,7 +53,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   def import_from_google
     raise GoogleDrive::AuthenticationError.new if spree_current_user.google_token.nil?
     resource.import_from_google! spree_current_user.google_token, params[:worksheet]
-    redirect_to admin_import_source_files_path
+    redirect_to admin_import_source_file_path(resource)
   end
 
   def edit_in_google

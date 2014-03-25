@@ -12,9 +12,25 @@ namespace :csv do
     if File.exist?(import_path)
       data     = File.read import_path
       SpreeImporter.config.progress_logging_enabled = true
-      importer = Spree::ImportSourceFile.new data: data, file_name: import_path, mime: "text/csv"
-      importer.save
-      importer.import!
+      import = Spree::ImportSourceFile.create data: data, file_name: import_path, mime: "text/csv"
+      importer = import.importer
+
+      importer.option_headers.each do |header|
+        importer.import :option, option_name: header.key, create_record: true
+      end
+      importer.property_headers.each do |header|
+        importer.import :property, property_name: header.key, create_record: true
+      end
+
+      importer.prototype_headers.each do |header|
+        importer.import :prototype, prototype_name: header.key, create_record: true
+      end
+      importer.import :taxonomy
+      importer.import :product
+      importer.import :variant
+      import.import_warnings  = importer.warnings
+      import.imported_records = importer.records      
+      import.save
     end    
   end
 end

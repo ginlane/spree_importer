@@ -26,6 +26,17 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     importer.csv.each { |*args| yield *args }
   end
 
+  def meta_from_google(token, worksheet_title='Initial')
+    session   = GoogleDrive.login_with_oauth token
+    ss        = session.spreadsheet_by_key spreadsheet_key
+    ws        = ss.worksheet_by_title(worksheet_title)
+    wid       = File.basename(ws.worksheet_feed_url)
+    gid       = GID_TABLE[wid.to_sym]
+    self.file_name = "#{ss.title} - #{ws.title}"
+    self.spreadsheet_url = ss.human_url    
+    save    
+  end
+
   def import_from_google!(token, worksheet_title='Initial')
     session   = GoogleDrive.login_with_oauth token
     ss        = session.spreadsheet_by_key spreadsheet_key
