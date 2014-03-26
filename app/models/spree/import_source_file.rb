@@ -30,6 +30,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     session   = GoogleDrive.login_with_oauth token
     ss        = session.spreadsheet_by_key spreadsheet_key
     ws        = ss.worksheet_by_title(worksheet_title)
+    ws ||= ss.worksheets.first
     wid       = File.basename(ws.worksheet_feed_url)
     gid       = GID_TABLE[wid.to_sym]
     self.file_name = "#{ss.title} - #{ws.title}"
@@ -61,6 +62,12 @@ class Spree::ImportSourceFile < ActiveRecord::Base
   def flat_worksheet(token)
     ss = google_spreadsheet(token)
     ss.worksheet_by_title('Flat') || ss.add_worksheet('Flat')
+  end
+
+  def worksheet_with_title(token,title)
+    raise 'no title' unless title
+    ss = google_spreadsheet(token)
+    ss.worksheet_by_title(title) || ss.add_worksheet(title)
   end
 
   def create_in_google!(token)
