@@ -23,8 +23,8 @@ module SpreeImporter
 
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
-            puts "PROD EXISTS"
-            Spree::Product.by_sku(product.sku).update_all(batch_id: batch_id)
+            # puts "PROD EXISTS"
+            # Spree::Product.by_sku(product.sku).update_all(batch_id: batch_id)
             # ap product
             # self.warnings << "Product exists for sku #{product.sku}, skipping product import"
             next
