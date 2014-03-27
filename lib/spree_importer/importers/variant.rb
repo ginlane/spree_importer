@@ -46,7 +46,9 @@ module SpreeImporter
           end
 
           stock_headers(headers, row) do |location, value|  
-            next if value.nil? || value == 0
+            next if value.nil? || value == 0 
+
+            next if value.to_i == instance.stock_items.find_by(stock_location_id:location.id).count_on_hand
 
             stock_transfer = 
             Spree::StockTransfer.where(

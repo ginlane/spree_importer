@@ -51,7 +51,17 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.spreadsheet_url = ss.human_url
     save
 
-    import!
+    if worksheet_title == 'Flat'
+      self.class.transaction do
+        importer.import :variant, batch_id: id
+      end
+
+      self.import_warnings  = importer.warnings
+      self.imported_records = importer.records
+      save
+    else
+      import!
+    end
   end
 
   def google_spreadsheet(token)

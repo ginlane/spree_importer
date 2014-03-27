@@ -18,7 +18,6 @@ module Spree
       def google
         url    = oauth_client.auth_code.authorize_url redirect_uri: redirect_uri,
                                                       scope: scopes
-
         if params[:redirect]
           session[:google_oauth_return_path] = params[:redirect]
         end
@@ -30,6 +29,7 @@ module Spree
         token = oauth_client.auth_code.get_token(params[:code], redirect_uri: redirect_uri)
 
         spree_current_user.update_attribute :google_token, token.token
+        spree_current_user.update_attribute :google_expires_at, Time.at(token.expires_at)
 
         flash[:notice] = "Authenticated with Google."
         redirect_to session.delete(:google_oauth_return_path)||admin_import_source_files_url
