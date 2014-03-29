@@ -69,7 +69,6 @@ module SpreeImporter
       end
 
       def fetch_instance(headers, row)
-        return find_uniq(headers,row) if self.respond_to? :find_uniq
         return target.new if unique_keys.nil?
 
         params = unique_keys.inject({ }) do |hash, key|

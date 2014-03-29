@@ -9,8 +9,12 @@ module SpreeImporter
 
       import_attributes :sku_pattern, :sku, :name, :price, :available_on,
                         :description, :meta_description, :meta_keywords, :cost_price
-
       target ::Spree::Product
+
+      def fetch_instance(headers, row)
+        master_sku             = val headers, row, :master_sku
+        target.by_sku(master_sku).first || target.new
+      end      
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
@@ -20,9 +24,9 @@ module SpreeImporter
 
           product.batch_id        = batch_id
 
-
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
+            # binding.pry
             # puts "PROD EXISTS"
             # Spree::Product.by_sku(product.sku).update_all(batch_id: batch_id)
             # ap product

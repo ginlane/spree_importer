@@ -1,5 +1,6 @@
 class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceController
 
+  before_filter :check_token
   rescue_from GoogleDrive::AuthenticationError, with: :google_authenticate
 
   def new
@@ -51,14 +52,11 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def import_from_google
-    raise GoogleDrive::AuthenticationError.new if !check_token
     resource.import_from_google! spree_current_user.google_token, params[:worksheet]
     redirect_to admin_import_source_file_path(resource)
   end
 
   def edit_in_google
-    raise GoogleDrive::AuthenticationError.new if !check_token
-
     if resource.spreadsheet_url.nil?
       resource.create_in_google! spree_current_user.google_token
     end
@@ -75,7 +73,6 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def create_google
-    raise GoogleDrive::AuthenticationError.new if !check_token
     session   = GoogleDrive.login_with_oauth spree_current_user.google_token
     
     next_id = Spree::ImportSourceFile.last.try(:id) || 0
@@ -92,8 +89,6 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def export_to_google
-    raise GoogleDrive::AuthenticationError.new if !check_token
-
     ws = resource.flat_worksheet spree_current_user.google_token
     y = 0
     SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).export do |r| 
@@ -131,7 +126,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def check_token
-    spree_current_user.google_token.nil? || spree_current_user.google_expires_at > Time.now
+    raise GoogleDrive::AuthenticationError if spree_current_user.google_expires_at.try(:past?)
   end
 
   def resource
