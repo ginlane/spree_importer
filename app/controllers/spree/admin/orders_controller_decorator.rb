@@ -15,7 +15,7 @@ module Spree
 
         if params[:q]
           params[:q][:deleted_at_null] ||= "1"
-          params[:q][:s]               ||= "name asc"
+          params[:q][:s]               ||= "created_at desc"
           params[:q]
         end
       end

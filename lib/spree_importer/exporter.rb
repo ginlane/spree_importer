@@ -37,9 +37,9 @@ class SpreeImporter::Exporter
       target_exporter.each_export_item options[:search] do |export_item|
         if SpreeImporter.config.progress_logging_enabled
           # pbar.title = export_item.try(:name) || export_item.to_s
-          if pbar.total != target_exporter.collection.try(:count) 
+          if pbar.total != target_exporter.try(:count) 
             pbar.reset
-            pbar.total = target_exporter.collection.try(:count)             
+            pbar.total = target_exporter.try(:count)             
           end
           pbar.increment
         end
