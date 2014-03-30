@@ -16,6 +16,7 @@ module Spree
         if params[:q]
           params[:q][:deleted_at_null] ||= "1"
           params[:q][:s]               ||= "created_at desc"
+          params[:q][:state]           ||= "complete"
           params[:q]
         end
       end
