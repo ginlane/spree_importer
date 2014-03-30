@@ -7,7 +7,7 @@ module SpreeImporter
       default_exporters  :order, :option, :property, :taxonomy
 
       def headers(order)
-        %w[ number completed_at name sku customer_name shipping_address billing_address
+        %w[ number state completed_at name sku customer_name shipping_address billing_address
             shipment_state price tax subtotal quantity ]
       end
 
