@@ -15,7 +15,8 @@ module SpreeImporter
         order                   = line_item.order
         tax                     = order.adjustments.tax.first.try :amount
         row["number"]           = order.number
-        row["completed_at"]     = order.completed_at.try :strftime, SpreeImporter.config.date_format
+        row["completed_at"]     = order.completed_at
+        row["state"]            = order.state
         row["name"]             = line_item.name
         row["sku"]              = line_item.sku
         row["customer_name"]    = order.shipping_address.try :full_name
