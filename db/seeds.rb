@@ -22,7 +22,7 @@ if File.exist?(import_path)
   end
   importer.import :taxonomy
   
-  importer.import :product, batch_id: id
-  importer.import :variant, batch_id: id
+  importer.import :product
+  importer.import :variant
 
 end
