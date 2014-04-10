@@ -2,10 +2,12 @@
 
 namespace :csv do
   task :export, [:file] => [:environment] do |t, args|
-    file = args[:file] || Rails.root.join('db/export.csv')
-    puts file
+    out_dir = Rails.root.join('public/exports')
+    Dir.mkdir(out_dir) unless File.exists? out_dir
+    file = args[:file] || "#{out_dir}/#{Time.new.strftime('%Y%m%dT%H%M')}.csv"
     SpreeImporter.config.progress_logging_enabled = true
     SpreeImporter::Exporter.new(target: :variant, file: file).export 
+    puts "exported to #{file}"
   end
   task :import, [:file] => [:environment] do |t, args|
     import_path = args[:file] || "#{Rails.root}/db/import.csv" 
