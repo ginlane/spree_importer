@@ -19,7 +19,13 @@ module SpreeImporter
           values << field.split(delimiter).map{ |f| Field.new f } if field
         end
 
-        option_type.option_values = values.flatten.uniq.map do |value|
+        values = values.flatten.uniq
+
+        values.reject! do |v|
+          option_type.option_values.find_by(name:v.option).present?
+        end
+
+        option_type.option_values << values.map do |value|
           pos = 0
           if option_type.option_values.map(&:name).include?(value.key)
             option_type.option_values.select{|v| v.name == value.key }.first
