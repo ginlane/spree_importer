@@ -12,7 +12,7 @@ module SpreeImporter
 
         taxonomies   = [ ]
         if SpreeImporter.config.progress_logging_enabled
-          pbar = ::ProgressBar. create(title:self.class.name.demodulize.pluralize, total:csv.size)      
+          pbar = ::ProgressBar. create(title:self.class.name.demodulize.pluralize, total:csv.size)
         end
         csv.each do |row|
           pbar.increment if SpreeImporter.config.progress_logging_enabled
@@ -21,15 +21,13 @@ module SpreeImporter
 
             value.split(delimiter).each do |heirarchy|
               heirarchy = heirarchy.split(sep).map &:strip
-              
+
               taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift
               heirarchy.inject(taxonomy.root) do |taxon, sub|
-                sub_taxon = ::Spree::Taxon.where(name: sub, taxonomy: taxonomy).first_or_create
-                sub_taxon.move_to_child_of(taxon) unless sub_taxon.parent == taxon
-                sub_taxon
+                taxon.children.where(name: sub).first_or_create
               end
 
-              taxonomies << taxonomy 
+              taxonomies << taxonomy
             end
           end
         end
