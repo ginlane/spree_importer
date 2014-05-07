@@ -24,7 +24,8 @@ module SpreeImporter
 
               taxonomy  = ::Spree::Taxonomy.find_or_create_by name: heirarchy.shift
               heirarchy.inject(taxonomy.root) do |taxon, sub|
-                taxon.children.where(name: sub).first_or_create
+                find = taxon.children.find_by(name: sub)
+                find || taxon.children.create(name:sub) 
               end
 
               taxonomies << taxonomy

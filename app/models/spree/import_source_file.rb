@@ -49,7 +49,7 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     self.data = csv
       .gsub(/\xE2\x80[\x98-\x99]/n, "'")
       .gsub(/\xE2\x80[\x9C-\x9D]/n, '""')
-      .encode("UTF-8", invalid: :replace, undef: '', replace: "?")
+      .encode("UTF-8", invalid: :replace, undef: :replace, replace: "?")
 
     self.file_name = "#{ss.title} - #{ws.title}"
     self.spreadsheet_url = ss.human_url
