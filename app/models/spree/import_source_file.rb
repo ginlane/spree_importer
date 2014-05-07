@@ -46,7 +46,11 @@ class Spree::ImportSourceFile < ActiveRecord::Base
     gid       = GID_TABLE[wid.to_sym]
     csv       = ss.export_as_string :csv, gid #ss.worksheets.find_index {|w|w.title == ws.title}
 
-    self.data = csv.encode("UTF-8", invalid: :replace, undef: :replace, replace: "?").gsub(/[\u201c\u201d]/, '"')
+    self.data = csv
+      .gsub(/\xE2\x80[\x98-\x99]/n, "'")
+      .gsub(/\xE2\x80[\x9C-\x9D]/n, '""')
+      .encode("UTF-8", invalid: :replace, undef: '', replace: "?")
+
     self.file_name = "#{ss.title} - #{ws.title}"
     self.spreadsheet_url = ss.human_url
     save
