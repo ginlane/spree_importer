@@ -13,8 +13,9 @@ module SpreeImporter
 
       def fetch_instance(headers, row)
         master_sku             = val headers, row, :master_sku
-        target.by_sku(master_sku).first || target.new
-      end      
+        obj = target.by_sku(master_sku).first || target.new
+        target.find obj.id
+      end
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
@@ -26,11 +27,7 @@ module SpreeImporter
 
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
-            # binding.pry
-            # puts "PROD EXISTS"
-            # Spree::Product.by_sku(product.sku).update_all(batch_id: batch_id)
-            # ap product
-            # self.warnings << "Product exists for sku #{product.sku}, skipping product import"
+            product.save
             next
           end
 
