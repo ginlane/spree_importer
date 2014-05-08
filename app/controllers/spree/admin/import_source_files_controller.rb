@@ -8,7 +8,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def show
-    @resource = @import_source_file = 
+    @resource = @import_source_file =
     Spree::ImportSourceFile.find(params[:id])
 
     respond_with(@resource) do |format|
@@ -18,7 +18,16 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   end
 
   def create_from_url
-    ss_key = sanitized[:spreadsheet_key]
+    url = URI.parse(sanitized[:spreadsheet_key])
+    if url.host
+      url_params = CGI.parse(url.query)
+      ss_key = url_params['key']
+      ss_key = ss_key.first if ss_key.kind_of? Array
+    else
+      ss_key = sanitized[:spreadsheet_key]
+    end
+
+
 
     if @source_file = Spree::ImportSourceFile.find_by(spreadsheet_key: ss_key)
       render json: { redirect:  admin_import_source_file_url(@source_file) } and return
@@ -43,7 +52,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
     @source_file.import!
     @source_file.reload
     @source_file.save
-    
+
     if @source_file.errors.blank?
       render_source_file
     else
@@ -74,7 +83,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
 
   def create_google
     session   = GoogleDrive.login_with_oauth spree_current_user.google_token
-    
+
     next_id = Spree::ImportSourceFile.last.try(:id) || 0
     next_id += 1
     ss = session.create_spreadsheet("#{Spree::Config[:site_name]} Batch Import ##{next_id}")
@@ -91,8 +100,8 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
   def export_to_google
     ws = resource.flat_worksheet spree_current_user.google_token
     y = 0
-    SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).export do |r| 
-      CSV.parse(r).first.each_with_index do |c,x| 
+    SpreeImporter::Exporter.new(search: {batch_id_eq:resource.id}, target: :variant).export do |r|
+      CSV.parse(r).first.each_with_index do |c,x|
         ws[(y+1),(x+1)] = c
       end
       y += 1
@@ -101,7 +110,7 @@ class Spree::Admin::ImportSourceFilesController < Spree::Admin::ResourceControll
         ws.save
       end
     end
-    ws.save 
+    ws.save
     redirect_to :back
   end
 
