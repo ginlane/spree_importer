@@ -127,9 +127,9 @@ class Spree::ImportSourceFile < ActiveRecord::Base
         importer.import :prototype, prototype_name: header.key, create_record: true
       end
     end
-    # self.class.transaction do
+    self.class.transaction do
       importer.import :taxonomy
-    # end
+    end
     self.class.transaction do
       importer.import :product, batch_id: id
       importer.import :variant, batch_id: id
