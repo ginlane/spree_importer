@@ -13,41 +13,57 @@ module SpreeImporter
 
       def fetch_instance(headers, row)
         master_sku             = val headers, row, :master_sku
-        obj = target.by_sku(master_sku).first || target.new
-        target.find obj.id
+        obj = target.by_sku(master_sku).first
+
+        if obj
+          target.find obj.id
+        else
+          target.new
+        end
       end
 
       def import(headers, csv)
         each_instance headers, csv do |product, row|
+
           master_sku             = val headers, row, :master_sku
           product.sku            = master_sku unless master_sku.nil?
           product.sku_pattern  ||= SpreeImporter.config.default_sku
 
+          if product.batch_id.present? && product.batch_id != batch_id
+            old_batch_ids = (product.property('Previous Batch IDs') || '').split(',')
+            unless old_batch_ids.include? product.batch_id
+              str = old_batch_ids.push(product.batch_id).join(',')
+              product.set_property('Previous Batch IDs', str)
+            end
+          end
+
           product.batch_id        = batch_id
 
-          # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
-            product.save
-            next
+            # product.save
+            # next
           end
 
-          shipping    = val headers, row, :shipping
+          unless product.shipping_category_id.present?
+            shipping    = val headers, row, :shipping
 
-          if shipping.nil?
-            shipping = ::Spree::ShippingCategory.find_by_name "Default"
-          else
-            shipping = ::Spree::ShippingCategory.find_by_name shipping
+            if shipping.nil?
+              shipping = ::Spree::ShippingCategory.find_by_name "Default"
+            else
+              shipping = ::Spree::ShippingCategory.find_by_name shipping
+            end
+
+            product.shipping_category_id = shipping.id
           end
 
-          product.shipping_category_id = shipping.id
+          properties, option_types     = props_and_ops_from_headers headers, row
 
-          properties, option_types     = props_and_ops_from_headers headers, row        
-          
           setup_variants product,   option_types, headers, row
           setup_properties product, properties, headers, row
+          puts "SKU: #{product.sku} id: #{product.id} name: #{product.name} variants: #{product.variants.map(&:sku)} taxons: #{product.taxons.map(&:name)}"
           setup_taxonomies product, row['category']
 
-          product.save!
+          product.save
         end
       end
 
@@ -56,7 +72,15 @@ module SpreeImporter
           taxon_names = taxonomies.split(SpreeImporter.config.delimiter).map do |tax|
             tax.split(SpreeImporter.config.taxon_separator).last.strip
           end.uniq
-          Spree::Taxon.where(name: taxon_names).each do |t|
+
+          current_taxon_names = product.taxons.map(&:name)
+          removed = current_taxon_names.reject{|n| taxon_names.include? n }
+
+          Spree::Taxon.where(name:removed).map do |t|
+            product.classifications.where(taxon:t).destroy_all
+          end
+          new_taxons = taxon_names - current_taxon_names
+          Spree::Taxon.where(name: new_taxons).each do |t|
             t.products << product
           end
         end
@@ -87,17 +111,20 @@ module SpreeImporter
         end
 
         product.save
-        
+
+        product.master.track_inventory = false
+        product.master.save
+        product.master.stock_items.destroy_all
+
         if val headers, row, :sku
           product.variants.destroy_all
         else
           product.variants.each &:generate_sku!
         end
 
-        product.variants.each{|v| v.update_attribute :batch_id, batch_id }        
-        product.master.update_attribute :batch_id, batch_id
+        product.variants_including_master.each{|v| v.update_attribute :batch_id, batch_id }
       end
     end
-    
+
   end
 end
