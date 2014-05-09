@@ -22,7 +22,7 @@ module SpreeImporter
         values = values.flatten.uniq
 
         values.reject! do |v|
-          option_type.option_values.find_by("UPPER(name) = ?", v.option.upcase).present?
+          option_type.option_values.find_by("UPPER(name) = ?", (v.option || v.key).upcase).present?
         end
 
         option_type.option_values << values.map do |value|
