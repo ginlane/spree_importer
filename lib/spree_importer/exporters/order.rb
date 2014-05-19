@@ -8,7 +8,7 @@ module SpreeImporter
 
       def headers(order)
         %w[ number state completed_at name sku customer_name shipping_address billing_address
-            shipment_state price tax subtotal quantity ]
+            shipment_state price tax subtotal total quantity ]
       end
 
       def append(row, line_item)
@@ -24,8 +24,9 @@ module SpreeImporter
         row["billing_address"]  = flat_address order.billing_address
         row["shipment_state"]   = order.shipment_state
         row["price"]            = line_item.price
-        row["tax"]              = tax
+        row["tax"]              = '%.2f' % (order.tax_zone.tax_rates.first.try(:amount).to_f * line_item.total)
         row["subtotal"]         = line_item.amount
+        row["total"]         = line_item.amount + row["tax"].to_f
         row["quantity"]         = line_item.quantity
       end
 
