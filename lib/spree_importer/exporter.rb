@@ -31,19 +31,7 @@ class SpreeImporter::Exporter
         yield CSV.generate_line headers
       end
 
-      # if SpreeImporter.config.progress_logging_enabled
-      #   pbar = ::ProgressBar.create(title:self.class.name.demodulize.pluralize)
-      # end
       target_exporter.each_export_item options[:search] do |export_item|
-        if SpreeImporter.config.progress_logging_enabled
-          # pbar.title = export_item.try(:name) || export_item.to_s
-          # if pbar.total != target_exporter.collection.try(:count)
-          #   pbar.progress = 0
-          #   pbar.total = target_exporter.collection.try(:count)
-          # end
-          pbar.increment
-        end
-
         row = CSV::Row.new headers, [ ]
 
         exporters.each do |exporter|
@@ -56,7 +44,6 @@ class SpreeImporter::Exporter
           csv << row
         end
       end
-      # pbar.stop if SpreeImporter.config.progress_logging_enabled
     end
   end
 
