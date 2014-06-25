@@ -35,13 +35,7 @@
       end
 
       def fetch_instance(params)
-        instance = target.where(params).first
-        if instance
-          self.warnings << "Warning existing #{target} matches params #{params}"
-          instance
-        else
-          target.new
-        end
+        target.find_by(params) || target.new
       end
 
       def val(headers, row, key)
