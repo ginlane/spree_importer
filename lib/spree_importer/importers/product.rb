@@ -20,7 +20,7 @@ module SpreeImporter
 
           product.batch_id        = batch_id
 
-          setup_taxonomies(product, row['category'])
+
 
           # for safety we're skipping and warning on products that look like dups
           if ::Spree::Variant.exists? sku: product.sku
@@ -36,10 +36,12 @@ module SpreeImporter
           else
             shipping = ::Spree::ShippingCategory.find_by_name shipping
           end
-
           product.shipping_category_id = shipping.id
-          properties                   = [ ]
 
+          #previously it was before shipping category.
+          setup_taxonomies(product, row['category'])
+
+          properties                   = [ ]
           properties, option_types     = props_and_ops_from_headers headers, row
 
           setup_variants product,   option_types, headers, row
@@ -91,10 +93,10 @@ module SpreeImporter
           product.variants.each &:generate_sku!
         end
 
-        product.variants.each{|v| v.update_attribute :batch_id, batch_id }        
+        product.variants.each{|v| v.update_attribute :batch_id, batch_id }
         product.master.update_attribute :batch_id, batch_id
       end
     end
-    
+
   end
 end
